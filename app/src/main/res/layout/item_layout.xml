@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp">
+
+    <!-- название -->
+
+    <TextView
+        android:id="@+id/title"
+        app:layout_constraintTop_toTopOf="@+id/color_main"
+        app:layout_constraintStart_toStartOf="@+id/color_main"
+        android:layout_margin="@dimen/large_margin"
+        android:text="@string/title"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_size_big"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/elevation" />
+
+    <!-- описание -->
+
+    <TextView
+        android:id="@+id/description"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintStart_toStartOf="@+id/color_main"
+        android:layout_marginStart="@dimen/large_margin"
+        android:text="@string/button_to_add"
+        android:textSize="@dimen/text_size"
+        android:textColor="@color/colorGreyLight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/elevation" />
+
+    <!-- количество -->
+
+    <TextView
+        android:id="@+id/quantity"
+        app:layout_constraintTop_toTopOf="@+id/color_main"
+        app:layout_constraintEnd_toEndOf="@+id/color_main"
+        android:layout_marginTop="@dimen/huge_margin"
+        android:layout_marginEnd="@dimen/large_margin"
+        android:text="@string/something"
+        android:textColor="@color/colorGreyDark"
+        android:textSize="@dimen/text_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/elevation" />
+
+    <!-- приоритет -->
+
+    <TextView
+        android:id="@+id/priority"
+        app:layout_constraintTop_toTopOf="@+id/color_support"
+        app:layout_constraintStart_toStartOf="@+id/color_support"
+        android:layout_margin="@dimen/large_margin"
+        android:text="@string/priority"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/elevation" />
+
+    <!-- периодичность -->
+
+    <TextView
+        android:id="@+id/period"
+        app:layout_constraintBottom_toBottomOf="@+id/color_support"
+        app:layout_constraintStart_toStartOf="@+id/color_support"
+        android:layout_margin="@dimen/large_margin"
+        android:textColor="@color/colorGreyLight"
+        android:text="@string/period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/elevation" />
+
+    <!-- тип -->
+
+    <TextView
+        android:id="@+id/type"
+        app:layout_constraintEnd_toEndOf="@+id/color_support"
+        app:layout_constraintTop_toTopOf="@+id/color_support"
+        android:layout_marginTop="@dimen/huge_margin"
+        android:layout_marginEnd="@dimen/large_margin"
+        android:text="@string/type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/elevation" />
+
+    <!-- цвет -->
+
+    <View
+        android:id="@+id/color_main"
+        android:background="@drawable/color_button_orange"
+        android:alpha="0.35"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="85dp"
+        android:elevation="@dimen/elevation_color" />
+
+    <View
+        android:id="@+id/color_support"
+        android:background="@drawable/color_button_orange"
+        android:alpha="0.35"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/color_main"
+        android:layout_width="wrap_content"
+        android:layout_height="85dp"
+        android:elevation="@dimen/elevation_color" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

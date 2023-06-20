@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">NewApppp</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+
+    <string name="good_habits_title">Хорошие привычки</string>
+    <string name="bad_habits_title">Плохие привычки</string>
+
+    <string name="add_new_habit_button">Добавить новую привычку</string>
+    <string name="button_to_add">Button to add habit</string>
+
+    <string name="title_of_habit">Название привычки</string>
+    <string name="habit_description">Описание</string>
+    <string name="select_the_priority">Выберите приоритет</string>
+    <string name="choose_the_type">Выберите тип</string>
+
+    <string name="mental">Ментальный</string>
+    <string name="Physical">Физический</string>
+
+    <string name="quantity_doing_habit">Количество выполнения</string>
+    <string name="execution_frequency">Периодичность выполнения</string>
+
+    <string name="save">Сохранить</string>
+
+    <string name="something">Something</string>
+
+    <string name="color_choose_text">Выберите цвет</string>
+    <!--Обращение к этому-->
+    <string-array name="priority_options">
+        <item>Приоритет</item>
+        <item>Низкий</item>
+        <item>Средний</item>
+        <item>Высокий</item>
+    </string-array>
+
+    <string name="fill_the_line">"Пожалуйста, заполните все поля и выберете значения"</string>
+    <string name="title">title</string>
+    <string name="priority">priority</string>
+    <string name="type">type</string>
+    <string name="period">3 раза в неделю</string>
+    <string name="colorText">Цвет</string>
+    <string name="info_about_app">О приложении</string>
+    <string name="home_page_title">Главная</string>
+</resources>
