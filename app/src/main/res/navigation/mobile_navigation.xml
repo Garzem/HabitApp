@@ -5,15 +5,31 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/nav_home">
 
+    <!--начальный фрагмент startDestination-->
+
     <fragment
         android:id="@+id/nav_home"
         android:name="com.example.newapppp.ui.home.HomeFragment"
-        android:label="@string/menu_home"
+        android:label="@string/home_page_title"
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.example.newapppp.ui.gallery.AppInfoFragment"
-        android:label="@string/menu_gallery"
+        android:id="@+id/nav_app_info_fragment"
+        android:name="com.example.newapppp.ui.appinfo.AppInfoFragment"
+        android:label="@string/info_about_app"
         tools:layout="@layout/fragment_app_info" />
+
+    <fragment
+        android:id="@+id/nav_redactor_fragment"
+        android:name="com.example.newapppp.redactor.RedactorFragment"
+        android:label="@string/redactor_habit_title"
+        tools:layout="@layout/redactor_fragment" >
+    </fragment>
+
+    <dialog
+        android:id="@+id/nav_color_choose_dialog"
+        android:name="com.example.habit_create.ColorChooseDialog"
+        android:label="@string/color_choose_title"
+        tools:layout="@layout/horizontal_color_choose">
+    </dialog>
 </navigation>

@@ -1,4 +1,4 @@
-package com.example.newapppp.data
+package com.example.newapppp.ui.data
 
 data class Habit(
     val title: String,
@@ -11,13 +11,13 @@ data class Habit(
 )
 
 enum class Priority {
-    High,
-    Medium,
-    Low,
-    Choose
+    CHOOSE,
+    LOW,
+    MEDIUM,
+    HIGH
 }
 
 enum class Type {
-    Good,
-    Bad
+    GOOD,
+    BAD
 }

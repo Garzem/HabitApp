@@ -4,19 +4,73 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.gallery.AppInfoFragment">
+    tools:context=".ui.appinfo.AppInfoFragment">
+
+    <ImageView
+        android:id="@+id/habit_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/habit_icon"
+        android:contentDescription="@string/icon_of_the_app_title" />
 
     <TextView
-        android:id="@+id/text_app_info"
-        android:layout_width="match_parent"
+        android:id="@+id/app_name_habit"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/achiever_title"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_size_normal"
+        android:layout_margin="@dimen/large_margin"
+        app:layout_constraintTop_toBottomOf="@+id/habit_image"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/app_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/version_1_0"
+        android:textColor="@color/colorGreyDark"
+        android:textSize="@dimen/text_size"
+        android:layout_margin="@dimen/normal_margin"
+        app:layout_constraintTop_toBottomOf="@+id/app_name_habit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/developer_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/developers_text_title"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_size_big"
+        android:layout_margin="@dimen/large_margin"
+        app:layout_constraintTop_toBottomOf="@+id/app_version"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/developer_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/developer_one_name"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_size_normal"
+        android:layout_margin="@dimen/normal_margin"
+        app:layout_constraintTop_toBottomOf="@+id/developer_title"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/developer_two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/developer_two_name"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_size_normal"
+        android:layout_margin="@dimen/normal_margin"
+        app:layout_constraintTop_toBottomOf="@+id/developer_one"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

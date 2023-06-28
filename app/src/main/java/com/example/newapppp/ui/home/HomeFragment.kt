@@ -4,13 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import com.example.newapppp.R
 import com.example.newapppp.databinding.FragmentHomeBinding
+import androidx.navigation.fragment.findNavController
+
 
 class HomeFragment : Fragment() {
-
+    //это для ооп
     private var _binding: FragmentHomeBinding? = null
 
     // This property is only valid between onCreateView and
@@ -21,18 +22,22 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+    ): View? {
+        return inflater.inflate(R.layout.fragment_home, container, false)
+    }
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentHomeBinding.bind(view)
+        val fab = binding.fab
+        fab.setOnClickListener {
+            navigateToRedactorFragment()
         }
-        return root
+    }
+
+    private fun navigateToRedactorFragment() {
+        val navController = findNavController()
+        navController.navigate(R.id.nav_redactor_fragment)
     }
 
     override fun onDestroyView() {

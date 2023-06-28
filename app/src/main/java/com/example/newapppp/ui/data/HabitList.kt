@@ -1,4 +1,4 @@
-package com.example.newapppp.data
+package com.example.newapppp.ui.data
 
 object HabitList {
 

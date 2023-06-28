@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/colorOfHabit"
+        android:text="@string/color_choose_text"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/large_margin" />
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_gravity="center"
+        android:layout_width="325dp"
+        android:layout_height="120dp"
+        android:fadeScrollbars="false" >
+
+        <LinearLayout
+            android:id="@+id/linear_color_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@drawable/gradient"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_pink"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorPink"
+                android:background="@drawable/color_button_pink" />
+
+            <Button
+                android:id="@+id/button_red"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorRed"
+                android:background="@drawable/color_button_red" />
+
+            <Button
+                android:id="@+id/button_deepOrange"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorDeepOrange"
+                android:background="@drawable/color_button_deep_orange" />
+
+            <Button
+                android:id="@+id/button_orange"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorOrange"
+                android:background="@drawable/color_button_orange" />
+
+            <Button
+                android:id="@+id/button_amber"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorAmber"
+                android:background="@drawable/color_button_amber" />
+
+            <Button
+                android:id="@+id/button_yellow"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorYellow"
+                android:background="@drawable/color_button_yellow" />
+
+            <Button
+                android:id="@+id/button_lime"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorLime"
+                android:background="@drawable/color_button_lime" />
+
+            <Button
+                android:id="@+id/button_lightGreen"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorLightGreen"
+                android:background="@drawable/color_button_light_green" />
+
+            <Button
+                android:id="@+id/button_green"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorGreen"
+                android:background="@drawable/color_button_green" />
+
+            <Button
+                android:id="@+id/button_teal"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorTeal"
+                android:background="@drawable/color_button_teal" />
+
+            <Button
+                android:id="@+id/button_cyan"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorCyan"
+                android:background="@drawable/color_button_cyan" />
+
+            <Button
+                android:id="@+id/button_lightBlue"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorLightBlue"
+                android:background="@drawable/color_button_light_blue" />
+
+            <Button
+                android:id="@+id/button_blue"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorBlue"
+                android:background="@drawable/color_button_blue" />
+
+            <Button
+                android:id="@+id/button_darkBlue"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorDarkBlue"
+                android:background="@drawable/color_button_dark_blue" />
+
+            <Button
+                android:id="@+id/button_purple"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorPurple"
+                android:background="@drawable/color_button_purple" />
+
+            <Button
+                android:id="@+id/button_deepPurple"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorDeepPurple"
+                android:background="@drawable/color_button_deep_purple" />
+
+            <Button
+                android:id="@+id/button_deepPurpleDark"
+                android:layout_margin="@dimen/large_margin"
+                android:layout_width="@dimen/color_button_width"
+                android:layout_height="@dimen/color_button_width"
+                android:textColorHint="@color/colorDeepPurpleDark"
+                android:background="@drawable/color_button_deep_purple_dark" />
+        </LinearLayout>
+    </HorizontalScrollView>
+</LinearLayout>

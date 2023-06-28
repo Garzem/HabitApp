@@ -25,8 +25,8 @@
     <string name="select_the_priority">Выберите приоритет</string>
     <string name="choose_the_type">Выберите тип</string>
 
-    <string name="mental">Ментальный</string>
-    <string name="Physical">Физический</string>
+    <string name="bad_habit">Вредная</string>
+    <string name="good_habit">Полезная</string>
 
     <string name="quantity_doing_habit">Количество выполнения</string>
     <string name="execution_frequency">Периодичность выполнения</string>
@@ -36,13 +36,6 @@
     <string name="something">Something</string>
 
     <string name="color_choose_text">Выберите цвет</string>
-    <!--Обращение к этому-->
-    <string-array name="priority_options">
-        <item>Приоритет</item>
-        <item>Низкий</item>
-        <item>Средний</item>
-        <item>Высокий</item>
-    </string-array>
 
     <string name="fill_the_line">"Пожалуйста, заполните все поля и выберете значения"</string>
     <string name="title">title</string>
@@ -52,4 +45,12 @@
     <string name="colorText">Цвет</string>
     <string name="info_about_app">О приложении</string>
     <string name="home_page_title">Главная</string>
+    <string name="icon_of_the_app_title">Иконка приложения</string>
+    <string name="achiever_title">Приложение для создания хобби \'Достигатор\'</string>
+    <string name="version_1_0">Версия 1.0</string>
+    <string name="developers_text_title">Разработчики</string>
+    <string name="developer_one_name">Сахан</string>
+    <string name="developer_two_name">Палкан</string>
+    <string name="redactor_habit_title">Редактор привычки</string>
+    <string name="color_choose_title">Выбор цвета</string>
 </resources>

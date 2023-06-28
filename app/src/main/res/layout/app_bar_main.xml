@@ -19,19 +19,10 @@
             app:popupTheme="@style/Theme.NewApppp.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
+    <!--занимает оставшееся места (контейнер)-->
+    <include
+        android:id="@+id/content_main_include"
+        layout="@layout/content_main" />
 
-    <include layout="@layout/content_main" />
-
-
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="16dp"
-        app:srcCompat="@drawable/plus_habit_icon"
-        android:contentDescription="@string/add_new_habit_button" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
