@@ -12,13 +12,12 @@ class RedactorFragmentViewModel : ViewModel() {
     val title = MutableLiveData<String>().apply { value = "" }
     val description = MutableLiveData<String>().apply { value = "" }
     val period = MutableLiveData<String>().apply { value = "" }
-    val color = MutableLiveData<Int>().apply { value = null }
+    val color = MutableLiveData<Int>().apply { value = 0 }
     val priority = MutableLiveData<Priority>().apply { value = Priority.CHOOSE}
-
     val type = MutableLiveData<Type>().apply { value = null}
     val quantity = MutableLiveData<String>().apply { value = "" }
 
-    fun getHabit(): Habit {
+    fun makeHabit(): Habit {
         return Habit(
             title = title.value!!,
             description = description.value!!,
@@ -40,8 +39,19 @@ class RedactorFragmentViewModel : ViewModel() {
         return Priority.CHOOSE
     }
 
-    private fun saveHabit() {
-
+    fun validation(): Boolean {
+        if (
+            title.value == "" ||
+            description.value == "" ||
+            period.value == "" ||
+            color.value == 0 ||
+            priority.value == Priority.CHOOSE ||
+            type.value == null ||
+            quantity.value == ""
+        ) {
+            return false
+        }
+        return true
     }
 //
 //    private fun getPriorityToString(priority: Priority): String = when (priority) {

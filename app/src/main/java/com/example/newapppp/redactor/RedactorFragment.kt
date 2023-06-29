@@ -6,13 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.habit_create.ColorChooseDialog
 import com.example.newapppp.R
 import com.example.newapppp.databinding.RedactorFragmentBinding
+import com.example.newapppp.ui.data.HabitList
 import com.example.newapppp.ui.data.Type
 
 class RedactorFragment: Fragment(), ColorChooseDialog.OnInputListener {
@@ -39,6 +42,10 @@ class RedactorFragment: Fragment(), ColorChooseDialog.OnInputListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sendToViewModel()
+        val saveButton = binding?.saveHabit
+        saveButton?.setOnClickListener {
+            saveNewHabit()
+        }
     }
 
     private fun sendToViewModel() {
@@ -96,5 +103,19 @@ class RedactorFragment: Fragment(), ColorChooseDialog.OnInputListener {
     override fun sendColor(colorChoose: Int) {
         binding?.chooseColorButton?.setBackgroundColor(colorChoose)
         viewModel.color.value = colorChoose
+    }
+
+    private fun saveNewHabit() {
+        if (!viewModel.validation()) {
+            Toast.makeText(
+                requireContext(),
+                R.string.fill_the_line,
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            val habit = viewModel.makeHabit()
+            HabitList.addHabit(habit)
+            findNavController().navigate(R.id.action_redactorFragment_to_homeFragment)
+        }
     }
 }

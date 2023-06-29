@@ -33,11 +33,11 @@ class HomeFragment : Fragment() {
         fab.setOnClickListener {
             navigateToRedactorFragment()
         }
+        //получение данных о привычке
     }
 
     private fun navigateToRedactorFragment() {
-        val navController = findNavController()
-        navController.navigate(R.id.nav_redactor_fragment)
+        findNavController().navigate(R.id.nav_redactor_fragment)
     }
 
     override fun onDestroyView() {

@@ -24,12 +24,15 @@
         android:name="com.example.newapppp.redactor.RedactorFragment"
         android:label="@string/redactor_habit_title"
         tools:layout="@layout/redactor_fragment" >
+        <action
+            android:id="@+id/action_redactorFragment_to_homeFragment"
+            app:destination="@+id/nav_home"
+            />
     </fragment>
 
     <dialog
         android:id="@+id/nav_color_choose_dialog"
         android:name="com.example.habit_create.ColorChooseDialog"
         android:label="@string/color_choose_title"
-        tools:layout="@layout/horizontal_color_choose">
-    </dialog>
+        tools:layout="@layout/horizontal_color_choose" />
 </navigation>
