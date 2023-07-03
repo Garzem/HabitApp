@@ -11,23 +11,31 @@
         android:id="@+id/nav_home"
         android:name="com.example.newapppp.ui.home.HomeFragment"
         android:label="@string/home_page_title"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/home_fragment" >
+        <action
+            android:id="@+id/action_home_fragment_to_redactor_fragment"
+            app:destination="@+id/nav_redactor_fragment"
+            />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_app_info_fragment"
         android:name="com.example.newapppp.ui.appinfo.AppInfoFragment"
         android:label="@string/info_about_app"
-        tools:layout="@layout/fragment_app_info" />
+        tools:layout="@layout/app_info_fragment" />
 
     <fragment
         android:id="@+id/nav_redactor_fragment"
-        android:name="com.example.newapppp.redactor.RedactorFragment"
+        android:name="com.example.newapppp.ui.redactor.RedactorFragment"
         android:label="@string/redactor_habit_title"
         tools:layout="@layout/redactor_fragment" >
         <action
-            android:id="@+id/action_redactorFragment_to_homeFragment"
-            app:destination="@+id/nav_home"
+            android:id="@+id/action_redactor_fragment_to_view_pager_filter"
+            app:destination="@+id/view_pager_filter"
             />
+        <action
+            android:id="@+id/action_habit_redactor_fragment_to_color_choose_dialog"
+            app:destination="@id/nav_color_choose_dialog" />
     </fragment>
 
     <dialog
@@ -35,4 +43,9 @@
         android:name="com.example.habit_create.ColorChooseDialog"
         android:label="@string/color_choose_title"
         tools:layout="@layout/horizontal_color_choose" />
+
+    <fragment
+        android:id="@+id/view_pager_filter"
+        android:name="com.example.newapppp.ui.typeofhabits.ViewPagerFilterFragment"
+        android:label="@string/view_pager_title" />
 </navigation>

@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <!--занимает оставшееся места (контейнер)-->
+    <include
+        android:id="@+id/content_main_include"
+        layout="@layout/content_main" />
+
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:theme="@style/Theme.NewApppp.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
@@ -19,10 +27,5 @@
             app:popupTheme="@style/Theme.NewApppp.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
-    <!--занимает оставшееся места (контейнер)-->
-    <include
-        android:id="@+id/content_main_include"
-        layout="@layout/content_main" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

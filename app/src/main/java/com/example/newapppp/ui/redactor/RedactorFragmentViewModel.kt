@@ -1,10 +1,10 @@
-package com.example.newapppp.redactor
+package com.example.newapppp.ui.redactor
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.newapppp.ui.data.Habit
-import com.example.newapppp.ui.data.Priority
-import com.example.newapppp.ui.data.Type
+import com.example.newapppp.data.Habit
+import com.example.newapppp.data.Priority
+import com.example.newapppp.data.Type
 
 class RedactorFragmentViewModel : ViewModel() {
 

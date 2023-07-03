@@ -5,13 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.example.newapppp.databinding.FragmentAppInfoBinding
+import com.example.newapppp.databinding.AppInfoFragmentBinding
 
 
 class AppInfoFragment : Fragment() {
 
-    private var _binding: FragmentAppInfoBinding? = null
+    private var _binding: AppInfoFragmentBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,7 +21,7 @@ class AppInfoFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAppInfoBinding.inflate(inflater, container, false)
+        _binding = AppInfoFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 

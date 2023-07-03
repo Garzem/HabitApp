@@ -1,4 +1,4 @@
-package com.example.newapppp.ui.data
+package com.example.newapppp.data
 
 data class Habit(
     val title: String,

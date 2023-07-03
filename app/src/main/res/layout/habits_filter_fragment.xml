@@ -3,6 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.habits.ViewPagerFilterFragment">
+    tools:context=".ui.typeofhabits.ViewPagerFilterFragment">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

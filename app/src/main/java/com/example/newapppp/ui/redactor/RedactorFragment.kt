@@ -1,4 +1,4 @@
-package com.example.newapppp.redactor
+package com.example.newapppp.ui.redactor
 
 
 import android.os.Bundle
@@ -15,8 +15,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.habit_create.ColorChooseDialog
 import com.example.newapppp.R
 import com.example.newapppp.databinding.RedactorFragmentBinding
-import com.example.newapppp.ui.data.HabitList
-import com.example.newapppp.ui.data.Type
+import com.example.newapppp.data.HabitList
+import com.example.newapppp.data.Type
 
 class RedactorFragment: Fragment(), ColorChooseDialog.OnInputListener {
 
@@ -32,9 +32,9 @@ class RedactorFragment: Fragment(), ColorChooseDialog.OnInputListener {
         //который связан с текущим фрагментом RedactorFragment
         binding = DataBindingUtil.inflate(inflater, R.layout.redactor_fragment, container, false)
         //обновление в соот. с жиз. циклами RedactorFragment
-        binding?.apply {
-            lifecycleOwner = this@RedactorFragment
-        }
+//        binding?.apply {
+//            lifecycleOwner = this@RedactorFragment
+//        }
         viewModel = ViewModelProvider(this)[RedactorFragmentViewModel::class.java]
         return binding?.root
     }
@@ -49,36 +49,18 @@ class RedactorFragment: Fragment(), ColorChooseDialog.OnInputListener {
     }
 
     private fun sendToViewModel() {
-        val title = binding!!.editTitle
-        val description = binding!!.editDescription
-        val period = binding!!.editPeriod
-        val quantity = binding!!.editQuantity
-
-        //??подробнее
-        title.doOnTextChanged { text, _, _, _ ->
-            viewModel.title.value = text.toString()
-        }
-
-        description.doOnTextChanged { text, _, _, _ ->
-            viewModel.description.value = text.toString()
-        }
-
-        period.doOnTextChanged { text, _, _, _ ->
-            viewModel.period.value = text.toString()
-        }
-
-        quantity.doOnTextChanged { text, _, _, _ ->
-            viewModel.quantity.value = text.toString()
-        }
-
         val radioGood = binding!!.radioGood
         val radioBad = binding!!.radioBad
         //??подробнее про __
         radioGood.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
             viewModel.type.value = Type.GOOD
+            }
         }
         radioBad.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.type.value = Type.BAD
+            if (isChecked) {
+                viewModel.type.value = Type.BAD
+            }
         }
 
         val spinner = binding!!.spinnerPriority
@@ -96,8 +78,7 @@ class RedactorFragment: Fragment(), ColorChooseDialog.OnInputListener {
     }
 
     private fun colorDialog() {
-        val colorChooseDialog = ColorChooseDialog(this)
-        colorChooseDialog.show(childFragmentManager, "colorChooseDialog")
+        findNavController().navigate(R.id.action_habit_redactor_fragment_to_color_choose_dialog)
     }
 
     override fun sendColor(colorChoose: Int) {
@@ -115,7 +96,7 @@ class RedactorFragment: Fragment(), ColorChooseDialog.OnInputListener {
         } else {
             val habit = viewModel.makeHabit()
             HabitList.addHabit(habit)
-            findNavController().navigate(R.id.action_redactorFragment_to_homeFragment)
+            findNavController().navigate(R.id.action_redactor_fragment_to_view_pager_filter)
         }
     }
 }

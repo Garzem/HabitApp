@@ -5,17 +5,17 @@
     <!--связывает поля xml с данными во viewModel-->
     <data>
         <import type="android.view.View"/>
-        <import type="com.example.newapppp.ui.data.Type"/>
+        <import type="com.example.newapppp.data.Type"/>
 
         <variable
             name="viewModel"
-            type="com.example.newapppp.redactor.RedactorFragmentViewModel"/>
+            type="com.example.newapppp.ui.redactor.RedactorFragmentViewModel"/>
     </data>
     
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.example.newapppp.redactor.RedactorFragment">
+        tools:context="com.example.newapppp.ui.redactor.RedactorFragment">
 
         <EditText
             android:id="@+id/edit_title"
@@ -28,7 +28,7 @@
             android:hint="@string/title_of_habit"
             android:inputType="text|textAutoCorrect"
             android:padding="@dimen/large_margin"
-            android:text="@{viewModel.title}"
+            android:text="@={viewModel.title}"
             app:layout_constraintEnd_toStartOf="@+id/color_holder"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -42,7 +42,7 @@
             android:layout_marginEnd="@dimen/small_margin"
             android:background="@drawable/stroke"
             android:hint="@string/habit_description"
-            android:text="@{viewModel.description}"
+            android:text="@={viewModel.description}"
             android:inputType="text|textAutoCorrect"
             android:padding="@dimen/large_margin"
             app:layout_constraintStart_toStartOf="parent"
@@ -129,7 +129,7 @@
             android:layout_marginEnd="@dimen/small_margin"
             android:background="@drawable/stroke"
             android:hint="@string/quantity_doing_habit"
-            android:text="@{viewModel.quantity}"
+            android:text="@={viewModel.quantity}"
             android:inputType="number"
             android:padding="@dimen/large_margin"
             app:layout_constraintEnd_toStartOf="@+id/spinner_priority"
@@ -145,7 +145,7 @@
             android:layout_marginEnd="@dimen/small_margin"
             android:background="@drawable/stroke"
             android:hint="@string/execution_frequency"
-            android:text="@{viewModel.period}"
+            android:text="@={viewModel.period}"
             android:inputType="text|textAutoCorrect"
             android:padding="@dimen/large_margin"
             app:layout_constraintEnd_toEndOf="parent"
