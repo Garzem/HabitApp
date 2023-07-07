@@ -1,5 +1,6 @@
 package com.example.newapppp.ui.redactor
 
+import android.graphics.drawable.Drawable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.newapppp.data.Habit
@@ -13,8 +14,8 @@ class RedactorFragmentViewModel : ViewModel() {
     val description = MutableLiveData<String>().apply { value = "" }
     val period = MutableLiveData<String>().apply { value = "" }
     val color = MutableLiveData<Int>().apply { value = 0 }
-    val priority = MutableLiveData<Priority>().apply { value = Priority.CHOOSE}
-    val type = MutableLiveData<Type>().apply { value = null}
+    val priority = MutableLiveData<Priority>().apply { value = Priority.CHOOSE }
+    val type = MutableLiveData<Type>().apply { value = null }
     val quantity = MutableLiveData<String>().apply { value = "" }
 
     fun makeHabit(): Habit {
@@ -29,15 +30,44 @@ class RedactorFragmentViewModel : ViewModel() {
         )
     }
 
-    fun getChosenPriority(position: Int): Priority {
-        when (position) {
+    //?? обсудить разницу
+    //нужно получить выбранное значение для дальнейшей реализации
+//    fun getChosenPriority(position: Int): Priority {
+//        when (position) {
+//            0 -> Priority.CHOOSE
+//            1 -> Priority.LOW
+//            2 -> Priority.MEDIUM
+//            3 -> Priority.HIGH
+//        }
+//        return Priority.CHOOSE
+//    }
+    //просто нужно обновить значение
+    fun getChosenPriority(position: Int) {
+        priority.value = when (position) {
             0 -> Priority.CHOOSE
             1 -> Priority.LOW
             2 -> Priority.MEDIUM
             3 -> Priority.HIGH
+            else -> Priority.CHOOSE
         }
-        return Priority.CHOOSE
     }
+
+    //возвращает список элементов, которые будут отображаться в выпадающем списке
+    //Этот список будет использован адаптером для отображения элементов
+    fun getList(): List<String> {
+        //values  возвращает массив всех значений (элементов) перечисления Priority
+        //map преобразует каждый элемент перечисления Priority в соответствующую строку
+        return Priority.values().map {
+            //it это Priority
+            when (it) {
+                Priority.CHOOSE -> "Приоритет"
+                Priority.LOW -> "Низкий"
+                Priority.MEDIUM -> "Средний"
+                Priority.HIGH -> "Высокий"
+            }
+        }
+    }
+
 
     fun validation(): Boolean {
         if (
@@ -53,21 +83,4 @@ class RedactorFragmentViewModel : ViewModel() {
         }
         return true
     }
-//
-//    private fun getPriorityToString(priority: Priority): String = when (priority) {
-//        Priority.CHOOSE -> "Приоритет"
-//        Priority.LOW -> "Низкий"
-//        Priority.MEDIUM -> "Средний"
-//        Priority.HIGH -> "Высокий"
-//    }
-
-//    fun getChosenPriority(position: Int): Pair<Priority, String> {
-//        return when (position) {
-//            0 -> Priority.CHOOSE to "Приоритет"
-//            1 -> Priority.LOW to "Низкий"
-//            2 -> Priority.MEDIUM to "Средний"
-//            3 -> Priority.HIGH to "Высокий"
-//            else -> Priority.CHOOSE to "Приоритет"
-//        }
-//    }
 }

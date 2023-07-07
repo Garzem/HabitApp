@@ -1,14 +1,19 @@
 package com.example.newapppp.ui.home
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.newapppp.R
+import androidx.fragment.app.viewModels
 import com.example.newapppp.databinding.HomeFragmentBinding
 import androidx.navigation.fragment.findNavController
+import com.example.newapppp.data.Habit
+import com.example.newapppp.data.HabitList
 import com.example.newapppp.data.Type
+import com.example.newapppp.ui.habitadapter.HabitListAdapter
 
 
 class HomeFragment : Fragment() {
@@ -27,9 +32,10 @@ class HomeFragment : Fragment() {
             return fragment
         }
     }
-    //это для ооп
-    private var _binding: HomeFragmentBinding? = null
 
+    private val homeViewModel: HomeViewModel by viewModels()
+
+    private var _binding: HomeFragmentBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -39,21 +45,40 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.home_fragment, container, false)
+        _binding = HomeFragmentBinding.inflate(inflater)
+        return _binding?.root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         _binding = HomeFragmentBinding.bind(view)
         val fab = binding.fab
         fab.setOnClickListener {
             navigateToRedactorFragment()
         }
         //получение данных о привычке
+        val adapter = HabitListAdapter(requireContext(), ::openHabitClick)
+        binding.recycleViewHabit.adapter = adapter
+        //устанавлявает наблюдатель для habit, он будет активен в течении жизненного цикла фрагмента
+        homeViewModel.habit.observe(viewLifecycleOwner) {
+            //при изменении habit выполняется этот код по его обновлению
+            adapter.updateData(HabitList.getHabits())
+            adapter.notifyDataSetChanged()
+        }
     }
 
+
     private fun navigateToRedactorFragment() {
-        findNavController().navigate(R.id.action_home_fragment_to_redactor_fragment)
+        val action = HomeFragmentDirections.actionHomeFragmentToRedactorFragment()
+        findNavController().navigate(action)
+    }
+
+    private fun openHabitClick(habit: Habit) {
+        homeViewModel.setHabit(habit)
+        val action = HomeFragmentDirections.actionHomeFragmentToRedactorFragment()
+        findNavController().navigate(action)
     }
 
     override fun onDestroyView() {

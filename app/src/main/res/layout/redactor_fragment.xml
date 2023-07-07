@@ -180,6 +180,7 @@
             android:layout_height="@dimen/color_button_width_small"
             android:layout_marginStart="@dimen/large_margin"
             android:layout_marginEnd="@dimen/large_margin"
+            app:backgroundTint="@null"
             android:background="@drawable/color_button_orange"
             app:layout_constraintBottom_toBottomOf="@+id/color_holder"
             app:layout_constraintStart_toEndOf="@+id/text_choose_color"

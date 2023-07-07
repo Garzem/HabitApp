@@ -11,11 +11,15 @@
         android:id="@+id/nav_home"
         android:name="com.example.newapppp.ui.home.HomeFragment"
         android:label="@string/home_page_title"
-        tools:layout="@layout/home_fragment" >
+        tools:layout="@layout/home_fragment">
         <action
             android:id="@+id/action_home_fragment_to_redactor_fragment"
-            app:destination="@+id/nav_redactor_fragment"
-            />
+            app:destination="@+id/nav_redactor_fragment">
+<!--            <argument-->
+<!--                android:name="habit"-->
+<!--                app:argType="com.example.newapppp.data.Habit" />-->
+        </action>
+
     </fragment>
 
     <fragment
@@ -28,11 +32,14 @@
         android:id="@+id/nav_redactor_fragment"
         android:name="com.example.newapppp.ui.redactor.RedactorFragment"
         android:label="@string/redactor_habit_title"
-        tools:layout="@layout/redactor_fragment" >
+        tools:layout="@layout/redactor_fragment">
         <action
             android:id="@+id/action_redactor_fragment_to_view_pager_filter"
-            app:destination="@+id/view_pager_filter"
-            />
+            app:destination="@+id/view_pager_filter">
+            <argument
+                android:name="habit"
+                app:argType="com.example.newapppp.data.Habit" />
+        </action>
         <action
             android:id="@+id/action_habit_redactor_fragment_to_color_choose_dialog"
             app:destination="@id/nav_color_choose_dialog" />

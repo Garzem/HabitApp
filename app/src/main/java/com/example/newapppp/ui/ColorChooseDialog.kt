@@ -26,8 +26,8 @@ class ColorChooseDialog: DialogFragment() {
         //и создает экземпляр привязки (binding) для этого представления
         binding = HorizontalColorChooseBinding.bind(view)
         //получает все элементы доступные для нажатия
-        buttons = binding!!.linearColorButtons.touchables
-        buttons!!.forEach { button ->
+        buttons = binding?.linearColorButtons?.touchables
+        buttons?.forEach { button ->
             button.setOnClickListener {
                 //it указывается для того, чтобы не учитывать нажатий по другим элементам, кроме button
                 onInputListener?.sendColor((it as Button).currentHintTextColor)
