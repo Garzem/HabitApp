@@ -16,8 +16,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.habit_create.ColorChooseDialog
 import com.example.newapppp.R
+import com.example.newapppp.data.Habit
 import com.example.newapppp.databinding.RedactorFragmentBinding
 import com.example.newapppp.data.HabitList
+import com.example.newapppp.data.Priority
 import com.example.newapppp.data.Type
 import com.example.newapppp.ui.home.HomeViewModel
 
@@ -28,9 +30,7 @@ class RedactorFragment: Fragment(), ColorChooseDialog.OnInputListener {
     private var binding: RedactorFragmentBinding? = null
     //инициализация объекта будет выполнена только при первом обращении к нему
     //т.е будет использоваться, когда дейсвительно понадобится
-    private val redactorViewModel: RedactorFragmentViewModel by lazy {
-        ViewModelProvider(this)[RedactorFragmentViewModel::class.java]
-    }
+    private val redactorViewModel: RedactorFragmentViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
