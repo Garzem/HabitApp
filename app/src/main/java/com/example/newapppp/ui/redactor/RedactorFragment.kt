@@ -22,8 +22,6 @@ import com.example.newapppp.ui.typeofhabits.ViewPagerViewModel
 
 class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
 
-    private val vpViewModel: ViewPagerViewModel by viewModels()
-
     private var binding: RedactorFragmentBinding? = null
 
     //инициализация объекта будет выполнена только при первом обращении к нему
@@ -120,7 +118,6 @@ class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
             ).show()
         } else {
             val habit = redactorViewModel.makeHabit()
-            vpViewModel.add(habit)
             findNavController().apply {
                 popBackStack()
                 val entry = currentBackStackEntry ?: return

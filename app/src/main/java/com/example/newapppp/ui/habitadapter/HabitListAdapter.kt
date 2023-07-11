@@ -16,6 +16,7 @@ class HabitListAdapter(
 ) : ListAdapter<Habit, HabitViewHolder>(HabitDiffUtilCallback()) {
 
     //прикрепляем к родительскому xml
+    //до {} сигнатура класса, дальше тело
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
         // описывается получение элемента списка
         val inflater = LayoutInflater.from(parent.context)
@@ -25,7 +26,6 @@ class HabitListAdapter(
 
     //привязывает данные
     override fun onBindViewHolder(holder: HabitViewHolder, position: Int) {
-        //Что это значит?
         holder.bind(context, getItem(position))
     }
 }

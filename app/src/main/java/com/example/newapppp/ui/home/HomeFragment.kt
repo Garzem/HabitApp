@@ -46,12 +46,6 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = HomeFragmentBinding.inflate(inflater)
-        findNavController().currentBackStackEntry?.let { entry ->
-            entry.savedStateHandle.getLiveData<Habit>("habit").observe(viewLifecycleOwner)
-            { result ->
-
-            }
-        }
         return _binding?.root
     }
 
@@ -67,7 +61,7 @@ class HomeFragment : Fragment() {
         //получение данных о привычке
         val adapter = HabitListAdapter(requireContext(), ::openHabitClick)
         binding.recycleViewHabit.adapter = adapter
-
+        //делаем observe, чтобы установить данные в адаптер
         vpViewModel.habitList.observe(viewLifecycleOwner){ habitList ->
             adapter.submitList(habitList)
         }

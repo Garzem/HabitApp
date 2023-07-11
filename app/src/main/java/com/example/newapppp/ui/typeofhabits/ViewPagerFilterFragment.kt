@@ -6,20 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.newapppp.R
+import com.example.newapppp.data.Habit
 import com.example.newapppp.data.Type
 import com.example.newapppp.databinding.ViewPagerFragmentBinding
 import com.example.newapppp.ui.home.HomeFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 class ViewPagerFilterFragment : Fragment() {
-
+    private val vpViewModel: ViewPagerViewModel by viewModels()
     private var _binding: ViewPagerFragmentBinding? = null
     private lateinit var viewPager: ViewPager2
 
     private val binding get() = _binding!!
-
+    //все действия с настройкой ui
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,6 +33,18 @@ class ViewPagerFilterFragment : Fragment() {
 
         val view = binding.root
 
+        return view
+    }
+    //вся настройка ui и вешание listeners
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        findNavController().currentBackStackEntry?.let { entry ->
+            entry.savedStateHandle.getLiveData<Habit>("habit").observe(viewLifecycleOwner)
+            { habit ->
+                vpViewModel.add(habit)
+            }
+        }
         val adapter = ViewPagerFilterAdapter(
             //передаёт активность в качестве контекста для адаптера
             activity as AppCompatActivity,
@@ -45,11 +61,6 @@ class ViewPagerFilterFragment : Fragment() {
         viewPager = binding.pagerChooseHabit
         viewPager.adapter = adapter
 
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         val tabLayout = binding.tabLayout
         //определяет как будут задаваться вкладки(табы)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
