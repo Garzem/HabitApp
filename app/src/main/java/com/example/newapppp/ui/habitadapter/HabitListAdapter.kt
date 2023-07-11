@@ -25,14 +25,9 @@ class HabitListAdapter(
         return HabitViewHolder(binding, openHabitClick)
     }
 
-    override fun getItemCount(): Int {
-        return habits.size
-    }
-
     //привязывает данные
     override fun onBindViewHolder(holder: HabitViewHolder, position: Int) {
-        //связывает данные с конкретным элементом списка
-        //передаётся 1 habit в список habits
-        holder.bind(context, habits[position])
+        //Что это значит?
+        holder.bind(context, getItem(position))
     }
 }

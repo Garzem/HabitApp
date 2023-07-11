@@ -44,6 +44,7 @@ class ViewPagerFilterFragment : Fragment() {
         //В <> указывается тип view
         viewPager = binding.pagerChooseHabit
         viewPager.adapter = adapter
+
         return view
     }
 

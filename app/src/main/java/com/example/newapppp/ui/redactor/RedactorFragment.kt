@@ -120,15 +120,12 @@ class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
             ).show()
         } else {
             val habit = redactorViewModel.makeHabit()
-            HabitList.addHabit(habit)
             vpViewModel.add(habit)
             findNavController().apply {
                 popBackStack()
                 val entry = currentBackStackEntry ?: return
                 entry.savedStateHandle.set("habit", habit)
             }
-//            val action = RedactorFragmentDirections.actionRedactorFragmentToViewPagerFilter(habit)
-//            findNavController().navigate(action)
         }
     }
 }

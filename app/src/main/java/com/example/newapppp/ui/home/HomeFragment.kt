@@ -46,12 +46,12 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = HomeFragmentBinding.inflate(inflater)
-        findNavController().currentBackStackEntry?.let { entry ->
-            entry.savedStateHandle.getLiveData<Habit>("habit").observe(viewLifecycleOwner)
-            { result ->
-
-            }
-        }
+//        findNavController().currentBackStackEntry?.let { entry ->
+//            entry.savedStateHandle.getLiveData<Habit>("habit").observe(viewLifecycleOwner)
+//            { result ->
+//
+//            }
+//        }
         return _binding?.root
     }
 
@@ -69,7 +69,7 @@ class HomeFragment : Fragment() {
         binding.recycleViewHabit.adapter = adapter
 
         vpViewModel.habitList.observe(viewLifecycleOwner){ habitList ->
-
+            adapter.submitList(habitList)
         }
 
     }
