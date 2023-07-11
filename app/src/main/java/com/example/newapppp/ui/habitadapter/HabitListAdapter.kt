@@ -15,8 +15,6 @@ class HabitListAdapter(
     private val openHabitClick: (Habit) -> Unit
 ) : ListAdapter<Habit, HabitViewHolder>(HabitDiffUtilCallback()) {
 
-    private var habits: MutableList<Habit> = mutableListOf()
-
     //прикрепляем к родительскому xml
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
         // описывается получение элемента списка

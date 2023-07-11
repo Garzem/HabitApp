@@ -75,19 +75,6 @@
         android:layout_height="wrap_content"
         android:elevation="@dimen/elevation" />
 
-    <!-- тип -->
-
-    <TextView
-        android:id="@+id/type"
-        app:layout_constraintEnd_toEndOf="@+id/color_support"
-        app:layout_constraintTop_toTopOf="@+id/color_support"
-        android:layout_marginTop="@dimen/huge_margin"
-        android:layout_marginEnd="@dimen/large_margin"
-        android:text="@string/type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/elevation" />
-
     <!-- цвет -->
 
     <View

@@ -16,20 +16,19 @@ class ViewPagerViewModel : ViewModel() {
     //??почему это val, если ему при каждой отправке данных присваивается новое значение?
     val habitList: LiveData<List<Habit>> get() = _habitList
 
-    //базовые значения
-    init {
-        _habitList.value = mutableListOf(
-            Habit(
-                title = "",
-                description = "",
-                period = "",
-                color = 0,
-                priority = Priority.CHOOSE,
-                type = Type.GOOD,
-                quantity = ""
-            )
-        )
-    }
+//    init {
+//        _habitList.value = mutableListOf(
+//            Habit(
+//                title = "",
+//                description = "",
+//                period = "",
+//                color = 0,
+//                priority = Priority.CHOOSE,
+//                type = Type.GOOD,
+//                quantity = ""
+//            )
+//        )
+//    }
 
     fun add(habit: Habit) {
         _habitList.value = _habitList.value?.plus(habit)
