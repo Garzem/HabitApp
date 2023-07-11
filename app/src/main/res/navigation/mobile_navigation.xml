@@ -3,24 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/view_pager_filter">
 
     <!--начальный фрагмент startDestination-->
-
-    <fragment
-        android:id="@+id/nav_home"
-        android:name="com.example.newapppp.ui.home.HomeFragment"
-        android:label="@string/home_page_title"
-        tools:layout="@layout/home_fragment">
-        <action
-            android:id="@+id/action_home_fragment_to_redactor_fragment"
-            app:destination="@+id/nav_redactor_fragment">
-<!--            <argument-->
-<!--                android:name="habit"-->
-<!--                app:argType="com.example.newapppp.data.Habit" />-->
-        </action>
-
-    </fragment>
 
     <fragment
         android:id="@+id/nav_app_info_fragment"
@@ -54,5 +39,9 @@
     <fragment
         android:id="@+id/view_pager_filter"
         android:name="com.example.newapppp.ui.typeofhabits.ViewPagerFilterFragment"
-        android:label="@string/view_pager_title" />
+        android:label="@string/view_pager_title">
+        <action
+            android:id="@+id/nav_pager_to_redactor_fragment"
+            app:destination="@+id/nav_redactor_fragment"/>
+    </fragment>
 </navigation>

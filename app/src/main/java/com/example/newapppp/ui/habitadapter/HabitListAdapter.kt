@@ -1,10 +1,9 @@
 package com.example.newapppp.ui.habitadapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.example.newapppp.databinding.ItemLayoutBinding
 import com.example.newapppp.data.Habit
 
@@ -14,7 +13,7 @@ class HabitListAdapter(
     //() указывают на то, что это callback(функция обратного вызова)
     private val context: Context,
     private val openHabitClick: (Habit) -> Unit
-) : RecyclerView.Adapter<HabitViewHolder>() {
+) : ListAdapter<Habit, HabitViewHolder>(HabitDiffUtilCallback()) {
 
     private var habits: MutableList<Habit> = mutableListOf()
 
@@ -35,14 +34,5 @@ class HabitListAdapter(
         //связывает данные с конкретным элементом списка
         //передаётся 1 habit в список habits
         holder.bind(context, habits[position])
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateData(habits: List<Habit>) {
-        //отчищает текущий список привычек
-        this.habits.clear()
-        //добавляет все элементы из переданных habits
-        this.habits.addAll(habits)
-        notifyDataSetChanged()
     }
 }

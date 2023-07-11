@@ -12,22 +12,20 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.habit_create.ColorChooseDialog
 import com.example.newapppp.R
-import com.example.newapppp.data.Habit
 import com.example.newapppp.databinding.RedactorFragmentBinding
 import com.example.newapppp.data.HabitList
-import com.example.newapppp.data.Priority
 import com.example.newapppp.data.Type
-import com.example.newapppp.ui.home.HomeViewModel
+import com.example.newapppp.ui.typeofhabits.ViewPagerViewModel
 
-class RedactorFragment: Fragment(), ColorChooseDialog.OnInputListener {
+class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
 
-    private val homeViewModel: HomeViewModel by viewModels()
+    private val vpViewModel: ViewPagerViewModel by viewModels()
 
     private var binding: RedactorFragmentBinding? = null
+
     //инициализация объекта будет выполнена только при первом обращении к нему
     //т.е будет использоваться, когда дейсвительно понадобится
     private val redactorViewModel: RedactorFragmentViewModel by viewModels()
@@ -78,12 +76,19 @@ class RedactorFragment: Fragment(), ColorChooseDialog.OnInputListener {
             redactorViewModel.getList()
         )
 
-        binding?.spinnerPriority?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                redactorViewModel.getChosenPriority(position)
+        binding?.spinnerPriority?.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    redactorViewModel.getChosenPriority(position)
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
 
         val colorChoose = binding?.chooseColorButton
         colorChoose?.setOnClickListener {
@@ -116,10 +121,14 @@ class RedactorFragment: Fragment(), ColorChooseDialog.OnInputListener {
         } else {
             val habit = redactorViewModel.makeHabit()
             HabitList.addHabit(habit)
-            //передаём хобби в HomeViewModel
-            homeViewModel.setHabit(habit)
-            val action = RedactorFragmentDirections.actionRedactorFragmentToViewPagerFilter(habit)
-            findNavController().navigate(action)
+            vpViewModel.add(habit)
+            findNavController().apply {
+                popBackStack()
+                val entry = currentBackStackEntry ?: return
+                entry.savedStateHandle.set("habit", habit)
+            }
+//            val action = RedactorFragmentDirections.actionRedactorFragmentToViewPagerFilter(habit)
+//            findNavController().navigate(action)
         }
     }
 }
