@@ -13,12 +13,13 @@ import com.example.newapppp.databinding.ItemLayoutBinding
 //??? как отличить подкласс от реализации интерфейса?
 class HabitViewHolder(
     private val binding: ItemLayoutBinding,
+    private val context: Context,
     private val openHabitClick: (Habit) -> Unit,
 //указывает на корневое представление макета списка для ViewHolder
 ): RecyclerView.ViewHolder(binding.root) {
 
     //связывание данных элемента списка с его макетом
-    fun bind(context: Context, habit: Habit) {
+    fun bind(habit: Habit) {
         val shapeDrawable = ContextCompat.getDrawable(context, R.drawable.color_button_orange) as GradientDrawable
         shapeDrawable.setColor(habit.color)
 

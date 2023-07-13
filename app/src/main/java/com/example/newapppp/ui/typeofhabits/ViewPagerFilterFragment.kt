@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.newapppp.R
@@ -18,7 +17,7 @@ import com.example.newapppp.ui.home.HomeFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 class ViewPagerFilterFragment : Fragment() {
-    private val vpViewModel: ViewPagerViewModel by viewModels()
+    private val vpViewModel: ViewPagerViewModel by activityViewModels()
     private var _binding: ViewPagerFragmentBinding? = null
     private lateinit var viewPager: ViewPager2
 
@@ -30,14 +29,12 @@ class ViewPagerFilterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = ViewPagerFragmentBinding.inflate(inflater, container, false)
-
-        val view = binding.root
-
-        return view
+        return binding.root
     }
     //вся настройка ui и вешание listeners
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         findNavController().currentBackStackEntry?.let { entry ->
             entry.savedStateHandle.getLiveData<Habit>("habit").observe(viewLifecycleOwner)

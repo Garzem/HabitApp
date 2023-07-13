@@ -1,11 +1,11 @@
 package com.example.newapppp.ui.redactor
 
-import android.graphics.drawable.Drawable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.Priority
 import com.example.newapppp.data.Type
+import java.util.UUID
 
 class RedactorFragmentViewModel : ViewModel() {
 
@@ -17,9 +17,11 @@ class RedactorFragmentViewModel : ViewModel() {
     val priority = MutableLiveData<Priority>().apply { value = Priority.CHOOSE }
     val type = MutableLiveData<Type>().apply { value = null }
     val quantity = MutableLiveData<String>().apply { value = "" }
+    private val habitId = UUID.randomUUID().toString()
 
     fun makeHabit(): Habit {
         return Habit(
+            id = habitId,
             title = title.value!!,
             description = description.value!!,
             period = period.value!!,

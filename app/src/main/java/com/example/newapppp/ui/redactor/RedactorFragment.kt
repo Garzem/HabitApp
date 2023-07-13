@@ -15,10 +15,12 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.habit_create.ColorChooseDialog
 import com.example.newapppp.R
+import com.example.newapppp.data.Habit
 import com.example.newapppp.databinding.RedactorFragmentBinding
 import com.example.newapppp.data.HabitList
 import com.example.newapppp.data.Type
 import com.example.newapppp.ui.typeofhabits.ViewPagerViewModel
+import java.util.UUID
 
 class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
 
@@ -45,11 +47,26 @@ class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+//        val habitPrevious = ""
+//        if (habitPrevious != null) {
+//            redactorViewModel.title.value = habitPrevious.title
+//            redactorViewModel.description.value = habitPrevious.description
+//            redactorViewModel.period.value = habitPrevious.period
+//            redactorViewModel.color.value = habitPrevious.color
+//            redactorViewModel.priority.value = habitPrevious.priority
+//            redactorViewModel.type.value = habitPrevious.type
+//            redactorViewModel.quantity.value = habitPrevious.quantity
+//        }
         sendToViewModel()
         val saveButton = binding?.saveHabit
         saveButton?.setOnClickListener {
             saveNewHabit()
         }
+    }
+
+    private fun newHabitFilter() {
+
     }
 
     private fun sendToViewModel() {

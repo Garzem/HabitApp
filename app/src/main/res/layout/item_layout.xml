@@ -97,5 +97,4 @@
         android:layout_height="85dp"
         android:elevation="@dimen/elevation_color" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>

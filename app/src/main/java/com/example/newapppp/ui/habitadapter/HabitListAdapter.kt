@@ -21,11 +21,11 @@ class HabitListAdapter(
         // описывается получение элемента списка
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemLayoutBinding.inflate(inflater, parent, false)
-        return HabitViewHolder(binding, openHabitClick)
+        return HabitViewHolder(binding,context, openHabitClick)
     }
 
     //привязывает данные
     override fun onBindViewHolder(holder: HabitViewHolder, position: Int) {
-        holder.bind(context, getItem(position))
+        holder.bind(getItem(position))
     }
 }
