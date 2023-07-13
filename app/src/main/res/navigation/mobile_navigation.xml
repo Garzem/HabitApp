@@ -42,7 +42,6 @@
         android:label="@string/view_pager_title">
         <action
             android:id="@+id/nav_pager_to_redactor_fragment"
-            app:destination="@+id/nav_redactor_fragment">
-        </action>
+            app:destination="@+id/nav_redactor_fragment"/>
     </fragment>
 </navigation>
