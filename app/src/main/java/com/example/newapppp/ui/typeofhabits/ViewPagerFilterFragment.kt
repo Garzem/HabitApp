@@ -14,6 +14,7 @@ import com.example.newapppp.data.Habit
 import com.example.newapppp.data.Type
 import com.example.newapppp.databinding.ViewPagerFragmentBinding
 import com.example.newapppp.ui.home.HomeFragment
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class ViewPagerFilterFragment : Fragment() {
@@ -22,6 +23,7 @@ class ViewPagerFilterFragment : Fragment() {
     private lateinit var viewPager: ViewPager2
 
     private val binding get() = _binding!!
+
     //все действия с настройкой ui
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,15 +33,17 @@ class ViewPagerFilterFragment : Fragment() {
         _binding = ViewPagerFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     //вся настройка ui и вешание listeners
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
+        val habitPrevious = findNavController().previousBackStackEntry?.savedStateHandle?.get<String>("habitId")
         findNavController().currentBackStackEntry?.let { entry ->
             entry.savedStateHandle.getLiveData<Habit>("habit").observe(viewLifecycleOwner)
             { habit ->
-                vpViewModel.add(habit)
+                if (habit.id == habitPrevious) {
+                    vpViewModel.add(habit)
+                }
             }
         }
         val adapter = ViewPagerFilterAdapter(
@@ -57,8 +61,12 @@ class ViewPagerFilterFragment : Fragment() {
         //В <> указывается тип view
         viewPager = binding.pagerChooseHabit
         viewPager.adapter = adapter
+        tabMediator()
+    }
 
+    private fun tabMediator() {
         val tabLayout = binding.tabLayout
+
         //определяет как будут задаваться вкладки(табы)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = if (position == 0)

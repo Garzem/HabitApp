@@ -21,12 +21,13 @@ class HomeFragment : Fragment() {
     companion object {
         //создаётся в качестве ключа сохранения в Bundle() для habit_type
         const val HABIT_TYPE = "habit_type"
+
         //создаёт новый экземпляр текущего фрагмента
         fun newInstance(habitType: Type): HomeFragment {
             val fragment = HomeFragment()
             val bundle = Bundle()
             //помещаем объекты, которые можно сериализовать
-            bundle.putSerializable(HABIT_TYPE,habitType)
+            bundle.putSerializable(HABIT_TYPE, habitType)
             //передаём данные в специально предназначенное для них место
             fragment.arguments = bundle
             return fragment
@@ -36,6 +37,7 @@ class HomeFragment : Fragment() {
     private val vpViewModel: ViewPagerViewModel by activityViewModels()
 
     private var _binding: HomeFragmentBinding? = null
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -62,7 +64,7 @@ class HomeFragment : Fragment() {
         val adapter = HabitListAdapter(requireContext(), ::openHabitClick)
         binding.recycleViewHabit.adapter = adapter
         //делаем observe, чтобы установить данные в адаптер
-        vpViewModel.habitList.observe(viewLifecycleOwner){ habitList ->
+        vpViewModel.habitList.observe(viewLifecycleOwner) { habitList ->
             adapter.submitList(habitList)
         }
 
@@ -70,13 +72,21 @@ class HomeFragment : Fragment() {
 
 
     private fun navigateToRedactorFragment() {
-        val action = ViewPagerFilterFragmentDirections.navPagerToRedactorFragment()
-        findNavController().navigate(action)
+        findNavController().apply {
+            val entry = currentBackStackEntry ?: return
+            entry.savedStateHandle.remove<Habit>("habit_previous")
+            val action = ViewPagerFilterFragmentDirections.navPagerToRedactorFragment()
+            navigate(action)
+        }
     }
 
     private fun openHabitClick(habit: Habit) {
-        val action = ViewPagerFilterFragmentDirections.navPagerToRedactorFragment()
-        findNavController().navigate(action)
+        findNavController().apply {
+            val entry = currentBackStackEntry ?: return
+            entry.savedStateHandle.set("habit_previous", habit)
+            val action = ViewPagerFilterFragmentDirections.navPagerToRedactorFragment()
+            navigate(action)
+        }
     }
 
     override fun onDestroyView() {

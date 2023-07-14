@@ -20,11 +20,7 @@
         tools:layout="@layout/redactor_fragment">
         <action
             android:id="@+id/action_redactor_fragment_to_view_pager_filter"
-            app:destination="@+id/view_pager_filter">
-            <argument
-                android:name="habit"
-                app:argType="com.example.newapppp.data.Habit" />
-        </action>
+            app:destination="@+id/view_pager_filter"/>
         <action
             android:id="@+id/action_habit_redactor_fragment_to_color_choose_dialog"
             app:destination="@id/nav_color_choose_dialog" />
@@ -42,7 +38,6 @@
         android:label="@string/view_pager_title">
         <action
             android:id="@+id/nav_pager_to_redactor_fragment"
-            app:destination="@+id/nav_redactor_fragment">
-        </action>
+            app:destination="@+id/nav_redactor_fragment"/>
     </fragment>
 </navigation>

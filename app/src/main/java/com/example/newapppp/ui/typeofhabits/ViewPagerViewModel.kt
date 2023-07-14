@@ -17,8 +17,6 @@ class ViewPagerViewModel : ViewModel() {
     //??почему это val, если ему при каждой отправке данных присваивается новое значение?
     val habitList: LiveData<List<Habit>> get() = _habitList
 
-
-
     fun add(habit: Habit) {
         //?нужен ли orEmpty
         //any() проверяет, удовлетворяет ли хотя бы один элемент из списка указанному условию.

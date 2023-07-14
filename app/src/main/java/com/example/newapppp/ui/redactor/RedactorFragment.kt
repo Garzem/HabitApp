@@ -18,6 +18,7 @@ import com.example.newapppp.R
 import com.example.newapppp.data.Habit
 import com.example.newapppp.databinding.RedactorFragmentBinding
 import com.example.newapppp.data.HabitList
+import com.example.newapppp.data.Priority
 import com.example.newapppp.data.Type
 import com.example.newapppp.ui.typeofhabits.ViewPagerViewModel
 import java.util.UUID
@@ -47,21 +48,33 @@ class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        val habitPrevious = ""
-//        if (habitPrevious != null) {
-//            redactorViewModel.title.value = habitPrevious.title
-//            redactorViewModel.description.value = habitPrevious.description
-//            redactorViewModel.period.value = habitPrevious.period
-//            redactorViewModel.color.value = habitPrevious.color
-//            redactorViewModel.priority.value = habitPrevious.priority
-//            redactorViewModel.type.value = habitPrevious.type
-//            redactorViewModel.quantity.value = habitPrevious.quantity
-//        }
+        getPreviousHabit()
         sendToViewModel()
         val saveButton = binding?.saveHabit
         saveButton?.setOnClickListener {
             saveNewHabit()
+        }
+    }
+
+    private fun getPreviousHabit() {
+        findNavController().previousBackStackEntry?.let { entry ->
+            entry.savedStateHandle.getLiveData<Habit>("habit_previous").observe(viewLifecycleOwner)
+            { habitPrevious ->
+                redactorViewModel.habitId.value = habitPrevious.id
+                redactorViewModel.title.value = habitPrevious.title
+                redactorViewModel.description.value = habitPrevious.description
+                redactorViewModel.period.value = habitPrevious.period
+                redactorViewModel.color.value = habitPrevious.color
+                redactorViewModel.priority.value = habitPrevious.priority
+                redactorViewModel.type.value = habitPrevious.type
+                redactorViewModel.quantity.value = habitPrevious.quantity
+
+                val priorityPosition = redactorViewModel.getPositionPriority(habitPrevious.priority)
+
+                binding?.spinnerPriority?.setSelection(priorityPosition)
+
+                findNavController().previousBackStackEntry?.savedStateHandle?.set("habitId", habitPrevious.id)
+            }
         }
     }
 
@@ -112,7 +125,8 @@ class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
     }
 
     private fun colorDialog() {
-        findNavController().navigate(R.id.action_habit_redactor_fragment_to_color_choose_dialog)
+        val action = RedactorFragmentDirections.actionHabitRedactorFragmentToColorChooseDialog()
+        findNavController().navigate(action)
     }
 
     override fun sendColor(colorChoose: Int) {

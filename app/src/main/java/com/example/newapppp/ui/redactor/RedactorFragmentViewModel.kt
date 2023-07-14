@@ -17,11 +17,11 @@ class RedactorFragmentViewModel : ViewModel() {
     val priority = MutableLiveData<Priority>().apply { value = Priority.CHOOSE }
     val type = MutableLiveData<Type>().apply { value = null }
     val quantity = MutableLiveData<String>().apply { value = "" }
-    private val habitId = UUID.randomUUID().toString()
+    val habitId = MutableLiveData<String>().apply { value = UUID.randomUUID().toString() }
 
     fun makeHabit(): Habit {
         return Habit(
-            id = habitId,
+            id = habitId.value!!,
             title = title.value!!,
             description = description.value!!,
             period = period.value!!,
@@ -44,6 +44,7 @@ class RedactorFragmentViewModel : ViewModel() {
 //        return Priority.CHOOSE
 //    }
     //просто нужно обновить значение
+    //проблема тут
     fun getChosenPriority(position: Int) {
         priority.value = when (position) {
             0 -> Priority.CHOOSE
@@ -51,6 +52,15 @@ class RedactorFragmentViewModel : ViewModel() {
             2 -> Priority.MEDIUM
             3 -> Priority.HIGH
             else -> Priority.CHOOSE
+        }
+    }
+
+    fun getPositionPriority(priority: Priority): Int {
+        return when (priority) {
+            Priority.CHOOSE -> 0
+            Priority.LOW -> 1
+            Priority.MEDIUM -> 2
+            Priority.HIGH -> 3
         }
     }
 
