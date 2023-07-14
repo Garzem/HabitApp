@@ -37,7 +37,6 @@ class ViewPagerFilterFragment : Fragment() {
     //вся настройка ui и вешание listeners
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val habitPrevious = findNavController().previousBackStackEntry?.savedStateHandle?.get<String>("habitId")
         findNavController().currentBackStackEntry?.let { entry ->
             entry.savedStateHandle.getLiveData<Habit>("habit").observe(viewLifecycleOwner)
             { habit ->

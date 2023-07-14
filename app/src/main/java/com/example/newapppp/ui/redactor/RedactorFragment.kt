@@ -72,8 +72,6 @@ class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
                 val priorityPosition = redactorViewModel.getPositionPriority(habitPrevious.priority)
 
                 binding?.spinnerPriority?.setSelection(priorityPosition)
-
-                findNavController().previousBackStackEntry?.savedStateHandle?.set("habitId", habitPrevious.id)
             }
         }
     }
