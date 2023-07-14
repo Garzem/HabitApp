@@ -40,9 +40,10 @@ class ViewPagerFilterFragment : Fragment() {
         findNavController().currentBackStackEntry?.let { entry ->
             entry.savedStateHandle.getLiveData<Habit>("habit").observe(viewLifecycleOwner)
             { habit ->
-                if (habit.id == habitPrevious) {
-                    vpViewModel.add(habit)
-                }
+                vpViewModel.add(habit)
+//                if (habit.id == habitPrevious) {
+//                    vpViewModel.add(habit)
+//                }
             }
         }
         val adapter = ViewPagerFilterAdapter(
