@@ -56,7 +56,6 @@
             android:layout_marginEnd="@dimen/small_margin"
             android:layout_marginBottom="@dimen/normal_margin"
             android:background="@drawable/stroke"
-            android:entries="@array/priority_options"
             app:layout_constraintBottom_toTopOf="@id/edit_period"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_description" />

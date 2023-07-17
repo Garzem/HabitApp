@@ -3,9 +3,7 @@ package com.example.newapppp.ui.typeofhabits
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
 import com.example.newapppp.data.Habit
-import com.example.newapppp.data.Type
 
 class ViewPagerViewModel : ViewModel() {
     //?почему это правильно по ООП?
@@ -17,22 +15,18 @@ class ViewPagerViewModel : ViewModel() {
     //??почему это val, если ему при каждой отправке данных присваивается новое значение?
     val habitList: LiveData<List<Habit>> get() = _habitList
 
-    fun add(habit: Habit) {
-        //?нужен ли orEmpty
-        //any() проверяет, удовлетворяет ли хотя бы один элемент из списка указанному условию.
-        //В данном случае, условие - это сравнение id элемента списка с id новой привычки.
-        if (!habitList.value.orEmpty().any { it.id == habit.id }) {
+    fun updateHabitList(habit: Habit) {
+        val habitPrevious = _habitList.value?.find { it.id == habit.id }
+        if (habitPrevious == null) {
             _habitList.value = _habitList.value?.plus(habit)
-        }
+        } else
+            _habitList.value = habitList.value?.map { habit }
     }
+}
 
-    fun update(habit: Habit) {
-
-    }
 
 //    fun habitFilter(type: Type): LiveData<List<Habit>> {
 //        return habitList.map {
 //            it.filter {}
 //        }
 //    }
-}

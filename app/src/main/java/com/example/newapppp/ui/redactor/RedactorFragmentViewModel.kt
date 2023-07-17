@@ -2,6 +2,7 @@ package com.example.newapppp.ui.redactor
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.Priority
 import com.example.newapppp.data.Type
@@ -14,14 +15,31 @@ class RedactorFragmentViewModel : ViewModel() {
     val description = MutableLiveData<String>().apply { value = "" }
     val period = MutableLiveData<String>().apply { value = "" }
     val color = MutableLiveData<Int>().apply { value = 0 }
-    val priority = MutableLiveData<Priority>().apply { value = Priority.CHOOSE }
+    private val priority = MutableLiveData<Priority>().apply { value = Priority.CHOOSE }
+    val priorityPosition = priority.map { priority ->  
+        getPositionPriority(priority)
+    }
     val type = MutableLiveData<Type>().apply { value = null }
     val quantity = MutableLiveData<String>().apply { value = "" }
-    val habitId = MutableLiveData<String>().apply { value = UUID.randomUUID().toString() }
+    var habitId: String? = null
+
+    //присваиваем полученную habit для дальнейшего редактирования
+    fun setHabit(habit: Habit?) {
+        if (habit != null) {
+            habitId = habit.id
+            title.value = habit.title
+            description.value = habit.description
+            period.value = habit.period
+            color.value = habit.color
+            priority.value = habit.priority
+            type.value = habit.type
+            quantity.value = habit.quantity
+        }
+    }
 
     fun makeHabit(): Habit {
         return Habit(
-            id = habitId.value!!,
+            id = habitId ?:UUID.randomUUID().toString(),
             title = title.value!!,
             description = description.value!!,
             period = period.value!!,
@@ -55,7 +73,7 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
-    fun getPositionPriority(priority: Priority): Int {
+    private fun getPositionPriority(priority: Priority): Int {
         return when (priority) {
             Priority.CHOOSE -> 0
             Priority.LOW -> 1

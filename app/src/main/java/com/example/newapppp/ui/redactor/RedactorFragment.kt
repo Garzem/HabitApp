@@ -13,20 +13,16 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.habit_create.ColorChooseDialog
 import com.example.newapppp.R
-import com.example.newapppp.data.Habit
 import com.example.newapppp.databinding.RedactorFragmentBinding
-import com.example.newapppp.data.HabitList
-import com.example.newapppp.data.Priority
 import com.example.newapppp.data.Type
-import com.example.newapppp.ui.typeofhabits.ViewPagerViewModel
-import java.util.UUID
 
 class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
 
     private var binding: RedactorFragmentBinding? = null
-
+    private val args: RedactorFragmentArgs? by navArgs()
     //инициализация объекта будет выполнена только при первом обращении к нему
     //т.е будет использоваться, когда дейсвительно понадобится
     private val redactorViewModel: RedactorFragmentViewModel by viewModels()
@@ -39,40 +35,24 @@ class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
         //инициализирует переменную viewModel экземпляром RedactorFragmentViewModel,
         //который связан с текущим фрагментом RedactorFragment
         binding = DataBindingUtil.inflate(inflater, R.layout.redactor_fragment, container, false)
-        //связываем lifecycle с текущем фрагментом для избежания ошибок и утечек памяти
-        binding?.lifecycleOwner = this
-        //??значения заданные в макете передаются в RedactorFragmentViewModel или наоборот
-        binding?.viewModel = redactorViewModel
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getPreviousHabit()
+        //связываем lifecycle с текущем фрагментом для избежания ошибок и утечек памяти
+        binding?.lifecycleOwner = this
+        //??значения заданные в макете передаются в RedactorFragmentViewModel или наоборот
+        binding?.viewModel = redactorViewModel
+        redactorViewModel.setHabit(args?.habit)
+        //?почему я не могу указать this вместо viewLifecycleOwner
+        redactorViewModel.priorityPosition.observe(viewLifecycleOwner) { priorityPosition ->
+            binding?.spinnerPriority?.setSelection(priorityPosition)
+        }
         sendToViewModel()
         val saveButton = binding?.saveHabit
         saveButton?.setOnClickListener {
             saveNewHabit()
-        }
-    }
-
-    private fun getPreviousHabit() {
-        findNavController().previousBackStackEntry?.let { entry ->
-            entry.savedStateHandle.getLiveData<Habit>("habit_previous").observe(viewLifecycleOwner)
-            { habitPrevious ->
-                redactorViewModel.habitId.value = habitPrevious.id
-                redactorViewModel.title.value = habitPrevious.title
-                redactorViewModel.description.value = habitPrevious.description
-                redactorViewModel.period.value = habitPrevious.period
-                redactorViewModel.color.value = habitPrevious.color
-                redactorViewModel.priority.value = habitPrevious.priority
-                redactorViewModel.type.value = habitPrevious.type
-                redactorViewModel.quantity.value = habitPrevious.quantity
-
-                val priorityPosition = redactorViewModel.getPositionPriority(habitPrevious.priority)
-
-                binding?.spinnerPriority?.setSelection(priorityPosition)
-            }
         }
     }
 

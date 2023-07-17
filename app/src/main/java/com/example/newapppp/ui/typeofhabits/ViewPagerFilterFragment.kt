@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.newapppp.R
@@ -14,14 +14,12 @@ import com.example.newapppp.data.Habit
 import com.example.newapppp.data.Type
 import com.example.newapppp.databinding.ViewPagerFragmentBinding
 import com.example.newapppp.ui.home.HomeFragment
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class ViewPagerFilterFragment : Fragment() {
-    private val vpViewModel: ViewPagerViewModel by activityViewModels()
+    private val vpViewModel: ViewPagerViewModel by viewModels()
     private var _binding: ViewPagerFragmentBinding? = null
     private lateinit var viewPager: ViewPager2
-
     private val binding get() = _binding!!
 
     //все действия с настройкой ui
@@ -40,10 +38,8 @@ class ViewPagerFilterFragment : Fragment() {
         findNavController().currentBackStackEntry?.let { entry ->
             entry.savedStateHandle.getLiveData<Habit>("habit").observe(viewLifecycleOwner)
             { habit ->
-                vpViewModel.add(habit)
-//                if (habit.id == habitPrevious) {
-//                    vpViewModel.add(habit)
-//                }
+                vpViewModel.updateHabitList(habit)
+                entry.savedStateHandle.remove<Habit>("habit")
             }
         }
         val adapter = ViewPagerFilterAdapter(
@@ -66,7 +62,6 @@ class ViewPagerFilterFragment : Fragment() {
 
     private fun tabMediator() {
         val tabLayout = binding.tabLayout
-
         //определяет как будут задаваться вкладки(табы)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = if (position == 0)
