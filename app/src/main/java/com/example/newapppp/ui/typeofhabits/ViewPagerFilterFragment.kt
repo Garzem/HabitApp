@@ -14,7 +14,6 @@ import com.example.newapppp.data.Habit
 import com.example.newapppp.data.Type
 import com.example.newapppp.databinding.ViewPagerFragmentBinding
 import com.example.newapppp.ui.home.HomeFragment
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class ViewPagerFilterFragment : Fragment() {
@@ -40,10 +39,8 @@ class ViewPagerFilterFragment : Fragment() {
         findNavController().currentBackStackEntry?.let { entry ->
             entry.savedStateHandle.getLiveData<Habit>("habit").observe(viewLifecycleOwner)
             { habit ->
-                vpViewModel.add(habit)
-//                if (habit.id == habitPrevious) {
-//                    vpViewModel.add(habit)
-//                }
+                vpViewModel.updateHabitList(habit)
+                entry.savedStateHandle.remove<Habit>("habit")
             }
         }
         val adapter = ViewPagerFilterAdapter(

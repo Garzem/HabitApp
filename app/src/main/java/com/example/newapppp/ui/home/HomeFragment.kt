@@ -21,7 +21,6 @@ class HomeFragment : Fragment() {
     companion object {
         //создаётся в качестве ключа сохранения в Bundle() для habit_type
         const val HABIT_TYPE = "habit_type"
-
         //создаёт новый экземпляр текущего фрагмента
         fun newInstance(habitType: Type): HomeFragment {
             val fragment = HomeFragment()
@@ -72,21 +71,13 @@ class HomeFragment : Fragment() {
 
 
     private fun navigateToRedactorFragment() {
-        findNavController().apply {
-            val entry = currentBackStackEntry ?: return
-            entry.savedStateHandle.remove<Habit>("habit_previous")
-            val action = ViewPagerFilterFragmentDirections.navPagerToRedactorFragment()
-            navigate(action)
-        }
+        val action = ViewPagerFilterFragmentDirections.navPagerToRedactorFragment(null)
+        findNavController().navigate(action)
     }
 
     private fun openHabitClick(habit: Habit) {
-        findNavController().apply {
-            val entry = currentBackStackEntry ?: return
-            entry.savedStateHandle.set("habit_previous", habit)
-            val action = ViewPagerFilterFragmentDirections.navPagerToRedactorFragment()
-            navigate(action)
-        }
+        val action = ViewPagerFilterFragmentDirections.navPagerToRedactorFragment(habit)
+        findNavController().navigate(action)
     }
 
     override fun onDestroyView() {
