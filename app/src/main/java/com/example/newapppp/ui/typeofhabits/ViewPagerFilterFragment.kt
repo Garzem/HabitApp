@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.newapppp.R
@@ -17,7 +17,7 @@ import com.example.newapppp.ui.home.HomeFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 class ViewPagerFilterFragment : Fragment() {
-    private val vpViewModel: ViewPagerViewModel by activityViewModels()
+    private val vpViewModel: ViewPagerViewModel by viewModels()
     private var _binding: ViewPagerFragmentBinding? = null
     private lateinit var viewPager: ViewPager2
     private val binding get() = _binding!!
@@ -63,7 +63,6 @@ class ViewPagerFilterFragment : Fragment() {
 
     private fun tabMediator() {
         val tabLayout = binding.tabLayout
-
         //определяет как будут задаваться вкладки(табы)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = if (position == 0)
