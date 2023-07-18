@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.newapppp.databinding.HomeFragmentBinding
 import androidx.navigation.fragment.findNavController
 import com.example.newapppp.data.Habit
@@ -26,6 +29,7 @@ class HomeFragment : Fragment() {
             val fragment = HomeFragment()
             val bundle = Bundle()
             //помещаем объекты, которые можно сериализовать
+//            bundle.putInt(HABIT_TYPE, habitType.ordinal)
             bundle.putSerializable(HABIT_TYPE, habitType)
             //передаём данные в специально предназначенное для них место
             fragment.arguments = bundle
@@ -33,13 +37,13 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private val vpViewModel: ViewPagerViewModel by activityViewModels()
-
+    private val vpViewModel: ViewPagerViewModel by viewModels(ownerProducer = { requireParentFragment() })
     private var _binding: HomeFragmentBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+//    private var filteredHabitList: LiveData<List<Habit>>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,7 +70,13 @@ class HomeFragment : Fragment() {
         vpViewModel.habitList.observe(viewLifecycleOwner) { habitList ->
             adapter.submitList(habitList)
         }
-
+//        val habitType = arguments?.getInt(HABIT_TYPE).let { if (it == 0) Type.GOOD else Type.BAD }
+//        habitType.let { type ->
+//            filteredHabitList = vpViewModel.habitFilter(type)
+//            filteredHabitList?.observe(viewLifecycleOwner) {
+//                adapter.submitList(it)
+//            }
+//        }
     }
 
 

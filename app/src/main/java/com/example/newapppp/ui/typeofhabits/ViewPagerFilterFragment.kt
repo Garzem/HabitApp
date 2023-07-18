@@ -20,7 +20,6 @@ class ViewPagerFilterFragment : Fragment() {
     private val vpViewModel: ViewPagerViewModel by activityViewModels()
     private var _binding: ViewPagerFragmentBinding? = null
     private lateinit var viewPager: ViewPager2
-
     private val binding get() = _binding!!
 
     //все действия с настройкой ui
@@ -60,6 +59,7 @@ class ViewPagerFilterFragment : Fragment() {
         viewPager.adapter = adapter
         tabMediator()
     }
+
 
     private fun tabMediator() {
         val tabLayout = binding.tabLayout

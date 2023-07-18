@@ -27,7 +27,6 @@ import java.util.UUID
 class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
 
     private var binding: RedactorFragmentBinding? = null
-
     private val args: RedactorFragmentArgs? by navArgs()
 
     //инициализация объекта будет выполнена только при первом обращении к нему
