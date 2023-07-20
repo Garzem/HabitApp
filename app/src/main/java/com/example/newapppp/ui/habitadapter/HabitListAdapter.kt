@@ -21,11 +21,28 @@ class HabitListAdapter(
         // описывается получение элемента списка
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemLayoutBinding.inflate(inflater, parent, false)
-        return HabitViewHolder(binding,context, openHabitClick)
+        return HabitViewHolder(binding, context, openHabitClick)
     }
 
     //привязывает данные
     override fun onBindViewHolder(holder: HabitViewHolder, position: Int) {
         holder.bind(getItem(position))
+    }
+
+    fun deleteHabitByPosition(habitPosition: Int) {
+        val currentList = currentList.toMutableList()
+        currentList.removeAt(habitPosition)
+        submitList(currentList)
+    }
+
+    fun getHabitAtPosition(position: Int): Habit? {
+        // Проверяем, что позиция находится в допустимом диапазоне индексов currentList
+        return if (position in currentList.indices) {
+            // Если позиция в допустимом диапазоне, то возвращаем элемент с этой позиции
+            // из списка currentList
+            currentList[position]
+        } else {
+            null
+        }
     }
 }

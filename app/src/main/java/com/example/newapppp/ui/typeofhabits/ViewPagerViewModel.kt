@@ -15,26 +15,37 @@ class ViewPagerViewModel : ViewModel() {
     private val _habitList = MutableLiveData<List<Habit>>(emptyList())
 
     //обеспечивает наблюдаемые данные, т.е предоставляет только чтение habitList
-    //??почему это val, если ему при каждой отправке данных присваивается новое значение?
     val habitList: LiveData<List<Habit>> get() = _habitList
 
-    fun updateHabitList(habit: Habit) {
-        val habitPrevious = _habitList.value?.find { it.id == habit.id }
-        if (habitPrevious == null) {
-            _habitList.value = _habitList.value?.plus(habit)
-        } else
-            _habitList.value = habitList.value?.map { habit }
+    fun updateHabitList(updatedHabit: Habit) {
+        val isUpdated = _habitList.value?.any { it.id == updatedHabit.id } ?: false
+        if (isUpdated) {
+            _habitList.value = habitList.value?.map { habit ->
+                if (habit.id == updatedHabit.id) {
+                    updatedHabit
+                } else {
+                    habit
+                }
+            }
+        } else {
+            _habitList.value = _habitList.value?.plus(updatedHabit)
+        }
     }
-
 
     fun habitFilter(type: Type): LiveData<List<Habit>> {
         return habitList.map {
             it.filter { habit ->
-                when (type) {
-                    Type.GOOD -> habit.type == Type.GOOD
-                    Type.BAD -> habit.type == Type.BAD
-                }
+                habit.type == type
             }
+        }
+    }
+
+    fun deleteById (habitId: String) {
+        val currentHabitList = _habitList.value?.toMutableList() ?: return
+        val habitToRemove = currentHabitList.find { it.id == habitId }
+        habitToRemove?.let {
+            currentHabitList.remove(it)
+            _habitList.value = currentHabitList
         }
     }
 }

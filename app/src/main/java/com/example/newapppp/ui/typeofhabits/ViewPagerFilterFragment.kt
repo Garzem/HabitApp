@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.newapppp.R
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.Type
+import com.example.newapppp.databinding.HomeFragmentBinding
 import com.example.newapppp.databinding.ViewPagerFragmentBinding
 import com.example.newapppp.ui.home.HomeFragment
 import com.google.android.material.tabs.TabLayoutMediator
@@ -37,14 +38,14 @@ class ViewPagerFilterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         findNavController().currentBackStackEntry?.let { entry ->
             entry.savedStateHandle.getLiveData<Habit>("habit").observe(viewLifecycleOwner)
-            { habit ->
-                vpViewModel.updateHabitList(habit)
+            { updatedHabit ->
+                vpViewModel.updateHabitList(updatedHabit)
                 entry.savedStateHandle.remove<Habit>("habit")
             }
         }
         val adapter = ViewPagerFilterAdapter(
-            //передаёт активность в качестве контекста для адаптера
-            activity as AppCompatActivity,
+            //передаёт фрагмент в качестве контекста для адаптера
+            this,
             //список объектов, которые будут созданы внутри viewPager2
             // будут отображаться в порядке указаном в списке
             listOf<Fragment>(
@@ -58,8 +59,17 @@ class ViewPagerFilterFragment : Fragment() {
         viewPager = binding.pagerChooseHabit
         viewPager.adapter = adapter
         tabMediator()
+
+        val fab = binding.fab
+        fab.setOnClickListener {
+            navigateToRedactorFragment()
+        }
     }
 
+    private fun navigateToRedactorFragment() {
+        val action = ViewPagerFilterFragmentDirections.navPagerToRedactorFragment(null)
+        findNavController().navigate(action)
+    }
 
     private fun tabMediator() {
         val tabLayout = binding.tabLayout
