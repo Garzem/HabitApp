@@ -14,7 +14,17 @@ data class Habit(
     val priority: Priority,
     val type: Type,
     val quantity: String
-) : Parcelable
+) : Parcelable {
+    //делает перевод на русский
+    fun getPriorityName() : String {
+        return when (priority) {
+            Priority.CHOOSE -> "Приоритет"
+            Priority.LOW -> "Низкий"
+            Priority.MEDIUM -> "Средний"
+            Priority.HIGH -> "Высокий"
+        }
+    }
+}
 
 enum class Priority {
     CHOOSE,

@@ -28,7 +28,7 @@ class HabitViewHolder(
         binding.period.text = habit.period
         binding.colorMain.background = shapeDrawable
         binding.colorSupport.background = shapeDrawable
-        binding.priority.text = habit.priority.toString()
+        binding.priority.text = habit.getPriorityName()
         binding.quantity.text = habit.quantity
         //обработчик нажатия на корневой элемент макета
         binding.root.setOnClickListener {

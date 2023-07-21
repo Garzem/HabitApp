@@ -11,6 +11,7 @@ import com.example.newapppp.databinding.HomeFragmentBinding
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.example.newapppp.R
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.Type
 import com.example.newapppp.ui.habitadapter.HabitListAdapter

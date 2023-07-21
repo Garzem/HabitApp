@@ -14,7 +14,8 @@ class RedactorFragmentViewModel : ViewModel() {
     val title = MutableLiveData<String>().apply { value = "" }
     val description = MutableLiveData<String>().apply { value = "" }
     val period = MutableLiveData<String>().apply { value = "" }
-    val color = MutableLiveData<Int>().apply { value = 0 }
+    //??почему с value = 0 была проблема?
+    val color = MutableLiveData<Int>().apply { value = 0xFF9100 }
     private val priority = MutableLiveData<Priority>().apply { value = Priority.CHOOSE }
     val priorityPosition = priority.map { priority ->
         getPositionPriority(priority)

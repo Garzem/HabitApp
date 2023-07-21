@@ -32,7 +32,7 @@
 
     <dialog
         android:id="@+id/nav_color_choose_dialog"
-        android:name="com.example.habit_create.ColorChooseDialog"
+        android:name="com.example.newapppp.ui.ColorChooseDialog"
         android:label="@string/color_choose_title"
         tools:layout="@layout/horizontal_color_choose" />
 

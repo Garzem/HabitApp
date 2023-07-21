@@ -1,6 +1,7 @@
-package com.example.habit_create
+package com.example.newapppp.ui
 
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,13 +11,17 @@ import androidx.fragment.app.DialogFragment
 import com.example.newapppp.R
 import com.example.newapppp.databinding.HorizontalColorChooseBinding
 
-class ColorChooseDialog: DialogFragment() {
+class ColorChooseDialog : DialogFragment() {
 
     private var buttons: ArrayList<View>? = null
     private var binding: HorizontalColorChooseBinding? = null
     private var onInputListener: OnInputListener? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.horizontal_color_choose, container, false)
     }
 
@@ -30,7 +35,10 @@ class ColorChooseDialog: DialogFragment() {
         buttons?.forEach { button ->
             button.setOnClickListener {
                 //it указывается для того, чтобы не учитывать нажатий по другим элементам, кроме button
-                onInputListener?.sendColor((it as Button).currentHintTextColor)
+                val color = getColorFromButton(it as Button)
+                if (color != null) {
+                    onInputListener?.sendColor(color)
+                }
                 dismiss()
             }
         }
@@ -47,5 +55,14 @@ class ColorChooseDialog: DialogFragment() {
             .findFragmentById(R.id.nav_host_fragment_content_main)!!
             .childFragmentManager.fragments[0]
         onInputListener = fragment as OnInputListener
+    }
+
+    private fun getColorFromButton(button: Button): Int? {
+        val background = button.background
+        return if (background is GradientDrawable) {
+            background.color?.defaultColor
+        } else {
+            null
+        }
     }
 }

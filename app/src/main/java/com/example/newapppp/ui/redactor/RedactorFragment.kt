@@ -9,20 +9,16 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.habit_create.ColorChooseDialog
+import com.example.newapppp.ui.ColorChooseDialog
 import com.example.newapppp.R
-import com.example.newapppp.data.Habit
 import com.example.newapppp.databinding.RedactorFragmentBinding
-import com.example.newapppp.data.HabitList
-import com.example.newapppp.data.Priority
 import com.example.newapppp.data.Type
-import com.example.newapppp.ui.typeofhabits.ViewPagerViewModel
-import java.util.UUID
 
 class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
 
@@ -62,10 +58,6 @@ class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
         saveButton?.setOnClickListener {
             saveNewHabit()
         }
-    }
-
-    private fun newHabitFilter() {
-
     }
 
     private fun sendToViewModel() {
@@ -143,3 +135,4 @@ class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
         }
     }
 }
+

@@ -34,7 +34,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorPink"
                 android:background="@drawable/color_button_pink" />
 
             <Button
@@ -43,7 +42,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorRed"
                 android:background="@drawable/color_button_red" />
 
             <Button
@@ -52,7 +50,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorDeepOrange"
                 android:background="@drawable/color_button_deep_orange" />
 
             <Button
@@ -61,7 +58,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorOrange"
                 android:background="@drawable/color_button_orange" />
 
             <Button
@@ -70,7 +66,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorAmber"
                 android:background="@drawable/color_button_amber" />
 
             <Button
@@ -79,7 +74,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorYellow"
                 android:background="@drawable/color_button_yellow" />
 
             <Button
@@ -88,7 +82,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorLime"
                 android:background="@drawable/color_button_lime" />
 
             <Button
@@ -97,7 +90,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorLightGreen"
                 android:background="@drawable/color_button_light_green" />
 
             <Button
@@ -106,7 +98,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorGreen"
                 android:background="@drawable/color_button_green" />
 
             <Button
@@ -115,7 +106,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorTeal"
                 android:background="@drawable/color_button_teal" />
 
             <Button
@@ -124,7 +114,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorCyan"
                 android:background="@drawable/color_button_cyan" />
 
             <Button
@@ -133,7 +122,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorLightBlue"
                 android:background="@drawable/color_button_light_blue" />
 
             <Button
@@ -142,7 +130,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorBlue"
                 android:background="@drawable/color_button_blue" />
 
             <Button
@@ -151,7 +138,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorDarkBlue"
                 android:background="@drawable/color_button_dark_blue" />
 
             <Button
@@ -160,7 +146,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorPurple"
                 android:background="@drawable/color_button_purple" />
 
             <Button
@@ -169,7 +154,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorDeepPurple"
                 android:background="@drawable/color_button_deep_purple" />
 
             <Button
@@ -178,7 +162,6 @@
                 android:layout_width="@dimen/color_button_width"
                 android:layout_height="@dimen/color_button_width"
                 app:backgroundTint="@null"
-                android:textColorHint="@color/colorDeepPurpleDark"
                 android:background="@drawable/color_button_deep_purple_dark" />
         </LinearLayout>
     </HorizontalScrollView>
