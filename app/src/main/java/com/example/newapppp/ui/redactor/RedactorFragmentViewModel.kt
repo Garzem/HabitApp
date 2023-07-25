@@ -41,25 +41,36 @@ class RedactorFragmentViewModel : ViewModel() {
     }
 
     fun makeHabit(): Habit {
-        return _uiState.value.run {
-            Habit(
-                id = generateId(this?.id),
-                //?? почему только здесь нужен this!!
-                title = this!!.title,
-                description = description,
-                period = period,
-                color = getChoosenColor(color),
-                priority = getChosenPriority(priorityPosition),
-                type = getChoosenType(type),
-                quantity = quantity
-            )
+        val currentState = _uiState.value
+        return if (currentState != null && currentState.id.isNotBlank()) {
+            currentState.run {
+                Habit(
+                    id = id,
+                    //?? почему только здесь нужен this!!
+                    title = title,
+                    description = description,
+                    period = period,
+                    color = getChoosenColor(color),
+                    priority = getChosenPriority(priorityPosition),
+                    type = getChoosenType(type),
+                    quantity = quantity
+                )
+            }
+        } else {
+            currentState.run {
+                Habit(
+                    id = UUID.randomUUID().toString(),
+                    //?? почему только здесь нужен this!!
+                    title = this?.title ?: "",
+                    description = this?.description ?: "",
+                    period = this?.period ?: "",
+                    color = getChoosenColor(this?.color ?: 4),
+                    priority = getChosenPriority(this?.priorityPosition ?: 0),
+                    type = getChoosenType(this?.type ?: 1),
+                    quantity = this?.quantity ?: ""
+                )
+            }
         }
-    }
-
-    fun generateId(id: String?): String {
-        if (id == null) {
-            return UUID.randomUUID().toString()
-        } else return id
     }
 
     fun getColor(color: HabitColor) {
