@@ -10,7 +10,7 @@ data class Habit(
     val title: String,
     val description: String,
     val period: String,
-    val color: Int,
+    val color: HabitColor,
     val priority: Priority,
     val type: Type,
     val quantity: String

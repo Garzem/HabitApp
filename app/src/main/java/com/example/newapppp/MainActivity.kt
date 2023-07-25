@@ -9,24 +9,22 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.databinding.ActivityMainBinding
 
 
-class MainActivity : AppCompatActivity() {
-
+class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private var binding: ActivityMainBinding? = null
-
+    private val binding by viewBinding(ActivityMainBinding::bind)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding?.root)
+        setContentView(binding.root)
 
-        setSupportActionBar(binding?.appBarMain?.toolbar)
+        setSupportActionBar(binding.appBarMain.toolbar)
 
-        val drawerLayout: DrawerLayout? = binding?.drawerLayout
-        val navView: NavigationView? = binding?.navView
+        val drawerLayout: DrawerLayout = binding.drawerLayout
+        val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         //задаёт основные пункты меню
         appBarConfiguration = AppBarConfiguration(
@@ -39,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         //связывает панель действий (action bar) с контроллером навигации (nav controller)
         setupActionBarWithNavController(navController, appBarConfiguration)
         //связывает контроллер навигации (nav controller) c экраном навигации (nav view)
-        navView?.setupWithNavController(navController)
+        navView.setupWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {

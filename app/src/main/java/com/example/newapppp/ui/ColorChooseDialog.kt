@@ -8,61 +8,31 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.DialogFragment
+import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
+import com.example.newapppp.data.HabitColor
+import com.example.newapppp.databinding.ActivityMainBinding
 import com.example.newapppp.databinding.HorizontalColorChooseBinding
+import com.example.newapppp.ui.redactor.RedactorFragmentViewModel
 
-class ColorChooseDialog : DialogFragment() {
+class ColorChooseDialog : DialogFragment(R.layout.horizontal_color_choose) {
 
     private var buttons: ArrayList<View>? = null
-    private var binding: HorizontalColorChooseBinding? = null
-    private var onInputListener: OnInputListener? = null
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.horizontal_color_choose, container, false)
-    }
+    private val binding by viewBinding(HorizontalColorChooseBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //bind принимает представление view в качестве параметра
-        //и создает экземпляр привязки (binding) для этого представления
-        binding = HorizontalColorChooseBinding.bind(view)
         //получает все элементы доступные для нажатия
-        buttons = binding?.linearColorButtons?.touchables
-        buttons?.forEach { button ->
+        buttons = binding.linearColorButtons.touchables
+        buttons?.forEachIndexed { i, button ->
             button.setOnClickListener {
-                //it указывается для того, чтобы не учитывать нажатий по другим элементам, кроме button
-                val color = getColorFromButton(it as Button)
-                if (color != null) {
-                    onInputListener?.sendColor(color)
+                findNavController().apply {
+                    popBackStack()
+                    val entry = currentBackStackEntry ?: return@apply
+                    entry.savedStateHandle.set("color", HabitColor.values()[i])
                 }
-                dismiss()
             }
-        }
-    }
-
-    interface OnInputListener {
-        fun sendColor(colorChoose: Int)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        //??Что является supportFragmentManager и как программа это понимает
-        val fragment = requireActivity().supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment_content_main)!!
-            .childFragmentManager.fragments[0]
-        onInputListener = fragment as OnInputListener
-    }
-
-    private fun getColorFromButton(button: Button): Int? {
-        val background = button.background
-        return if (background is GradientDrawable) {
-            background.color?.defaultColor
-        } else {
-            null
         }
     }
 }

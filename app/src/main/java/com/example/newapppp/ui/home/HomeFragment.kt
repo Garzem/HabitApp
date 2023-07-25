@@ -11,6 +11,7 @@ import com.example.newapppp.databinding.HomeFragmentBinding
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.Type
@@ -20,7 +21,7 @@ import com.example.newapppp.ui.typeofhabits.ViewPagerFilterFragmentDirections
 import com.example.newapppp.ui.typeofhabits.ViewPagerViewModel
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(R.layout.home_fragment) {
 
     companion object {
         //создаётся в качестве ключа сохранения в Bundle() для habit_type
@@ -38,31 +39,15 @@ class HomeFragment : Fragment() {
     }
 
     private val vpViewModel: ViewPagerViewModel by viewModels(ownerProducer = { requireParentFragment() })
-    private var _binding: HomeFragmentBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = HomeFragmentBinding.inflate(inflater)
-        return _binding?.root
-    }
+    private val binding by viewBinding(HomeFragmentBinding::bind)
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        _binding = HomeFragmentBinding.bind(view)
         //получение данных о привычке
         val adapter = HabitListAdapter(requireContext(), ::openHabitClick)
         binding.recycleViewHabit.adapter = adapter
         //делаем observe, чтобы установить данные в адаптер
-
         val habitType = arguments?.serialazible(HABIT_TYPE_KEY, Type::class.java)
         habitType?.let { type ->
             vpViewModel.habitFilter(type).observe(viewLifecycleOwner) {
@@ -92,10 +77,5 @@ class HomeFragment : Fragment() {
         //связывает ItemTouchHelper с RecyclerView,
         //чтобы обработчик смахивания (swipe) элементов сработал внутри RecyclerView.
         itemTouchHelper.attachToRecyclerView(binding.recycleViewHabit)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

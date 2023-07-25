@@ -9,29 +9,20 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.Type
+import com.example.newapppp.databinding.ActivityMainBinding
 import com.example.newapppp.databinding.HomeFragmentBinding
 import com.example.newapppp.databinding.ViewPagerFragmentBinding
 import com.example.newapppp.ui.home.HomeFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
-class ViewPagerFilterFragment : Fragment() {
+class ViewPagerFilterFragment : Fragment(R.layout.view_pager_fragment) {
     private val vpViewModel: ViewPagerViewModel by viewModels()
-    private var _binding: ViewPagerFragmentBinding? = null
+    private val binding by viewBinding(ViewPagerFragmentBinding::bind)
     private lateinit var viewPager: ViewPager2
-    private val binding get() = _binding!!
-
-    //все действия с настройкой ui
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = ViewPagerFragmentBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
     //вся настройка ui и вешание listeners
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -83,10 +74,5 @@ class ViewPagerFilterFragment : Fragment() {
             viewPager.setCurrentItem(tab.position, true)
             //привязывает к viewPager2 и активирует функциональность TabLayoutMediator
         }.attach()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

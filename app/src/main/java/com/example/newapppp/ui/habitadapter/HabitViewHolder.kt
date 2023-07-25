@@ -21,8 +21,8 @@ class HabitViewHolder(
     //связывание данных элемента списка с его макетом
     fun bind(habit: Habit) {
         val shapeDrawable = ContextCompat.getDrawable(context, R.drawable.color_button_orange) as GradientDrawable
-        shapeDrawable.setColor(habit.color)
-
+        val color = ContextCompat.getColor(context, habit.color.getColorRedId())
+        shapeDrawable.setColor(color)
         binding.title.text = habit.title
         binding.description.text = habit.description
         binding.period.text = habit.period

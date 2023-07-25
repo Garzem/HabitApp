@@ -1,103 +1,118 @@
 package com.example.newapppp.ui.redactor
 
-
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.newapppp.ui.ColorChooseDialog
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
+import com.example.newapppp.data.Habit
+import com.example.newapppp.data.HabitColor
 import com.example.newapppp.databinding.RedactorFragmentBinding
 import com.example.newapppp.data.Type
 
-class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
 
-    private var binding: RedactorFragmentBinding? = null
-    private val args: RedactorFragmentArgs? by navArgs()
+class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
+    private val binding by viewBinding(RedactorFragmentBinding::bind)
+    private val args: RedactorFragmentArgs by navArgs()
     //инициализация объекта будет выполнена только при первом обращении к нему
     //т.е будет использоваться, когда дейсвительно понадобится
     private val redactorViewModel: RedactorFragmentViewModel by viewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        //инициализирует переменную viewModel экземпляром RedactorFragmentViewModel,
-        //который связан с текущим фрагментом RedactorFragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.redactor_fragment, container, false)
-        return binding?.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //связываем lifecycle с текущем фрагментом для избежания ошибок и утечек памяти
-        binding?.lifecycleOwner = this
-        //??значения заданные в макете передаются в RedactorFragmentViewModel или наоборот
-        binding?.viewModel = redactorViewModel
-
-        redactorViewModel.setHabit(args?.habit)
-        //???почему не могу this
-        redactorViewModel.priorityPosition.observe(viewLifecycleOwner) { priorityPosition ->
-            binding?.spinnerPriority?.setSelection(priorityPosition)
+        findNavController().currentBackStackEntry?.let { entry ->
+            entry.savedStateHandle.getLiveData<HabitColor>("color").observe(viewLifecycleOwner)
+            { color ->
+                redactorViewModel.getColor(color)
+                binding.chooseColorButton.background.let { drawable ->
+                    //проверяет, является ли полученный Drawable экземпляром класса GradientDrawable
+                    if (drawable is GradientDrawable) {
+                        val colorInt  = ContextCompat.getColor(requireContext(), color.getColorRedId())
+                        drawable.setColor(colorInt)
+                    }
+                    entry.savedStateHandle.remove<HabitColor>("color")
+                }
+            }
         }
-
+        redactorViewModel.setHabit(args.habit)
+        //??почему не могу this
+        redactorViewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+            uiState.let { changedState ->
+            binding.spinnerPriority.setSelection(changedState.priorityPosition) }
+        }
         sendToViewModel()
-        val saveButton = binding?.saveHabit
-        saveButton?.setOnClickListener {
+        val saveButton = binding.saveHabit
+        saveButton.setOnClickListener {
             saveNewHabit()
         }
     }
 
     private fun sendToViewModel() {
-        val radioGood = binding?.radioGood
-        val radioBad = binding?.radioBad
+        val radioGood = binding.radioGood
+        val radioBad = binding.radioBad
+
+        //считаывает информацию с текстовых полей
+        binding.editTitle.addTextChangedListener{
+            redactorViewModel.getTitle(it.toString())
+        }
+
+        binding.editDescription.addTextChangedListener{
+            redactorViewModel.getDescription(it.toString())
+        }
+
+        binding.editQuantity.addTextChangedListener{
+            redactorViewModel.getQuantity(it.toString())
+        }
+
+        binding.editPeriod.addTextChangedListener{
+            redactorViewModel.getPeriod(it.toString())
+        }
+
         //??подробнее про __
-        radioGood?.setOnCheckedChangeListener { _, isChecked ->
+        radioGood.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                redactorViewModel.type.value = Type.GOOD
+                redactorViewModel.getType(Type.GOOD)
             }
         }
-        radioBad?.setOnCheckedChangeListener { _, isChecked ->
+        radioBad.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                redactorViewModel.type.value = Type.BAD
+                redactorViewModel.getType(Type.BAD)
             }
         }
         //создаём адаптер для списка элементов
-        binding?.spinnerPriority?.adapter = ArrayAdapter(
+        binding.spinnerPriority.adapter = ArrayAdapter(
             requireContext(),
             //определяем макет для отдельного элемента выпадающего списка
             android.R.layout.simple_spinner_item,
             redactorViewModel.getList()
         )
 
-        binding?.spinnerPriority?.onItemSelectedListener =
+        binding.spinnerPriority.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
+                    parent: AdapterView<*>,
+                    view: View,
                     position: Int,
                     id: Long
                 ) {
-                    redactorViewModel.getChosenPriority(position)
+                    redactorViewModel.getPriority(position)
                 }
 
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
+                override fun onNothingSelected(parent: AdapterView<*>) {}
             }
 
-        val colorChoose = binding?.chooseColorButton
-        colorChoose?.setOnClickListener {
+        val colorChoose = binding.chooseColorButton
+        colorChoose.setOnClickListener {
             colorDialog()
         }
     }
@@ -105,17 +120,6 @@ class RedactorFragment : Fragment(), ColorChooseDialog.OnInputListener {
     private fun colorDialog() {
         val action = RedactorFragmentDirections.actionHabitRedactorFragmentToColorChooseDialog()
         findNavController().navigate(action)
-    }
-
-    override fun sendColor(colorChoose: Int) {
-        //drawable ссылается на полученный фоновый Drawable
-        binding?.chooseColorButton?.background?.let { drawable ->
-            //проверяет, является ли полученный Drawable экземпляром класса GradientDrawable
-            if (drawable is GradientDrawable) {
-                drawable.setColor(colorChoose)
-            }
-        }
-        redactorViewModel.color.value = colorChoose
     }
 
     private fun saveNewHabit() {

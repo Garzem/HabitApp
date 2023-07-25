@@ -1,54 +1,189 @@
 package com.example.newapppp.ui.redactor
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
 import com.example.newapppp.data.Habit
+import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.Priority
 import com.example.newapppp.data.Type
+import com.example.newapppp.data.UiState
 import java.util.UUID
 
 class RedactorFragmentViewModel : ViewModel() {
-
-    //как??поместить в функцию и сделать проверку на выбранные значения
-    val title = MutableLiveData<String>().apply { value = "" }
-    val description = MutableLiveData<String>().apply { value = "" }
-    val period = MutableLiveData<String>().apply { value = "" }
-    //??почему с value = 0 была проблема?
-    val color = MutableLiveData<Int>().apply { value = 0xFF9100 }
-    private val priority = MutableLiveData<Priority>().apply { value = Priority.CHOOSE }
-    val priorityPosition = priority.map { priority ->
-        getPositionPriority(priority)
-    }
-    val type = MutableLiveData<Type>().apply { value = null }
-    val quantity = MutableLiveData<String>().apply { value = "" }
-    var habitId: String? = null
+    private val _uiState = MutableLiveData<UiState>()
+    val uiState: LiveData<UiState> get() = _uiState
 
     fun setHabit(habit: Habit?) {
         if (habit != null) {
-            habitId = habit.id
-            title.value = habit.title
-            description.value = habit.description
-            period.value = habit.period
-            color.value = habit.color
-            priority.value = habit.priority
-            type.value = habit.type
-            quantity.value = habit.quantity
-
+            _uiState.value = UiState(
+                id = habit.id,
+                title = habit.title,
+                description = habit.description,
+                period = habit.period,
+                color = getPositionColor(habit.color),
+                priorityPosition = getPositionPriority(habit.priority),
+                type = getPositionType(habit.type),
+                quantity = habit.quantity
+            )
+        } else {
+            _uiState.value = UiState(
+                id = "",
+                title = "",
+                description = "",
+                period = "",
+                color = getPositionColor(HabitColor.ORANGE),
+                priorityPosition = 0,
+                type = 0,
+                quantity = ""
+            )
         }
     }
 
     fun makeHabit(): Habit {
-        return Habit(
-            id = habitId ?: UUID.randomUUID().toString(),
-            title = title.value!!,
-            description = description.value!!,
-            period = period.value!!,
-            color = color.value!!,
-            priority = priority.value!!,
-            type = type.value!!,
-            quantity = quantity.value!!
+        return _uiState.value.run {
+            Habit(
+                id = generateId(this?.id),
+                //?? почему только здесь нужен this!!
+                title = this!!.title,
+                description = description,
+                period = period,
+                color = getChoosenColor(color),
+                priority = getChosenPriority(priorityPosition),
+                type = getChoosenType(type),
+                quantity = quantity
+            )
+        }
+    }
+
+    fun generateId(id: String?): String {
+        if (id == null) {
+            return UUID.randomUUID().toString()
+        } else return id
+    }
+
+    fun getColor(color: HabitColor) {
+        _uiState.value = _uiState.value?.copy(
+            color = getPositionColor(color)
         )
+    }
+
+    fun getTitle(title: String) {
+        _uiState.value = _uiState.value?.copy(
+            title = title
+        )
+    }
+
+    fun getDescription(description: String) {
+        _uiState.value = _uiState.value?.copy(
+            description = description
+        )
+    }
+
+    fun getQuantity(quantity: String) {
+        _uiState.value = _uiState.value?.copy(
+            quantity = quantity
+        )
+    }
+
+    fun getPeriod(period: String) {
+        _uiState.value = _uiState.value?.copy(
+            period = period
+        )
+    }
+
+    fun getType(type: Type) {
+        _uiState.value = _uiState.value?.copy(
+            type = getPositionType(type)
+        )
+    }
+
+    fun getPriority(priorityPosition: Int) {
+        _uiState.value = _uiState.value?.copy(
+            priorityPosition = priorityPosition
+        )
+    }
+
+    fun getChoosenColor(colorPosition: Int): HabitColor {
+        return when (colorPosition) {
+            0 -> HabitColor.PINK
+            1 -> HabitColor.RED
+            2 -> HabitColor.DEEPORANGE
+            3 -> HabitColor.ORANGE
+            4 -> HabitColor.AMBER
+            5 -> HabitColor.YELLOW
+            6 -> HabitColor.LIME
+            7 -> HabitColor.LIGHTGREEN
+            8 -> HabitColor.GREEN
+            9 -> HabitColor.TEAL
+            10 -> HabitColor.CYAN
+            11 -> HabitColor.LIGHTBLUE
+            12 -> HabitColor.BLUE
+            13 -> HabitColor.DARKBLUE
+            14 -> HabitColor.PURPLE
+            15 -> HabitColor.DEEPPURPLE
+            16 -> HabitColor.DEEPPURPLEDARK
+            else -> HabitColor.ORANGE
+        }
+    }
+
+    fun getPositionColor(color: HabitColor): Int {
+        return when (color) {
+            HabitColor.PINK -> 0
+            HabitColor.RED -> 1
+            HabitColor.DEEPORANGE -> 2
+            HabitColor.ORANGE -> 3
+            HabitColor.AMBER -> 4
+            HabitColor.YELLOW -> 5
+            HabitColor.LIME -> 6
+            HabitColor.LIGHTGREEN -> 7
+            HabitColor.GREEN -> 8
+            HabitColor.TEAL -> 9
+            HabitColor.CYAN -> 10
+            HabitColor.LIGHTBLUE -> 11
+            HabitColor.BLUE -> 12
+            HabitColor.DARKBLUE -> 13
+            HabitColor.PURPLE -> 14
+            HabitColor.DEEPPURPLE -> 15
+            HabitColor.DEEPPURPLEDARK -> 16
+        }
+    }
+
+//    fun getColorInt(color: HabitColor): Int {
+//        return when (color) {
+//            HabitColor.PINK -> ContextCompat.getColor(R.color.orange)
+//            HabitColor.RED -> 1
+//            HabitColor.DEEPORANGE -> 2
+//            HabitColor.ORANGE -> 3
+//            HabitColor.AMBER -> 4
+//            HabitColor.YELLOW -> 5
+//            HabitColor.LIME -> 6
+//            HabitColor.LIGHTGREEN -> 7
+//            HabitColor.GREEN -> 8
+//            HabitColor.TEAL -> 9
+//            HabitColor.CYAN -> 10
+//            HabitColor.LIGHTBLUE -> 11
+//            HabitColor.BLUE -> 12
+//            HabitColor.DARKBLUE -> 13
+//            HabitColor.PURPLE -> 14
+//            HabitColor.DEEPPURPLE -> 15
+//            HabitColor.DEEPPURPLEDARK -> 16
+//        }
+//    }
+
+    fun getChoosenType(typePosition: Int): Type {
+        return when (typePosition) {
+            1 -> Type.GOOD
+            2 -> Type.BAD
+            else -> Type.GOOD
+        }
+    }
+
+    fun getPositionType(type: Type): Int {
+        return when (type) {
+            Type.GOOD -> 1
+            Type.BAD -> 2
+        }
     }
 
     //?? обсудить разницу
@@ -64,8 +199,8 @@ class RedactorFragmentViewModel : ViewModel() {
 //    }
     //просто нужно обновить значение
     //проблема тут
-    fun getChosenPriority(position: Int) {
-        priority.value = when (position) {
+    fun getChosenPriority(priorityPosition: Int): Priority {
+        return when (priorityPosition) {
             0 -> Priority.CHOOSE
             1 -> Priority.LOW
             2 -> Priority.MEDIUM
@@ -101,17 +236,10 @@ class RedactorFragmentViewModel : ViewModel() {
 
 
     fun validation(): Boolean {
-        if (
-            title.value == "" ||
-            description.value == "" ||
-            period.value == "" ||
-            color.value == 0 ||
-            priority.value == Priority.CHOOSE ||
-            type.value == null ||
-            quantity.value == ""
-        ) {
-            return false
-        }
-        return true
+        return _uiState.value?.let { currentState ->
+            currentState.run {
+                id.isBlank() && title.isNotBlank() && description.isNotBlank() && period.isNotBlank() && priorityPosition != Priority.CHOOSE.ordinal && quantity.isNotBlank()
+            }
+        } ?: false
     }
 }
