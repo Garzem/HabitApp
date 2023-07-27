@@ -14,62 +14,43 @@ class RedactorFragmentViewModel : ViewModel() {
     private val _uiState = MutableLiveData<UiState>()
     val uiState: LiveData<UiState> get() = _uiState
 
+    private val _showErrorToast = SingleLiveEvent<Nothing>()
+    val showErrorToast: LiveData<Nothing> get() = _showErrorToast
+
+    private val _goBackWithResult = SingleLiveEvent<Habit>()
+    val goBackWithResult: LiveData<Habit> get() = _goBackWithResult
+
     fun setHabit(habit: Habit?) {
         if (habit != null) {
             _uiState.value = UiState(
                 id = habit.id,
                 title = habit.title,
+                titleCursorPosition = 0,
                 description = habit.description,
+                descriptionCursorPosition = 0,
                 period = habit.period,
+                periodCursorPosition = 0,
                 color = getPositionColor(habit.color),
                 priorityPosition = getPositionPriority(habit.priority),
                 type = getPositionType(habit.type),
-                quantity = habit.quantity
+                quantity = habit.quantity,
+                quantityCursorPosition = 0
             )
         } else {
             _uiState.value = UiState(
-                id = "",
+                id = null,
                 title = "",
+                titleCursorPosition = 0,
                 description = "",
+                descriptionCursorPosition = 0,
                 period = "",
+                periodCursorPosition = 0,
                 color = getPositionColor(HabitColor.ORANGE),
                 priorityPosition = 0,
                 type = 0,
-                quantity = ""
+                quantity = "",
+                quantityCursorPosition = 0
             )
-        }
-    }
-
-    fun makeHabit(): Habit {
-        val currentState = _uiState.value
-        return if (currentState != null && currentState.id.isNotBlank()) {
-            currentState.run {
-                Habit(
-                    id = id,
-                    //?? почему только здесь нужен this!!
-                    title = title,
-                    description = description,
-                    period = period,
-                    color = getChoosenColor(color),
-                    priority = getChosenPriority(priorityPosition),
-                    type = getChoosenType(type),
-                    quantity = quantity
-                )
-            }
-        } else {
-            currentState.run {
-                Habit(
-                    id = UUID.randomUUID().toString(),
-                    //?? почему только здесь нужен this!!
-                    title = this?.title ?: "",
-                    description = this?.description ?: "",
-                    period = this?.period ?: "",
-                    color = getChoosenColor(this?.color ?: 4),
-                    priority = getChosenPriority(this?.priorityPosition ?: 0),
-                    type = getChoosenType(this?.type ?: 1),
-                    quantity = this?.quantity ?: ""
-                )
-            }
         }
     }
 
@@ -79,121 +60,75 @@ class RedactorFragmentViewModel : ViewModel() {
         )
     }
 
-    fun getTitle(title: String) {
-        _uiState.value = _uiState.value?.copy(
-            title = title
-        )
+    fun onTitleChanged(title: String, cursorPosition: Int) {
+        if (_uiState.value?.title != title) {
+            _uiState.value = _uiState.value?.copy(
+                title = title,
+                titleCursorPosition = cursorPosition
+            )
+        }
     }
 
-    fun getDescription(description: String) {
-        _uiState.value = _uiState.value?.copy(
-            description = description
-        )
+    fun onDescriptionChanged(description: String, cursorPosition: Int) {
+        if (_uiState.value?.description != description) {
+            _uiState.value = _uiState.value?.copy(
+                description = description,
+                descriptionCursorPosition = cursorPosition
+            )
+        }
     }
 
-    fun getQuantity(quantity: String) {
-        _uiState.value = _uiState.value?.copy(
-            quantity = quantity
-        )
+    fun onQuantityChanged(quantity: String, cursorPosition: Int) {
+        if (_uiState.value?.quantity != quantity) {
+            _uiState.value = _uiState.value?.copy(
+                quantity = quantity,
+                quantityCursorPosition = cursorPosition
+            )
+        }
     }
 
-    fun getPeriod(period: String) {
-        _uiState.value = _uiState.value?.copy(
-            period = period
-        )
+    fun onPeriodChanged(period: String, cursorPosition: Int) {
+        if (_uiState.value?.period != period) {
+            _uiState.value = _uiState.value?.copy(
+                period = period,
+                periodCursorPosition = cursorPosition
+            )
+        }
     }
 
-    fun getType(type: Type) {
+    fun setupType(type: Type) {
         _uiState.value = _uiState.value?.copy(
             type = getPositionType(type)
         )
     }
 
-    fun getPriority(priorityPosition: Int) {
+    fun onNewPrioritySelected(priorityPosition: Int) {
         _uiState.value = _uiState.value?.copy(
             priorityPosition = priorityPosition
         )
     }
 
-    fun getChoosenColor(colorPosition: Int): HabitColor {
-        return when (colorPosition) {
-            0 -> HabitColor.PINK
-            1 -> HabitColor.RED
-            2 -> HabitColor.DEEPORANGE
-            3 -> HabitColor.ORANGE
-            4 -> HabitColor.AMBER
-            5 -> HabitColor.YELLOW
-            6 -> HabitColor.LIME
-            7 -> HabitColor.LIGHTGREEN
-            8 -> HabitColor.GREEN
-            9 -> HabitColor.TEAL
-            10 -> HabitColor.CYAN
-            11 -> HabitColor.LIGHTBLUE
-            12 -> HabitColor.BLUE
-            13 -> HabitColor.DARKBLUE
-            14 -> HabitColor.PURPLE
-            15 -> HabitColor.DEEPPURPLE
-            16 -> HabitColor.DEEPPURPLEDARK
-            else -> HabitColor.ORANGE
-        }
+    fun getChosenColor(colorPosition: Int): HabitColor {
+        return HabitColor.values().getOrNull(colorPosition) ?: HabitColor.ORANGE
     }
 
     fun getPositionColor(color: HabitColor): Int {
-        return when (color) {
-            HabitColor.PINK -> 0
-            HabitColor.RED -> 1
-            HabitColor.DEEPORANGE -> 2
-            HabitColor.ORANGE -> 3
-            HabitColor.AMBER -> 4
-            HabitColor.YELLOW -> 5
-            HabitColor.LIME -> 6
-            HabitColor.LIGHTGREEN -> 7
-            HabitColor.GREEN -> 8
-            HabitColor.TEAL -> 9
-            HabitColor.CYAN -> 10
-            HabitColor.LIGHTBLUE -> 11
-            HabitColor.BLUE -> 12
-            HabitColor.DARKBLUE -> 13
-            HabitColor.PURPLE -> 14
-            HabitColor.DEEPPURPLE -> 15
-            HabitColor.DEEPPURPLEDARK -> 16
-        }
+        return HabitColor.values().indexOf(color)
     }
 
-//    fun getColorInt(color: HabitColor): Int {
-//        return when (color) {
-//            HabitColor.PINK -> ContextCompat.getColor(R.color.orange)
-//            HabitColor.RED -> 1
-//            HabitColor.DEEPORANGE -> 2
-//            HabitColor.ORANGE -> 3
-//            HabitColor.AMBER -> 4
-//            HabitColor.YELLOW -> 5
-//            HabitColor.LIME -> 6
-//            HabitColor.LIGHTGREEN -> 7
-//            HabitColor.GREEN -> 8
-//            HabitColor.TEAL -> 9
-//            HabitColor.CYAN -> 10
-//            HabitColor.LIGHTBLUE -> 11
-//            HabitColor.BLUE -> 12
-//            HabitColor.DARKBLUE -> 13
-//            HabitColor.PURPLE -> 14
-//            HabitColor.DEEPPURPLE -> 15
-//            HabitColor.DEEPPURPLEDARK -> 16
-//        }
-//    }
 
-    fun getChoosenType(typePosition: Int): Type {
+    private fun getChosenType(typePosition: Int): Type {
         return when (typePosition) {
-            1 -> Type.GOOD
-            2 -> Type.BAD
+            0 -> Type.GOOD
+            1 -> Type.BAD
             else -> Type.GOOD
         }
     }
 
-    fun getPositionType(type: Type): Int {
+    private fun getPositionType(type: Type): Int {
         return when (type) {
-            Type.GOOD -> 1
-            Type.BAD -> 2
+            Type.GOOD -> 0
+            Type.BAD -> 1
         }
     }
 
@@ -208,9 +143,7 @@ class RedactorFragmentViewModel : ViewModel() {
 //        }
 //        return Priority.CHOOSE
 //    }
-    //просто нужно обновить значение
-    //проблема тут
-    fun getChosenPriority(priorityPosition: Int): Priority {
+    private fun getChosenPriority(priorityPosition: Int): Priority {
         return when (priorityPosition) {
             0 -> Priority.CHOOSE
             1 -> Priority.LOW
@@ -220,7 +153,7 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
-    fun getPositionPriority(priority: Priority): Int {
+    private fun getPositionPriority(priority: Priority): Int {
         return when (priority) {
             Priority.CHOOSE -> 0
             Priority.LOW -> 1
@@ -245,11 +178,33 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
+    fun saveHabit() {
+        val uiState = _uiState.value
+        //?? почему если написать uiState != null || validation() и поменять местами
+        //else, то требует проверку на null??
+        if (uiState == null || !validation()) {
+            _showErrorToast.emit()
+        } else {
+            val habit = uiState.run {
+                Habit(
+                    id = id ?: UUID.randomUUID().toString(),
+                    title = title,
+                    description = description,
+                    period = period,
+                    color = getChosenColor(color),
+                    priority = getChosenPriority(priorityPosition),
+                    type = getChosenType(type),
+                    quantity = quantity
+                )
+            }
+            _goBackWithResult.emit(habit)
+        }
+    }
 
-    fun validation(): Boolean {
+    private fun validation(): Boolean {
         return _uiState.value?.let { currentState ->
             currentState.run {
-                id.isBlank() && title.isNotBlank() && description.isNotBlank() && period.isNotBlank() && priorityPosition != Priority.CHOOSE.ordinal && quantity.isNotBlank()
+                title.isNotBlank() && description.isNotBlank() && period.isNotBlank() && priorityPosition != Priority.CHOOSE.ordinal && quantity.isNotBlank()
             }
         } ?: false
     }

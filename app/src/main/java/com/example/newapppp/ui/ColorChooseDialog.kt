@@ -30,7 +30,7 @@ class ColorChooseDialog : DialogFragment(R.layout.horizontal_color_choose) {
                 findNavController().apply {
                     popBackStack()
                     val entry = currentBackStackEntry ?: return@apply
-                    entry.savedStateHandle.set("color", HabitColor.values()[i])
+                    entry.savedStateHandle["color"] = HabitColor.values()[i]
                 }
             }
         }
