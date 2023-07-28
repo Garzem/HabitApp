@@ -17,6 +17,7 @@ class RedactorFragmentViewModel : ViewModel() {
     private val _showErrorToast = SingleLiveEvent<Nothing>()
     val showErrorToast: LiveData<Nothing> get() = _showErrorToast
 
+    //?? зачем нам это, если мы в любом случае сохраним
     private val _goBackWithResult = SingleLiveEvent<Habit>()
     val goBackWithResult: LiveData<Habit> get() = _goBackWithResult
 
@@ -52,6 +53,10 @@ class RedactorFragmentViewModel : ViewModel() {
                 quantityCursorPosition = 0
             )
         }
+    }
+
+    fun onSaveUiState(uiState: UiState) {
+        _uiState.value = uiState
     }
 
     fun getColor(color: HabitColor) {

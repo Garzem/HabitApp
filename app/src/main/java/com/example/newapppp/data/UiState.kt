@@ -1,5 +1,7 @@
 package com.example.newapppp.data
 
+import java.io.Serializable
+
 data class UiState(
     val id: String?,
     val title: String,
@@ -13,4 +15,4 @@ data class UiState(
     val type: Int,
     val quantity: String,
     val quantityCursorPosition: Int
-)
+) : Serializable

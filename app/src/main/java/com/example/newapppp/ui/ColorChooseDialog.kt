@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -23,6 +24,15 @@ class ColorChooseDialog : DialogFragment(R.layout.horizontal_color_choose) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.buttonOrange.background.let { drawable ->
+            if (drawable is GradientDrawable) {
+                val drawableColor = drawable.color?.defaultColor
+                if (drawableColor != ContextCompat.getColor(requireContext(), R.color.colorOrange)) {
+                    drawable.setColor(ContextCompat.getColor(requireContext(), R.color.colorOrange))
+                    }
+            }
+        }
+
         //получает все элементы доступные для нажатия
         buttons = binding.linearColorButtons.touchables
         buttons?.forEachIndexed { i, button ->
@@ -36,3 +46,4 @@ class ColorChooseDialog : DialogFragment(R.layout.horizontal_color_choose) {
         }
     }
 }
+

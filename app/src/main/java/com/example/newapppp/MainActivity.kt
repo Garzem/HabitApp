@@ -9,19 +9,22 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.databinding.ActivityMainBinding
-
+import com.example.newapppp.databinding.AppBarMainBinding
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private val binding by viewBinding(ActivityMainBinding::bind)
+    private val binding: ActivityMainBinding by viewBinding(ActivityMainBinding::bind)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(binding.root)
 
-        setSupportActionBar(binding.appBarMain.toolbar)
+        val toolbar: Toolbar = binding.appBarMain.toolbar
+
+        setSupportActionBar(toolbar)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
@@ -30,7 +33,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         appBarConfiguration = AppBarConfiguration(
             //ищет пару уникальных navigation fragment - drawer item
             setOf(
-                R.id.nav_home, R.id.nav_app_info_fragment
+                R.id.nav_view_pager_filter, R.id.nav_app_info_fragment
                 //указывает какой layout будет вызываться вместе с приложением
             ), drawerLayout
         )
@@ -44,6 +47,4 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
-
 }

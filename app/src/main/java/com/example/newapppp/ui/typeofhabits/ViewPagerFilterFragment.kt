@@ -27,18 +27,11 @@ class ViewPagerFilterFragment : Fragment(R.layout.view_pager_fragment) {
     //вся настройка ui и вешание listeners
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        findNavController().currentBackStackEntry?.let { entry ->
-            entry.savedStateHandle.getLiveData<Habit>("habit").observe(viewLifecycleOwner)
-            { updatedHabit ->
-                vpViewModel.updateHabitList(updatedHabit)
-                entry.savedStateHandle.remove<Habit>("habit")
-            }
-        }
+        setupOrUpdateNewHabit()
+        deleteHabit()
         val adapter = ViewPagerFilterAdapter(
             //передаёт фрагмент в качестве контекста для адаптера
             this,
-            //список объектов, которые будут созданы внутри viewPager2
-            // будут отображаться в порядке указаном в списке
             listOf<Fragment>(
                 HomeFragment.newInstance(Type.GOOD),
                 HomeFragment.newInstance(Type.BAD)
@@ -54,6 +47,26 @@ class ViewPagerFilterFragment : Fragment(R.layout.view_pager_fragment) {
         val fab = binding.fab
         fab.setOnClickListener {
             navigateToRedactorFragment()
+        }
+    }
+
+    private fun setupOrUpdateNewHabit() {
+        findNavController().currentBackStackEntry?.let { entry ->
+            entry.savedStateHandle.getLiveData<Habit>("habit").observe(viewLifecycleOwner)
+            { updatedHabit ->
+                vpViewModel.updateHabitList(updatedHabit)
+                entry.savedStateHandle.remove<Habit>("habit")
+            }
+        }
+    }
+
+    private fun deleteHabit() {
+        findNavController().currentBackStackEntry?.let { entry ->
+            entry.savedStateHandle.getLiveData<String>("habitIdFromRedactor").observe(viewLifecycleOwner)
+            {habitId ->
+                vpViewModel.deleteById(habitId)
+                entry.savedStateHandle.remove<String>("habitIdFromRedactor")
+            }
         }
     }
 
