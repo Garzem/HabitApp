@@ -1,178 +1,196 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.newapppp.ui.redactor.RedactorFragment">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/edit_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/small_margin"
-        android:layout_marginTop="@dimen/normal_margin"
-        android:layout_marginEnd="@dimen/small_margin"
-        android:background="@drawable/stroke"
-        android:hint="@string/title_of_habit"
-        android:inputType="text|textAutoCorrect"
-        android:padding="@dimen/large_margin"
-        app:layout_constraintEnd_toStartOf="@+id/color_holder"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/edit_description"
+    <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/small_margin"
-        android:layout_marginTop="@dimen/normal_margin"
-        android:layout_marginEnd="@dimen/small_margin"
-        android:background="@drawable/stroke"
-        android:hint="@string/habit_description"
-        android:inputType="text|textAutoCorrect"
-        android:padding="@dimen/large_margin"
+        android:layout_height="match_parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_title" />
-    <!--добавить id через _ -->
-    <Spinner
-        android:id="@+id/spinner_priority"
-        android:layout_width="120dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/normal_margin"
-        android:layout_marginEnd="@dimen/small_margin"
-        android:layout_marginBottom="@dimen/normal_margin"
-        android:background="@drawable/stroke"
-        app:layout_constraintBottom_toTopOf="@id/edit_period"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_description" />
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <View
-        android:id="@+id/type_holder"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="@dimen/small_margin"
-        android:layout_marginTop="@dimen/normal_margin"
-        android:layout_marginEnd="@dimen/small_margin"
-        android:background="@drawable/stroke"
-        app:layout_constraintBottom_toBottomOf="@+id/radio_type"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_period" />
-
-    <TextView
-        android:id="@+id/text_radio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/normal_margin"
-        android:text="@string/choose_the_type"
-        android:textColor="@color/colorGreyDark"
-        android:textSize="@dimen/text_size_normal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/type_holder" />
-
-    <RadioGroup
-        android:id="@+id/radio_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/normal_margin"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/normal_margin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_radio">
-
-        <RadioButton
-            android:id="@+id/radio_good"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/large_margin"
-            android:text="@string/good_habit"
-            android:textColor="@color/colorGreyDark"
-            android:textSize="@dimen/text_size_normal" />
+            tools:context="com.example.newapppp.ui.redactor.RedactorFragment">
 
-        <RadioButton
-            android:id="@+id/radio_bad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/large_margin"
-            android:text="@string/bad_habit"
-            android:textColor="@color/colorGreyDark"
-            android:textSize="@dimen/text_size_normal" />
+            <EditText
+                android:id="@+id/edit_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/small_margin"
+                android:layout_marginTop="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/small_margin"
+                android:background="@drawable/stroke"
+                android:hint="@string/title_of_habit"
+                android:inputType="text|textAutoCorrect"
+                android:padding="@dimen/large_margin"
+                app:layout_constraintEnd_toStartOf="@+id/color_holder"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <View
+                android:id="@+id/color_holder"
+                android:layout_width="120dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="@dimen/small_margin"
+                android:background="@drawable/stroke"
+                app:layout_constraintBottom_toBottomOf="@+id/edit_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/edit_title" />
 
-    </RadioGroup>
+            <TextView
+                android:id="@+id/text_choose_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/large_margin"
+                android:text="@string/colorText"
+                android:textColor="@color/colorGreyDark"
+                android:textSize="@dimen/text_size_normal"
+                app:layout_constraintBottom_toBottomOf="@+id/color_holder"
+                app:layout_constraintStart_toStartOf="@+id/color_holder"
+                app:layout_constraintTop_toTopOf="@+id/color_holder" />
 
-    <EditText
-        android:id="@+id/edit_quantity"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/small_margin"
-        android:layout_marginTop="@dimen/normal_margin"
-        android:layout_marginEnd="@dimen/small_margin"
-        android:background="@drawable/stroke"
-        android:hint="@string/quantity_doing_habit"
-        android:inputType="number"
-        android:padding="@dimen/large_margin"
-        app:layout_constraintEnd_toStartOf="@+id/spinner_priority"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_description" />
+            <Button
+                android:id="@+id/choose_color_button"
+                android:layout_width="@dimen/color_button_width_small"
+                android:layout_height="@dimen/color_button_width_small"
+                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginEnd="@dimen/large_margin"
+                android:background="@drawable/color_button_orange"
+                app:backgroundTint="@null"
+                app:layout_constraintBottom_toBottomOf="@+id/color_holder"
+                app:layout_constraintStart_toEndOf="@+id/text_choose_color"
+                app:layout_constraintTop_toTopOf="@+id/color_holder" />
 
-    <EditText
-        android:id="@+id/edit_period"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/small_margin"
-        android:layout_marginTop="@dimen/normal_margin"
-        android:layout_marginEnd="@dimen/small_margin"
-        android:background="@drawable/stroke"
-        android:hint="@string/execution_frequency"
-        android:inputType="text|textAutoCorrect"
-        android:padding="@dimen/large_margin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_quantity" />
+            <EditText
+                android:id="@+id/edit_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/small_margin"
+                android:layout_marginTop="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/small_margin"
+                android:background="@drawable/stroke"
+                android:hint="@string/habit_description"
+                android:inputType="text|textAutoCorrect"
+                android:padding="@dimen/large_margin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/edit_title" />
 
-    <View
-        android:id="@+id/color_holder"
-        android:layout_width="120dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="@dimen/small_margin"
-        android:background="@drawable/stroke"
-        app:layout_constraintBottom_toBottomOf="@+id/edit_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/edit_title" />
+            <EditText
+                android:id="@+id/edit_quantity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/small_margin"
+                android:layout_marginTop="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/small_margin"
+                android:background="@drawable/stroke"
+                android:hint="@string/quantity_doing_habit"
+                android:inputType="number"
+                android:padding="@dimen/large_margin"
+                app:layout_constraintEnd_toStartOf="@+id/spinner_priority"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edit_description" />
 
-    <TextView
-        android:id="@+id/text_choose_color"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/large_margin"
-        android:text="@string/colorText"
-        android:textColor="@color/colorGreyDark"
-        android:textSize="@dimen/text_size_normal"
-        app:layout_constraintBottom_toBottomOf="@+id/color_holder"
-        app:layout_constraintStart_toStartOf="@+id/color_holder"
-        app:layout_constraintTop_toTopOf="@+id/color_holder" />
+            <!--добавить id через _ -->
+            <Spinner
+                android:id="@+id/spinner_priority"
+                android:layout_width="120dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/small_margin"
+                android:layout_marginBottom="@dimen/normal_margin"
+                android:background="@drawable/stroke"
+                app:layout_constraintBottom_toTopOf="@id/edit_period"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edit_description" />
 
-    <Button
-        android:id="@+id/choose_color_button"
-        android:layout_width="@dimen/color_button_width_small"
-        android:layout_height="@dimen/color_button_width_small"
-        android:layout_marginStart="@dimen/large_margin"
-        android:layout_marginEnd="@dimen/large_margin"
-        android:background="@drawable/color_button_orange"
-        app:backgroundTint="@null"
-        app:layout_constraintBottom_toBottomOf="@+id/color_holder"
-        app:layout_constraintStart_toEndOf="@+id/text_choose_color"
-        app:layout_constraintTop_toTopOf="@+id/color_holder" />
+            <EditText
+                android:id="@+id/edit_period"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/small_margin"
+                android:layout_marginTop="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/small_margin"
+                android:background="@drawable/stroke"
+                android:hint="@string/execution_frequency"
+                android:inputType="text|textAutoCorrect"
+                android:padding="@dimen/large_margin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edit_quantity" />
 
+            <View
+                android:id="@+id/type_holder"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="@dimen/small_margin"
+                android:layout_marginTop="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/small_margin"
+                android:layout_marginBottom="100dp"
+                android:background="@drawable/stroke"
+                app:layout_constraintBottom_toBottomOf="@+id/radio_type"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edit_period"
+                app:layout_constraintVertical_bias="0" />
+
+            <TextView
+                android:id="@+id/text_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/normal_margin"
+                android:text="@string/choose_the_type"
+                android:textColor="@color/colorGreyDark"
+                android:textSize="@dimen/text_size_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/type_holder" />
+
+            <RadioGroup
+                android:id="@+id/radio_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/normal_margin"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/normal_margin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_radio">
+
+                <RadioButton
+                    android:id="@+id/radio_good"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/large_margin"
+                    android:text="@string/good_habit"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="@dimen/text_size_normal" />
+
+                <RadioButton
+                    android:id="@+id/radio_bad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/large_margin"
+                    android:text="@string/bad_habit"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="@dimen/text_size_normal" />
+            </RadioGroup>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
     <Button
         android:id="@+id/save_habit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/delete_habit"
@@ -182,7 +200,7 @@
         android:id="@+id/delete_habit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

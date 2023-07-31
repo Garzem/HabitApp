@@ -10,7 +10,7 @@ data class UiState(
     val descriptionCursorPosition: Int,
     val period: String,
     val periodCursorPosition: Int,
-    val color: Int,
+    val color: HabitColor,
     val priorityPosition: Int,
     val type: Int,
     val quantity: String,

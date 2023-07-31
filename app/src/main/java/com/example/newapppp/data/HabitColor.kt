@@ -21,26 +21,26 @@ enum class HabitColor {
     DEEPPURPLE,
     DEEPPURPLEDARK;
 
-    fun getColorRedId(): Int {
+    fun getBackGroundResId(): Int {
         return when(this) {
             //???почему я получаю не тот int?
-            PINK -> R.color.colorPink
-            RED -> R.color.colorRed
-            DEEPORANGE -> R.color.colorDeepOrange
-            ORANGE -> R.color.colorOrange
-            AMBER -> R.color.colorAmber
-            YELLOW -> R.color.colorYellow
-            LIME -> R.color.colorLime
-            LIGHTGREEN -> R.color.colorLightGreen
-            GREEN -> R.color.colorGreen
-            TEAL -> R.color.colorTeal
-            CYAN -> R.color.colorCyan
-            LIGHTBLUE -> R.color.colorLightBlue
-            BLUE -> R.color.colorBlue
-            DARKBLUE -> R.color.colorDarkBlue
-            PURPLE -> R.color.colorPurple
-            DEEPPURPLE -> R.color.colorDeepPurple
-            DEEPPURPLEDARK -> R.color.colorDeepPurpleDark
+            PINK -> R.drawable.color_button_pink
+            RED -> R.drawable.color_button_red
+            DEEPORANGE -> R.drawable.color_button_deep_orange
+            ORANGE -> R.drawable.color_button_orange
+            AMBER -> R.drawable.color_button_amber
+            YELLOW -> R.drawable.color_button_yellow
+            LIME -> R.drawable.color_button_lime
+            LIGHTGREEN -> R.drawable.color_button_light_green
+            GREEN -> R.drawable.color_button_green
+            TEAL -> R.drawable.color_button_teal
+            CYAN -> R.drawable.color_button_cyan
+            LIGHTBLUE -> R.drawable.color_button_light_blue
+            BLUE -> R.drawable.color_button_blue
+            DARKBLUE -> R.drawable.color_button_dark_blue
+            PURPLE -> R.drawable.color_button_purple
+            DEEPPURPLE -> R.drawable.color_button_deep_purple
+            DEEPPURPLEDARK -> R.drawable.color_button_deep_purple_dark
         }
     }
 }

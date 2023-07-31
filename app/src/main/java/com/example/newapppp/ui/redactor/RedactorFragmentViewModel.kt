@@ -14,8 +14,8 @@ class RedactorFragmentViewModel : ViewModel() {
     private val _uiState = MutableLiveData<UiState>()
     val uiState: LiveData<UiState> get() = _uiState
 
-    private val _showErrorToast = SingleLiveEvent<Nothing>()
-    val showErrorToast: LiveData<Nothing> get() = _showErrorToast
+    private val _showErrorToast = SingleLiveEvent<Unit>()
+    val showErrorToast: LiveData<Unit> get() = _showErrorToast
 
     //?? зачем нам это, если мы в любом случае сохраним
     private val _goBackWithResult = SingleLiveEvent<Habit>()
@@ -31,7 +31,7 @@ class RedactorFragmentViewModel : ViewModel() {
                 descriptionCursorPosition = 0,
                 period = habit.period,
                 periodCursorPosition = 0,
-                color = getPositionColor(habit.color),
+                color = habit.color,
                 priorityPosition = getPositionPriority(habit.priority),
                 type = getPositionType(habit.type),
                 quantity = habit.quantity,
@@ -46,7 +46,7 @@ class RedactorFragmentViewModel : ViewModel() {
                 descriptionCursorPosition = 0,
                 period = "",
                 periodCursorPosition = 0,
-                color = getPositionColor(HabitColor.ORANGE),
+                color = HabitColor.ORANGE,
                 priorityPosition = 0,
                 type = 0,
                 quantity = "",
@@ -55,13 +55,9 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
-    fun onSaveUiState(uiState: UiState) {
-        _uiState.value = uiState
-    }
-
-    fun getColor(color: HabitColor) {
+    fun saveColor(color: HabitColor) {
         _uiState.value = _uiState.value?.copy(
-            color = getPositionColor(color)
+            color = color
         )
     }
 
@@ -112,15 +108,6 @@ class RedactorFragmentViewModel : ViewModel() {
             priorityPosition = priorityPosition
         )
     }
-
-    fun getChosenColor(colorPosition: Int): HabitColor {
-        return HabitColor.values().getOrNull(colorPosition) ?: HabitColor.ORANGE
-    }
-
-    fun getPositionColor(color: HabitColor): Int {
-        return HabitColor.values().indexOf(color)
-    }
-
 
     private fun getChosenType(typePosition: Int): Type {
         return when (typePosition) {
@@ -196,7 +183,7 @@ class RedactorFragmentViewModel : ViewModel() {
                     title = title,
                     description = description,
                     period = period,
-                    color = getChosenColor(color),
+                    color = color,
                     priority = getChosenPriority(priorityPosition),
                     type = getChosenType(type),
                     quantity = quantity

@@ -1,12 +1,11 @@
 package com.example.newapppp.ui.redactor
 
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -20,18 +19,11 @@ import com.example.newapppp.data.Type
 import com.example.newapppp.data.UiState
 //??почему тут databinding?
 import com.example.newapppp.databinding.RedactorFragmentBinding
-import com.example.newapppp.ui.home.HomeFragment
-import com.example.newapppp.ui.home.HomeSerializable.Companion.serialazible
-
 
 class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
     private val binding by viewBinding(RedactorFragmentBinding::bind)
     private val args: RedactorFragmentArgs by navArgs()
-
-    companion object {
-        private const val VIEW_MODEL_STATE = "viewModelState"
-    }
 
     //инициализация объекта будет выполнена только при первом обращении к нему
     //т.е будет использоваться, когда дейсвительно понадобится
@@ -46,45 +38,17 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         setupPrioritySpinner()
         setupRadioButtons()
         setupColorButton()
-        colorFormNavController()
+        observeColorResult()
 
         redactorViewModel.setHabit(args.habit)
 
-        onChangedHabit(redactorViewModel.uiState.value ?: return)
-
-        val saveButton = binding.saveHabit
-        saveButton.setOnClickListener {
-            redactorViewModel.saveHabit()
+        redactorViewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+            onChangedHabit(uiState)
         }
-        val deleteButton = binding.deleteHabit
-        if (args.habit != null) {
-            deleteButton.visibility = View.VISIBLE
-            deleteButton.setOnClickListener {
-                deleteHabitInViewPager(args.habit ?: return@setOnClickListener)
-            }
-        } else {
-            deleteButton.visibility = View.GONE
-        }
+        setupButtons()
         setupResultOrError()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        val viewModelState = redactorViewModel.uiState.value
-        outState.putSerializable(Companion.VIEW_MODEL_STATE, viewModelState)
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        if (savedInstanceState != null) {
-            //может быть nullable, если ключ "viewModelState" отсутствует в объекте savedInstanceState
-            val viewModelState =
-                savedInstanceState.serialazible(Companion.VIEW_MODEL_STATE, UiState::class.java)
-            if (viewModelState != null) {
-                redactorViewModel.onSaveUiState(viewModelState)
-            }
-        }
-    }
 
     private fun setupTitleText() {
         binding.editTitle.addTextChangedListener(
@@ -129,8 +93,8 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         binding.spinnerPriority.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View,
+                    parent: AdapterView<*>?,
+                    view: View?,
                     position: Int,
                     id: Long
                 ) {
@@ -164,20 +128,23 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         }
     }
 
-    private fun colorFormNavController() {
+    private fun setupButtons() {
+        binding.saveHabit.setOnClickListener {
+            redactorViewModel.saveHabit()
+        }
+        binding.deleteHabit.apply {
+            setOnClickListener{
+                deleteHabitInViewPager(args.habit ?: return@setOnClickListener)
+            }
+            isVisible = args.habit != null
+        }
+    }
+    private fun observeColorResult() {
         findNavController().currentBackStackEntry?.let { entry ->
             entry.savedStateHandle.getLiveData<HabitColor>("color").observe(viewLifecycleOwner)
             { color ->
-                redactorViewModel.getColor(color)
-                binding.chooseColorButton.background.let { drawable ->
-                    //проверяет, является ли полученный Drawable экземпляром класса GradientDrawable
-                    if (drawable is GradientDrawable) {
-                        val colorInt =
-                            ContextCompat.getColor(requireContext(), color.getColorRedId())
-                        drawable.setColor(colorInt)
-                    }
-                    entry.savedStateHandle.remove<HabitColor>("color")
-                }
+                redactorViewModel.saveColor(color)
+                entry.savedStateHandle.remove<HabitColor>("color")
             }
         }
     }
@@ -215,20 +182,13 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
     private fun onChangedHabit(uiState: UiState) {
         binding.editTitle.setText(uiState.title)
+        binding.editTitle.setSelection(uiState.titleCursorPosition)
         binding.editDescription.setText(uiState.description)
+        binding.editDescription.setSelection(uiState.descriptionCursorPosition)
         binding.editPeriod.setText(uiState.period)
+        binding.editPeriod.setSelection(uiState.periodCursorPosition)
         //???можно ли сделать запись без let? Если нет, то почему
-        binding.chooseColorButton.background.let { drawable ->
-            if (drawable is GradientDrawable) {
-                val colorEnum = redactorViewModel.getChosenColor(uiState.color)
-                drawable.setColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        colorEnum.getColorRedId()
-                    )
-                )
-            }
-        }
+        binding.chooseColorButton.setBackgroundResource(uiState.color.getBackGroundResId())
         binding.spinnerPriority.setSelection(uiState.priorityPosition)
 
         if (uiState.type == 0) {
@@ -237,6 +197,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
             binding.radioBad.isChecked = true
         }
         binding.editQuantity.setText(uiState.quantity)
+        binding.editQuantity.setSelection(uiState.quantityCursorPosition)
     }
 }
 

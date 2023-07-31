@@ -34,7 +34,7 @@ class SingleLiveEvent<T>(v: T? = null) : MutableLiveData<T>(v) {
 
 @SuppressLint("NullSafeMutableLiveData")
 @MainThread
-fun<T> SingleLiveEvent<T>.emit() {
+fun SingleLiveEvent<Unit>.emit() {
     this.value = null
 }
 
