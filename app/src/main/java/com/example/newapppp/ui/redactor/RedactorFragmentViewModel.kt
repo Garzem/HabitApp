@@ -17,7 +17,6 @@ class RedactorFragmentViewModel : ViewModel() {
     private val _showErrorToast = SingleLiveEvent<Unit>()
     val showErrorToast: LiveData<Unit> get() = _showErrorToast
 
-    //?? зачем нам это, если мы в любом случае сохраним
     private val _goBackWithResult = SingleLiveEvent<Habit>()
     val goBackWithResult: LiveData<Habit> get() = _goBackWithResult
 
@@ -110,57 +109,24 @@ class RedactorFragmentViewModel : ViewModel() {
     }
 
     private fun getChosenType(typePosition: Int): Type {
-        return when (typePosition) {
-            0 -> Type.GOOD
-            1 -> Type.BAD
-            else -> Type.GOOD
-        }
+        return Type.values()[typePosition]
     }
 
     private fun getPositionType(type: Type): Int {
-        return when (type) {
-            Type.GOOD -> 0
-            Type.BAD -> 1
-        }
+        return Type.values().indexOf(type)
     }
 
-    //?? обсудить разницу
-    //нужно получить выбранное значение для дальнейшей реализации
-//    fun getChosenPriority(position: Int): Priority {
-//        when (position) {
-//            0 -> Priority.CHOOSE
-//            1 -> Priority.LOW
-//            2 -> Priority.MEDIUM
-//            3 -> Priority.HIGH
-//        }
-//        return Priority.CHOOSE
-//    }
     private fun getChosenPriority(priorityPosition: Int): Priority {
-        return when (priorityPosition) {
-            0 -> Priority.CHOOSE
-            1 -> Priority.LOW
-            2 -> Priority.MEDIUM
-            3 -> Priority.HIGH
-            else -> Priority.CHOOSE
-        }
+        return Priority.values()[priorityPosition]
     }
 
     private fun getPositionPriority(priority: Priority): Int {
-        return when (priority) {
-            Priority.CHOOSE -> 0
-            Priority.LOW -> 1
-            Priority.MEDIUM -> 2
-            Priority.HIGH -> 3
-        }
+        return Priority.values().indexOf(priority)
+
     }
 
-    //возвращает список элементов, которые будут отображаться в выпадающем списке
-    //Этот список будет использован адаптером для отображения элементов
     fun getList(): List<String> {
-        //values  возвращает массив всех значений (элементов) перечисления Priority
-        //map преобразует каждый элемент перечисления Priority в соответствующую строку
         return Priority.values().map {
-            //it это Priority
             when (it) {
                 Priority.CHOOSE -> "Приоритет"
                 Priority.LOW -> "Низкий"
@@ -172,8 +138,6 @@ class RedactorFragmentViewModel : ViewModel() {
 
     fun saveHabit() {
         val uiState = _uiState.value
-        //?? почему если написать uiState != null || validation() и поменять местами
-        //else, то требует проверку на null??
         if (uiState == null || !validation()) {
             _showErrorToast.emit()
         } else {
@@ -196,7 +160,11 @@ class RedactorFragmentViewModel : ViewModel() {
     private fun validation(): Boolean {
         return _uiState.value?.let { currentState ->
             currentState.run {
-                title.isNotBlank() && description.isNotBlank() && period.isNotBlank() && priorityPosition != Priority.CHOOSE.ordinal && quantity.isNotBlank()
+                title.isNotBlank()
+                        && description.isNotBlank()
+                        && period.isNotBlank()
+                        && priorityPosition != Priority.CHOOSE.ordinal
+                        && quantity.isNotBlank()
             }
         } ?: false
     }

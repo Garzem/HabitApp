@@ -5,8 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="10dp">
 
-    <!-- название -->
-
     <TextView
         android:id="@+id/title"
         app:layout_constraintTop_toTopOf="@+id/color_main"
@@ -19,8 +17,6 @@
         android:layout_height="wrap_content"
         android:elevation="@dimen/elevation" />
 
-    <!-- описание -->
-
     <TextView
         android:id="@+id/description"
         app:layout_constraintTop_toBottomOf="@+id/title"
@@ -32,8 +28,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="@dimen/elevation" />
-
-    <!-- количество -->
 
     <TextView
         android:id="@+id/quantity"
@@ -48,8 +42,6 @@
         android:layout_height="wrap_content"
         android:elevation="@dimen/elevation" />
 
-    <!-- приоритет -->
-
     <TextView
         android:id="@+id/priority"
         app:layout_constraintTop_toTopOf="@+id/color_support"
@@ -62,8 +54,6 @@
         android:layout_height="wrap_content"
         android:elevation="@dimen/elevation" />
 
-    <!-- периодичность -->
-
     <TextView
         android:id="@+id/period"
         app:layout_constraintBottom_toBottomOf="@+id/color_support"
@@ -74,8 +64,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="@dimen/elevation" />
-
-    <!-- цвет -->
 
     <View
         android:id="@+id/color_main"

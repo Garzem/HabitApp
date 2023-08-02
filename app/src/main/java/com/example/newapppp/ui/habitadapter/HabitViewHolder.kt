@@ -1,35 +1,25 @@
 package com.example.newapppp.ui.habitadapter
 
-import android.content.Context
-import android.graphics.drawable.GradientDrawable
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.newapppp.R
 import com.example.newapppp.data.Habit
 import com.example.newapppp.databinding.ItemLayoutBinding
 
-
-//Является подклассом RecyclerView.ViewHolder
-//??? как отличить подкласс от реализации интерфейса?
 class HabitViewHolder(
     private val binding: ItemLayoutBinding,
-    private val context: Context,
     private val openHabitClick: (Habit) -> Unit,
-//указывает на корневое представление макета списка для ViewHolder
-): RecyclerView.ViewHolder(binding.root) {
-
-    //связывание данных элемента списка с его макетом
+) : RecyclerView.ViewHolder(binding.root) {
     fun bind(habit: Habit) {
-        binding.title.text = habit.title
-        binding.description.text = habit.description
-        binding.period.text = habit.period
-        binding.colorMain.setBackgroundResource(habit.color.getBackGroundResId())
-        binding.colorSupport.setBackgroundResource(habit.color.getBackGroundResId())
-        binding.priority.text = habit.getPriorityName()
-        binding.quantity.text = habit.quantity
-        //обработчик нажатия на корневой элемент макета
-        binding.root.setOnClickListener {
-            openHabitClick(habit)
+        binding.apply {
+            title.text = habit.title
+            description.text = habit.description
+            period.text = habit.period
+            colorMain.setBackgroundResource(habit.color.getBackGroundResId())
+            colorSupport.setBackgroundResource(habit.color.getBackGroundResId())
+            priority.text = habit.getPriorityName()
+            quantity.text = habit.quantity
+            root.setOnClickListener {
+                openHabitClick(habit)
+            }
         }
     }
 }

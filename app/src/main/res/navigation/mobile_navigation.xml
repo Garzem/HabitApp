@@ -5,8 +5,6 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/nav_view_pager_filter">
 
-    <!--начальный фрагмент startDestination-->
-
     <fragment
         android:id="@+id/nav_app_info_fragment"
         android:name="com.example.newapppp.ui.appinfo.AppInfoFragment"

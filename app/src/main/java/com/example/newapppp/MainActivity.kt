@@ -29,17 +29,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        //задаёт основные пункты меню
+
         appBarConfiguration = AppBarConfiguration(
-            //ищет пару уникальных navigation fragment - drawer item
             setOf(
                 R.id.nav_view_pager_filter, R.id.nav_app_info_fragment
-                //указывает какой layout будет вызываться вместе с приложением
             ), drawerLayout
         )
-        //связывает панель действий (action bar) с контроллером навигации (nav controller)
         setupActionBarWithNavController(navController, appBarConfiguration)
-        //связывает контроллер навигации (nav controller) c экраном навигации (nav view)
+
         navView.setupWithNavController(navController)
     }
 

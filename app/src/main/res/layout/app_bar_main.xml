@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!--занимает оставшееся места (контейнер)-->
     <include
         android:id="@+id/content_main_include"
         layout="@layout/content_main" />

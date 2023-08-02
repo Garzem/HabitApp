@@ -7,11 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.newapppp.ui.typeofhabits.ViewPagerFilterFragment"
     android:orientation="vertical">
-<!--    Почему при смене на LinearLayout всё начало отображаться-->
-<!--    корректно, интересна именно логика отображения, что в -->
-<!--    начале, что потом и т.д-->
 
-    <!--    ??нормально ли, что 2 апбара?-->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/view_pager_app_bar"
         android:layout_width="match_parent"

@@ -23,7 +23,6 @@ enum class HabitColor {
 
     fun getBackGroundResId(): Int {
         return when(this) {
-            //???почему я получаю не тот int?
             PINK -> R.drawable.color_button_pink
             RED -> R.drawable.color_button_red
             DEEPORANGE -> R.drawable.color_button_deep_orange

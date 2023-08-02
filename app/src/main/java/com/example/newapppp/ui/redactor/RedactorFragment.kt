@@ -13,20 +13,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
+import com.example.newapppp.data.Constants.COLOR_KEY
+import com.example.newapppp.data.Constants.HABIT_KEY
+import com.example.newapppp.data.Constants.HABIT_ID_FROM_REDACTOR_KEY
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.Type
 import com.example.newapppp.data.UiState
-//??почему тут databinding?
 import com.example.newapppp.databinding.RedactorFragmentBinding
 
 class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
     private val binding by viewBinding(RedactorFragmentBinding::bind)
     private val args: RedactorFragmentArgs by navArgs()
-
-    //инициализация объекта будет выполнена только при первом обращении к нему
-    //т.е будет использоваться, когда дейсвительно понадобится
     private val redactorViewModel: RedactorFragmentViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,7 +45,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
             onChangedHabit(uiState)
         }
         setupButtons()
-        setupResultOrError()
+        observeEvents()
     }
 
 
@@ -85,7 +84,6 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
     private fun setupPrioritySpinner() {
         binding.spinnerPriority.adapter = ArrayAdapter(
             requireContext(),
-            //определяем макет для отдельного элемента выпадающего списка
             android.R.layout.simple_spinner_item,
             redactorViewModel.getList()
         )
@@ -141,10 +139,10 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
     }
     private fun observeColorResult() {
         findNavController().currentBackStackEntry?.let { entry ->
-            entry.savedStateHandle.getLiveData<HabitColor>("color").observe(viewLifecycleOwner)
+            entry.savedStateHandle.getLiveData<HabitColor>(COLOR_KEY).observe(viewLifecycleOwner)
             { color ->
                 redactorViewModel.saveColor(color)
-                entry.savedStateHandle.remove<HabitColor>("color")
+                entry.savedStateHandle.remove<HabitColor>(COLOR_KEY)
             }
         }
     }
@@ -159,11 +157,11 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         findNavController().apply {
             popBackStack()
             val entry = currentBackStackEntry ?: return
-            entry.savedStateHandle["habitIdFromRedactor"] = habitId
+            entry.savedStateHandle[HABIT_ID_FROM_REDACTOR_KEY] = habitId
         }
     }
 
-    private fun setupResultOrError() {
+    private fun observeEvents() {
         redactorViewModel.showErrorToast.observe(viewLifecycleOwner) {
             Toast.makeText(
                 requireContext(),
@@ -175,7 +173,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
             findNavController().apply {
                 popBackStack()
                 val entry = currentBackStackEntry ?: return@observe
-                entry.savedStateHandle["habit"] = habit
+                entry.savedStateHandle[HABIT_KEY] = habit
             }
         }
     }
@@ -187,7 +185,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         binding.editDescription.setSelection(uiState.descriptionCursorPosition)
         binding.editPeriod.setText(uiState.period)
         binding.editPeriod.setSelection(uiState.periodCursorPosition)
-        //???можно ли сделать запись без let? Если нет, то почему
+
         binding.chooseColorButton.setBackgroundResource(uiState.color.getBackGroundResId())
         binding.spinnerPriority.setSelection(uiState.priorityPosition)
 

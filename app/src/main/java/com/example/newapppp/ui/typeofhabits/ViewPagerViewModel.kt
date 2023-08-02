@@ -9,12 +9,7 @@ import com.example.newapppp.data.Type
 
 
 class ViewPagerViewModel : ViewModel() {
-    //?почему это правильно по ООП?
-    //хранит изменяющиеся данные типа Habit(используется для хранения текущего состояния привычки)
-    //emptyList() не null, лист с 0 элементов
     private val _habitList = MutableLiveData<List<Habit>>(emptyList())
-
-    //обеспечивает наблюдаемые данные, т.е предоставляет только чтение habitList
     val habitList: LiveData<List<Habit>> get() = _habitList
 
     fun updateHabitList(updatedHabit: Habit) {

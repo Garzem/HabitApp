@@ -15,7 +15,6 @@ data class Habit(
     val type: Type,
     val quantity: String
 ) : Parcelable {
-    //делает перевод на русский
     fun getPriorityName() : String {
         return when (priority) {
             Priority.CHOOSE -> "Приоритет"
