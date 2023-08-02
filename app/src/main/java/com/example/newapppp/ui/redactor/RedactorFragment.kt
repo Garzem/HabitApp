@@ -9,6 +9,9 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -21,6 +24,8 @@ import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.Type
 import com.example.newapppp.data.UiState
 import com.example.newapppp.databinding.RedactorFragmentBinding
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
@@ -41,13 +46,15 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
         redactorViewModel.setHabit(args.habit)
 
-        redactorViewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-            onChangedHabit(uiState)
+        FlowExtension().apply {
+            collectWithLifecycle(redactorViewModel.uiState) {uiState ->
+                onChangedHabit(uiState)
+            }
         }
+
         setupButtons()
         observeEvents()
     }
-
 
     private fun setupTitleText() {
         binding.editTitle.addTextChangedListener(
