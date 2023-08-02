@@ -1,6 +1,5 @@
 package com.example.newapppp.ui.home
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -15,7 +14,7 @@ import com.example.newapppp.data.Constants.HABIT_TYPE_KEY
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.Type
 import com.example.newapppp.ui.habitadapter.HabitListAdapter
-import com.example.newapppp.ui.home.HomeSerializable.Companion.serialazible
+import com.example.newapppp.ui.home.HomeSerializable.Companion.serializable
 import com.example.newapppp.ui.typeofhabits.ViewPagerFilterFragmentDirections
 import com.example.newapppp.ui.typeofhabits.ViewPagerViewModel
 
@@ -41,7 +40,7 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
         val adapter = HabitListAdapter(::openHabitClick)
         binding.recycleViewHabit.adapter = adapter
 
-        val habitType = arguments?.serialazible(HABIT_TYPE_KEY, Type::class.java)
+        val habitType = arguments?.serializable(HABIT_TYPE_KEY, Type::class.java)
         habitType?.let { type ->
             vpViewModel.habitFilter(type).observe(viewLifecycleOwner) {
                 adapter.submitList(it)

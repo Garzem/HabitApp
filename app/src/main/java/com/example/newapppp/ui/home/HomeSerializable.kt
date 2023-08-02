@@ -7,7 +7,7 @@ import java.io.Serializable
 class HomeSerializable {
     companion object {
         @Suppress("UNCHECKED_CAST")
-        fun <T : Serializable> Bundle.serialazible(key: String, className: Class<T>): T? {
+        fun <T : Serializable> Bundle.serializable(key: String, className: Class<T>): T? {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
                 getSerializable(key, className)
             else
