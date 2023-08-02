@@ -8,11 +8,31 @@ import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.Priority
 import com.example.newapppp.data.Type
 import com.example.newapppp.data.UiState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import java.util.UUID
 
 class RedactorFragmentViewModel : ViewModel() {
-    private val _uiState = MutableLiveData<UiState>()
-    val uiState: LiveData<UiState> get() = _uiState
+
+    private val _uiState = MutableStateFlow(
+        UiState(
+            id = null,
+            title = "",
+            titleCursorPosition = 0,
+            description = "",
+            descriptionCursorPosition = 0,
+            period = "",
+            periodCursorPosition = 0,
+            color = HabitColor.ORANGE,
+            priorityPosition = 0,
+            type = 0,
+            quantity = "",
+            quantityCursorPosition = 0
+        )
+    )
+    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     private val _showErrorToast = SingleLiveEvent<Unit>()
     val showErrorToast: LiveData<Unit> get() = _showErrorToast
@@ -36,33 +56,20 @@ class RedactorFragmentViewModel : ViewModel() {
                 quantity = habit.quantity,
                 quantityCursorPosition = 0
             )
-        } else {
-            _uiState.value = UiState(
-                id = null,
-                title = "",
-                titleCursorPosition = 0,
-                description = "",
-                descriptionCursorPosition = 0,
-                period = "",
-                periodCursorPosition = 0,
-                color = HabitColor.ORANGE,
-                priorityPosition = 0,
-                type = 0,
-                quantity = "",
-                quantityCursorPosition = 0
-            )
         }
     }
 
     fun saveColor(color: HabitColor) {
-        _uiState.value = _uiState.value?.copy(
-            color = color
-        )
+        _uiState.update { state ->
+            state.copy(
+                color = color
+            )
+        }
     }
 
     fun onTitleChanged(title: String, cursorPosition: Int) {
-        if (_uiState.value?.title != title) {
-            _uiState.value = _uiState.value?.copy(
+        _uiState.update { state ->
+            state.copy(
                 title = title,
                 titleCursorPosition = cursorPosition
             )
@@ -70,8 +77,8 @@ class RedactorFragmentViewModel : ViewModel() {
     }
 
     fun onDescriptionChanged(description: String, cursorPosition: Int) {
-        if (_uiState.value?.description != description) {
-            _uiState.value = _uiState.value?.copy(
+        _uiState.update { state ->
+            state.copy(
                 description = description,
                 descriptionCursorPosition = cursorPosition
             )
@@ -79,8 +86,8 @@ class RedactorFragmentViewModel : ViewModel() {
     }
 
     fun onQuantityChanged(quantity: String, cursorPosition: Int) {
-        if (_uiState.value?.quantity != quantity) {
-            _uiState.value = _uiState.value?.copy(
+        _uiState.update { state ->
+            state.copy(
                 quantity = quantity,
                 quantityCursorPosition = cursorPosition
             )
@@ -88,8 +95,8 @@ class RedactorFragmentViewModel : ViewModel() {
     }
 
     fun onPeriodChanged(period: String, cursorPosition: Int) {
-        if (_uiState.value?.period != period) {
-            _uiState.value = _uiState.value?.copy(
+        _uiState.update { state ->
+            state.copy(
                 period = period,
                 periodCursorPosition = cursorPosition
             )
@@ -97,15 +104,19 @@ class RedactorFragmentViewModel : ViewModel() {
     }
 
     fun setupType(type: Type) {
-        _uiState.value = _uiState.value?.copy(
-            type = getPositionType(type)
-        )
+        _uiState.update { state ->
+            state.copy(
+                type = getPositionType(type)
+            )
+        }
     }
 
     fun onNewPrioritySelected(priorityPosition: Int) {
-        _uiState.value = _uiState.value?.copy(
-            priorityPosition = priorityPosition
-        )
+        _uiState.update { state ->
+            state.copy(
+                priorityPosition = priorityPosition
+            )
+        }
     }
 
     private fun getChosenType(typePosition: Int): Type {
@@ -138,9 +149,7 @@ class RedactorFragmentViewModel : ViewModel() {
 
     fun saveHabit() {
         val uiState = _uiState.value
-        if (uiState == null || !validation()) {
-            _showErrorToast.emit()
-        } else {
+        if (validation()) {
             val habit = uiState.run {
                 Habit(
                     id = id ?: UUID.randomUUID().toString(),
@@ -154,11 +163,13 @@ class RedactorFragmentViewModel : ViewModel() {
                 )
             }
             _goBackWithResult.emit(habit)
+        } else {
+            _showErrorToast.emit()
         }
     }
 
     private fun validation(): Boolean {
-        return _uiState.value?.let { currentState ->
+        return _uiState.value.let { currentState ->
             currentState.run {
                 title.isNotBlank()
                         && description.isNotBlank()
@@ -166,6 +177,6 @@ class RedactorFragmentViewModel : ViewModel() {
                         && priorityPosition != Priority.CHOOSE.ordinal
                         && quantity.isNotBlank()
             }
-        } ?: false
+        }
     }
 }
