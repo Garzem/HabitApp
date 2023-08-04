@@ -19,11 +19,11 @@ import java.util.UUID
 
 class RedactorFragmentViewModel : ViewModel() {
 
-    private val habitDao: HabitDao = AppHabitDataBase.getDatabase().
+    private val habitDao: HabitDao = AppHabitDataBase.getDatabase().habitDao()
 
     private val _uiState = MutableStateFlow(
         UiState(
-            id = null,
+            id = 0,
             title = "",
             titleCursorPosition = 0,
             description = "",
@@ -157,7 +157,7 @@ class RedactorFragmentViewModel : ViewModel() {
         if (validation()) {
             val habit = uiState.run {
                 Habit(
-                    id = id ?: UUID.randomUUID().toString(),
+                    id = id,
                     title = title,
                     description = description,
                     period = period,
