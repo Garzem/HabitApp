@@ -154,6 +154,12 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
+    fun deleteHabit(habit: Habit) {
+        viewModelScope.launch {
+            habitDao.deleteHabit(habit)
+        }
+    }
+
     fun saveHabit() {
         val uiState = _uiState.value
         if (validation()) {

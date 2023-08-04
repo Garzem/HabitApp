@@ -143,11 +143,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         binding.deleteHabit.apply {
             setOnClickListener{
 //                deleteHabitInViewPager(args.habit ?: return@setOnClickListener)
-                if (args.habit != null) {
-                    redactorViewModel.viewModelScope.launch {
-                        redactorViewModel.habitDao.deleteHabit(args.habit!!)
-                    }
-                }
+                    redactorViewModel.deleteHabit(args.habit ?: return@setOnClickListener)
             }
             isVisible = args.habit != null
         }
