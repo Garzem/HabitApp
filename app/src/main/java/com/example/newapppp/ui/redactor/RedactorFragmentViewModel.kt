@@ -21,11 +21,9 @@ import java.util.UUID
 
 class RedactorFragmentViewModel : ViewModel() {
 
-    private val habitDao: HabitDao = AppHabitDataBase.getDatabase().habitDao()
-
     private val _uiState = MutableStateFlow(
         UiState(
-            id = 0,
+            id = null,
             title = "",
             titleCursorPosition = 0,
             description = "",
@@ -154,9 +152,10 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
-    fun deleteHabit(habit: Habit) {
+    fun deleteHabit() {
         viewModelScope.launch {
-            habitDao.deleteHabit(habit)
+//            AppHabitDataBase.habitDao.deleteHabit(_uiState.value)
+            _goBackWithResult.emit()
         }
     }
 
@@ -165,7 +164,7 @@ class RedactorFragmentViewModel : ViewModel() {
         if (validation()) {
             val habit = uiState.run {
                 Habit(
-                    id = id,
+                    id = id ?: UUID.randomUUID().toString(),
                     title = title,
                     description = description,
                     period = period,
@@ -176,7 +175,7 @@ class RedactorFragmentViewModel : ViewModel() {
                 )
             }
             viewModelScope.launch {
-                habitDao.upsertHabit(habit)
+
                 _goBackWithResult.emit(habit)
             }
         } else {

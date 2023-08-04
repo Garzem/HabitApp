@@ -141,26 +141,26 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
             redactorViewModel.saveHabit()
         }
         binding.deleteHabit.apply {
-            setOnClickListener{
-//                deleteHabitInViewPager(args.habit ?: return@setOnClickListener)
-                    redactorViewModel.deleteHabit(args.habit ?: return@setOnClickListener)
+            setOnClickListener {
+                redactorViewModel.deleteHabit()
             }
             isVisible = args.habit != null
         }
     }
+
     private fun observeColorResult() {
         FlowExtension().apply {
             collectWithLifecycle(redactorViewModel.uiState) { uiState ->
                 redactorViewModel.saveColor(uiState.color)
             }
         }
-//        findNavController().currentBackStackEntry?.let { entry ->
-//            entry.savedStateHandle.getLiveData<HabitColor>(COLOR_KEY).observe(viewLifecycleOwner)
-//            { color ->
-//                redactorViewModel.saveColor(color)
-//                entry.savedStateHandle.remove<HabitColor>(COLOR_KEY)
-//            }
-//        }
+        findNavController().currentBackStackEntry?.let { entry ->
+            entry.savedStateHandle.getLiveData<HabitColor>(COLOR_KEY).observe(viewLifecycleOwner)
+            { color ->
+                redactorViewModel.saveColor(color)
+                entry.savedStateHandle.remove<HabitColor>(COLOR_KEY)
+            }
+        }
     }
 
     private fun colorDialog() {
@@ -168,14 +168,6 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         findNavController().navigate(action)
     }
 
-//    private fun deleteHabitInViewPager(habit: Habit) {
-//        val habitId = habit.id
-//        findNavController().apply {
-//            popBackStack()
-//            val entry = currentBackStackEntry ?: return
-//            entry.savedStateHandle[HABIT_ID_FROM_REDACTOR_KEY] = habitId
-//        }
-//    }
 
     private fun observeEvents() {
         redactorViewModel.showErrorToast.observe(viewLifecycleOwner) {
@@ -185,13 +177,9 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
                 Toast.LENGTH_SHORT
             ).show()
         }
-//        redactorViewModel.goBackWithResult.observe(viewLifecycleOwner) { habit ->
-//            findNavController().apply {
-//                popBackStack()
-//                val entry = currentBackStackEntry ?: return@observe
-//                entry.savedStateHandle[HABIT_KEY] = habit
-//            }
-//        }
+        redactorViewModel.goBackWithResult.observe(viewLifecycleOwner) {
+            findNavController().popBackStack()
+        }
     }
 
     private fun onChangedHabit(uiState: UiState) {

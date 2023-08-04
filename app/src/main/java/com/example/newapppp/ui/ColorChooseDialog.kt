@@ -19,18 +19,20 @@ class ColorChooseDialog : DialogFragment(R.layout.horizontal_color_choose) {
 
     private var buttons: ArrayList<View>? = null
     private val binding by viewBinding(HorizontalColorChooseBinding::bind)
-    private val habitDao: HabitDao = AppHabitDataBase.getDatabase().habitDao()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         buttons = binding.linearColorButtons.touchables
         buttons?.forEachIndexed { i, button ->
             button.setOnClickListener {
-                lifecycleScope.launch {
-                    habitDao.upsertColor(HabitColor.values()[i])
+                findNavController().apply {
+                    popBackStack()
+                    val entry = currentBackStackEntry ?: return@apply
+                    entry.savedStateHandle[Constants.COLOR_KEY] = HabitColor.values()[i]
                 }
             }
         }
     }
 }
+
 
