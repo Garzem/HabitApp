@@ -11,14 +11,16 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.newapppp.data.AppHabitDataBase
 import com.example.newapppp.databinding.ActivityMainBinding
-import com.example.newapppp.databinding.AppBarMainBinding
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val binding: ActivityMainBinding by viewBinding(ActivityMainBinding::bind)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        AppHabitDataBase.init(applicationContext)
 
         setContentView(binding.root)
 
