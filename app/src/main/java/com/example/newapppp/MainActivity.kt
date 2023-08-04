@@ -20,8 +20,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AppHabitDataBase.init(applicationContext)
-
         setContentView(binding.root)
 
         val toolbar: Toolbar = binding.appBarMain.toolbar
