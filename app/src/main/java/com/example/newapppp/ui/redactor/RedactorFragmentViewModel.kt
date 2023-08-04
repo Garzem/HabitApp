@@ -2,6 +2,7 @@ package com.example.newapppp.ui.redactor
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.room.RoomDatabase
 import com.example.newapppp.data.AppHabitDataBase
 import com.example.newapppp.data.Habit
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 class RedactorFragmentViewModel : ViewModel() {
@@ -167,7 +169,10 @@ class RedactorFragmentViewModel : ViewModel() {
                     quantity = quantity
                 )
             }
-            _goBackWithResult.emit(habit)
+            viewModelScope.launch {
+                habitDao.upsertHabit(habit)
+                _goBackWithResult.emit(habit)
+            }
         } else {
             _showErrorToast.emit()
         }
