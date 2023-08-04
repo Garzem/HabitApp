@@ -12,15 +12,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
+import com.example.newapppp.data.AppHabitDataBase
 import com.example.newapppp.data.Constants.COLOR_KEY
 import com.example.newapppp.data.Constants.HABIT_KEY
 import com.example.newapppp.data.Constants.HABIT_ID_FROM_REDACTOR_KEY
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
+import com.example.newapppp.data.HabitDao
 import com.example.newapppp.data.Type
 import com.example.newapppp.data.UiState
 import com.example.newapppp.databinding.RedactorFragmentBinding
@@ -32,6 +35,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
     private val binding by viewBinding(RedactorFragmentBinding::bind)
     private val args: RedactorFragmentArgs by navArgs()
     private val redactorViewModel: RedactorFragmentViewModel by viewModels()
+    private val habitDao: HabitDao = AppHabitDataBase.getDatabase().habitDao()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -139,7 +143,12 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         }
         binding.deleteHabit.apply {
             setOnClickListener{
-                deleteHabitInViewPager(args.habit ?: return@setOnClickListener)
+//                deleteHabitInViewPager(args.habit ?: return@setOnClickListener)
+                if (args.habit != null) {
+                    redactorViewModel.viewModelScope.launch {
+                        habitDao.deleteHabit(args.habit!!)
+                    }
+                }
             }
             isVisible = args.habit != null
         }
@@ -159,14 +168,14 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         findNavController().navigate(action)
     }
 
-    private fun deleteHabitInViewPager(habit: Habit) {
-        val habitId = habit.id
-        findNavController().apply {
-            popBackStack()
-            val entry = currentBackStackEntry ?: return
-            entry.savedStateHandle[HABIT_ID_FROM_REDACTOR_KEY] = habitId
-        }
-    }
+//    private fun deleteHabitInViewPager(habit: Habit) {
+//        val habitId = habit.id
+//        findNavController().apply {
+//            popBackStack()
+//            val entry = currentBackStackEntry ?: return
+//            entry.savedStateHandle[HABIT_ID_FROM_REDACTOR_KEY] = habitId
+//        }
+//    }
 
     private fun observeEvents() {
         redactorViewModel.showErrorToast.observe(viewLifecycleOwner) {
@@ -176,13 +185,13 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
                 Toast.LENGTH_SHORT
             ).show()
         }
-        redactorViewModel.goBackWithResult.observe(viewLifecycleOwner) { habit ->
-            findNavController().apply {
-                popBackStack()
-                val entry = currentBackStackEntry ?: return@observe
-                entry.savedStateHandle[HABIT_KEY] = habit
-            }
-        }
+//        redactorViewModel.goBackWithResult.observe(viewLifecycleOwner) { habit ->
+//            findNavController().apply {
+//                popBackStack()
+//                val entry = currentBackStackEntry ?: return@observe
+//                entry.savedStateHandle[HABIT_KEY] = habit
+//            }
+//        }
     }
 
     private fun onChangedHabit(uiState: UiState) {
