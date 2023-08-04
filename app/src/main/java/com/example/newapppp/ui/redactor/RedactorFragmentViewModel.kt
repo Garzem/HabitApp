@@ -2,10 +2,12 @@ package com.example.newapppp.ui.redactor
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.room.RoomDatabase
 import com.example.newapppp.data.AppHabitDataBase
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitDao
+import com.example.newapppp.data.HabitDataBase
 import com.example.newapppp.data.Priority
 import com.example.newapppp.data.Type
 import com.example.newapppp.data.UiState
@@ -16,6 +18,8 @@ import kotlinx.coroutines.flow.update
 import java.util.UUID
 
 class RedactorFragmentViewModel : ViewModel() {
+
+    private val habitDao: HabitDao = AppHabitDataBase.getDatabase().
 
     private val _uiState = MutableStateFlow(
         UiState(

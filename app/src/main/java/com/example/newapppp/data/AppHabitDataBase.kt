@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper
 
 
 object AppHabitDataBase {
-    private lateinit var instance: RoomDatabase
+    private lateinit var instance: HabitDataBase
 
     fun init(context: Context) {
         instance = Room.databaseBuilder(
@@ -18,7 +18,7 @@ object AppHabitDataBase {
         ).build()
     }
 
-    fun getDatabase(): RoomDatabase {
+    fun getDatabase(): HabitDataBase {
         if (!::instance.isInitialized) {
             throw UninitializedPropertyAccessException("AppDataBase must be initialized fisrt")
         }
