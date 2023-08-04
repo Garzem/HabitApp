@@ -21,7 +21,7 @@ import java.util.UUID
 
 class RedactorFragmentViewModel : ViewModel() {
 
-    private val habitDao: HabitDao = AppHabitDataBase.getDatabase().habitDao()
+    val habitDao: HabitDao = AppHabitDataBase.getDatabase().habitDao()
 
     private val _uiState = MutableStateFlow(
         UiState(

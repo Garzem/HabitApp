@@ -35,7 +35,6 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
     private val binding by viewBinding(RedactorFragmentBinding::bind)
     private val args: RedactorFragmentArgs by navArgs()
     private val redactorViewModel: RedactorFragmentViewModel by viewModels()
-    private val habitDao: HabitDao = AppHabitDataBase.getDatabase().habitDao()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -146,7 +145,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 //                deleteHabitInViewPager(args.habit ?: return@setOnClickListener)
                 if (args.habit != null) {
                     redactorViewModel.viewModelScope.launch {
-                        habitDao.deleteHabit(args.habit!!)
+                        redactorViewModel.habitDao.deleteHabit(args.habit!!)
                     }
                 }
             }
