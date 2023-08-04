@@ -3,7 +3,7 @@ package com.example.newapppp.data
 import java.io.Serializable
 
 data class UiState(
-    val id: Int,
+    val id: String?,
     val title: String,
     val titleCursorPosition: Int,
     val description: String,

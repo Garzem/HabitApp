@@ -8,8 +8,8 @@ import kotlinx.parcelize.Parcelize
 @Entity(tableName = "habit")
 @Parcelize
 data class Habit(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: String?,
     val title: String,
     val description: String,
     val period: String,

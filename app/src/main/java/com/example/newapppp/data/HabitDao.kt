@@ -14,13 +14,10 @@ interface HabitDao {
     @Delete
     suspend fun deleteHabit(habit: Habit)
 
-    @Upsert
-    suspend fun upsertColor(color: HabitColor)
-
     @Query("SELECT * FROM Habit WHERE id = :habitId")
     suspend fun getHabitById(habitId: Int) : Habit
 
-    @Query("SELECT color FROM Habit WHERE id = :habitId")
-    suspend fun getColorById(habitId: Int) : HabitColor
+    @Query("SELECT color FROM Habit WHERE id = :type")
+    suspend fun getHabitListById(type: Type) : Habit
 
 }

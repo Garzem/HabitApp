@@ -20,7 +20,7 @@ object AppHabitDataBase {
 
     fun getDatabase(): HabitDataBase {
         if (!::instance.isInitialized) {
-            throw UninitializedPropertyAccessException("AppDataBase must be initialized fisrt")
+            throw UninitializedPropertyAccessException("AppDataBase must be initialized first")
         }
         return instance
     }
