@@ -17,4 +17,10 @@ interface HabitDao {
     @Upsert
     suspend fun upsertColor(color: HabitColor)
 
+    @Query("SELECT * FROM Habit WHERE id = :habitId")
+    suspend fun getHabitById(habitId: Int) : Habit
+
+    @Query("SELECT color FROM Habit WHERE id = :habitId")
+    suspend fun getColorById(habitId: Int) : HabitColor
+
 }

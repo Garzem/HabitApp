@@ -50,7 +50,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         redactorViewModel.setHabit(args.habit)
 
         FlowExtension().apply {
-            collectWithLifecycle(redactorViewModel.uiState) {uiState ->
+            collectWithLifecycle(redactorViewModel.uiState) { uiState ->
                 onChangedHabit(uiState)
             }
         }
@@ -149,6 +149,11 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         }
     }
     private fun observeColorResult() {
+        FlowExtension().apply {
+            collectWithLifecycle(redactorViewModel.uiState.value.color) { color ->
+
+            }
+        }
         findNavController().currentBackStackEntry?.let { entry ->
             entry.savedStateHandle.getLiveData<HabitColor>(COLOR_KEY).observe(viewLifecycleOwner)
             { color ->
