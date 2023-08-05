@@ -3,15 +3,10 @@ package com.example.newapppp.ui.redactor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.RoomDatabase
-import com.example.newapppp.data.AppHabitDataBase
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
-import com.example.newapppp.data.HabitDao
-import com.example.newapppp.data.HabitDataBase
 import com.example.newapppp.data.Priority
 import com.example.newapppp.data.Type
-import com.example.newapppp.data.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

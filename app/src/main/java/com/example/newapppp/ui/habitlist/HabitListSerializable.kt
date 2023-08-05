@@ -1,10 +1,10 @@
-package com.example.newapppp.ui.home
+package com.example.newapppp.ui.habitlist
 
 import android.os.Build
 import android.os.Bundle
 import java.io.Serializable
 
-class HomeSerializable {
+class HabitListSerializable {
     companion object {
         @Suppress("UNCHECKED_CAST")
         fun <T : Serializable> Bundle.serializable(key: String, className: Class<T>): T? {

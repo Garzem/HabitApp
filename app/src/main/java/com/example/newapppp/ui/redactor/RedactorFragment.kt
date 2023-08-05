@@ -9,26 +9,15 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
-import com.example.newapppp.data.AppHabitDataBase
 import com.example.newapppp.data.Constants.COLOR_KEY
-import com.example.newapppp.data.Constants.HABIT_KEY
-import com.example.newapppp.data.Constants.HABIT_ID_FROM_REDACTOR_KEY
-import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
-import com.example.newapppp.data.HabitDao
 import com.example.newapppp.data.Type
-import com.example.newapppp.data.UiState
 import com.example.newapppp.databinding.RedactorFragmentBinding
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
+import com.example.newapppp.extension.FlowExtension
 
 class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 

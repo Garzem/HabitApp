@@ -1,4 +1,4 @@
-package com.example.newapppp.ui.redactor
+package com.example.newapppp.extension
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle

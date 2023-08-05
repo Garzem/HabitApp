@@ -13,11 +13,11 @@ import com.example.newapppp.data.Constants.HABIT_ID_FROM_REDACTOR_KEY
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.Type
 import com.example.newapppp.databinding.ViewPagerFragmentBinding
-import com.example.newapppp.ui.home.HomeFragment
+import com.example.newapppp.ui.habitlist.HabitListFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
-class ViewPagerFilterFragment : Fragment(R.layout.view_pager_fragment) {
-    private val vpViewModel: ViewPagerViewModel by viewModels()
+class HomeFragment : Fragment(R.layout.view_pager_fragment) {
+    private val homeViewModel: HomeFragmentViewModel by viewModels()
     private val binding by viewBinding(ViewPagerFragmentBinding::bind)
     private lateinit var viewPager: ViewPager2
 
@@ -25,11 +25,11 @@ class ViewPagerFilterFragment : Fragment(R.layout.view_pager_fragment) {
         super.onViewCreated(view, savedInstanceState)
         setupOrUpdateNewHabit()
         deleteHabit()
-        val adapter = ViewPagerFilterAdapter(
+        val adapter = HomeFragmentAdapter(
             this,
             listOf<Fragment>(
-                HomeFragment.newInstance(Type.GOOD),
-                HomeFragment.newInstance(Type.BAD)
+                HabitListFragment.newInstance(Type.GOOD),
+                HabitListFragment.newInstance(Type.BAD)
             )
         )
 
@@ -47,7 +47,7 @@ class ViewPagerFilterFragment : Fragment(R.layout.view_pager_fragment) {
         findNavController().currentBackStackEntry?.let { entry ->
             entry.savedStateHandle.getLiveData<Habit>(HABIT_KEY).observe(viewLifecycleOwner)
             { updatedHabit ->
-                vpViewModel.updateHabitList(updatedHabit)
+                homeViewModel.updateHabitList(updatedHabit)
                 entry.savedStateHandle.remove<Habit>(HABIT_KEY)
             }
         }
@@ -57,7 +57,7 @@ class ViewPagerFilterFragment : Fragment(R.layout.view_pager_fragment) {
         findNavController().currentBackStackEntry?.let { entry ->
             entry.savedStateHandle.getLiveData<String>(HABIT_ID_FROM_REDACTOR_KEY).observe(viewLifecycleOwner)
             {habitId ->
-                vpViewModel.deleteById(habitId)
+                homeViewModel.deleteById(habitId)
                 entry.savedStateHandle.remove<String>(HABIT_ID_FROM_REDACTOR_KEY)
             }
         }

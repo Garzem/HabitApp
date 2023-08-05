@@ -1,4 +1,4 @@
-package com.example.newapppp.ui.home
+package com.example.newapppp.ui.habitlist
 
 import android.os.Bundle
 import android.view.View
@@ -13,17 +13,16 @@ import com.example.newapppp.R
 import com.example.newapppp.data.Constants.HABIT_TYPE_KEY
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.Type
-import com.example.newapppp.ui.habitadapter.HabitListAdapter
-import com.example.newapppp.ui.home.HomeSerializable.Companion.serializable
+import com.example.newapppp.ui.habitlist.HabitListSerializable.Companion.serializable
 import com.example.newapppp.ui.typeofhabits.ViewPagerFilterFragmentDirections
-import com.example.newapppp.ui.typeofhabits.ViewPagerViewModel
+import com.example.newapppp.ui.typeofhabits.HomeFragmentViewModel
 
 
-class HomeFragment : Fragment(R.layout.home_fragment) {
+class HabitListFragment : Fragment(R.layout.home_fragment) {
 
     companion object {
-        fun newInstance(habitType: Type): HomeFragment {
-            val fragment = HomeFragment()
+        fun newInstance(habitType: Type): HabitListFragment {
+            val fragment = HabitListFragment()
             val bundle = Bundle()
             bundle.putSerializable(HABIT_TYPE_KEY, habitType)
             fragment.arguments = bundle
@@ -31,7 +30,7 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
         }
     }
 
-    private val vpViewModel: ViewPagerViewModel by viewModels(ownerProducer = { requireParentFragment() })
+    private val homeViewModel: HomeFragmentViewModel by viewModels(ownerProducer = { requireParentFragment() })
     private val binding by viewBinding(HomeFragmentBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,7 +41,7 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
 
         val habitType = arguments?.serializable(HABIT_TYPE_KEY, Type::class.java)
         habitType?.let { type ->
-            vpViewModel.habitFilter(type).observe(viewLifecycleOwner) {
+            homeViewModel.habitFilter(type).observe(viewLifecycleOwner) {
                 adapter.submitList(it)
             }
         }
@@ -61,7 +60,7 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
                 val habit = adapter.getHabitAtPosition(position)
                 habit?.let {
                     adapter.deleteHabitByPosition(position)
-                    vpViewModel.deleteById(it.id)
+                    homeViewModel.deleteById(it.id)
                 }
             }
         })

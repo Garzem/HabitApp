@@ -8,7 +8,7 @@ import com.example.newapppp.data.Habit
 import com.example.newapppp.data.Type
 
 
-class ViewPagerViewModel : ViewModel() {
+class HomeFragmentViewModel : ViewModel() {
     private val _habitList = MutableLiveData<List<Habit>>(emptyList())
     val habitList: LiveData<List<Habit>> get() = _habitList
 

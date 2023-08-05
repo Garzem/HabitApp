@@ -1,5 +1,6 @@
-package com.example.newapppp.data
+package com.example.newapppp.ui.redactor
 
+import com.example.newapppp.data.HabitColor
 import java.io.Serializable
 
 data class UiState(
