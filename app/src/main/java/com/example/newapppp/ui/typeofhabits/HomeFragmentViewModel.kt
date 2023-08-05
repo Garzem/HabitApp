@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
-import com.example.newapppp.data.HabitEntity
-import com.example.newapppp.data.Type
+import com.example.newapppp.database.HabitEntity
+import com.example.newapppp.database.TypeEntity
 
 
 class HomeFragmentViewModel : ViewModel() {
@@ -27,7 +27,7 @@ class HomeFragmentViewModel : ViewModel() {
         }
     }
 
-    fun habitFilter(type: Type): LiveData<List<HabitEntity>> {
+    fun habitFilter(type: TypeEntity): LiveData<List<HabitEntity>> {
         return habitList.map {
             it.filter { habit ->
                 habit.type == type

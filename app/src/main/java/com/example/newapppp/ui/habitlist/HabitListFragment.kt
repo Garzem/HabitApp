@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.data.Constants.HABIT_TYPE_KEY
-import com.example.newapppp.data.HabitEntity
-import com.example.newapppp.data.Type
+import com.example.newapppp.database.HabitEntity
+import com.example.newapppp.database.TypeEntity
 import com.example.newapppp.ui.habitlist.HabitListSerializable.Companion.serializable
 import com.example.newapppp.ui.typeofhabits.ViewPagerFilterFragmentDirections
 import com.example.newapppp.ui.typeofhabits.HomeFragmentViewModel
@@ -21,7 +21,7 @@ import com.example.newapppp.ui.typeofhabits.HomeFragmentViewModel
 class HabitListFragment : Fragment(R.layout.home_fragment) {
 
     companion object {
-        fun newInstance(habitType: Type): HabitListFragment {
+        fun newInstance(habitType: TypeEntity): HabitListFragment {
             val fragment = HabitListFragment()
             val bundle = Bundle()
             bundle.putSerializable(HABIT_TYPE_KEY, habitType)
@@ -39,7 +39,7 @@ class HabitListFragment : Fragment(R.layout.home_fragment) {
         val adapter = HabitListAdapter(::openHabitClick)
         binding.recycleViewHabit.adapter = adapter
 
-        val habitType = arguments?.serializable(HABIT_TYPE_KEY, Type::class.java)
+        val habitType = arguments?.serializable(HABIT_TYPE_KEY, TypeEntity::class.java)
         habitType?.let { type ->
             homeViewModel.habitFilter(type).observe(viewLifecycleOwner) {
                 adapter.submitList(it)

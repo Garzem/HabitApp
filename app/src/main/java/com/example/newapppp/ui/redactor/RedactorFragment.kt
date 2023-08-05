@@ -15,7 +15,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.data.Constants.COLOR_KEY
 import com.example.newapppp.data.HabitColor
-import com.example.newapppp.data.Type
+import com.example.newapppp.database.TypeEntity
 import com.example.newapppp.databinding.RedactorFragmentBinding
 import com.example.newapppp.extension.FlowExtension
 
@@ -108,12 +108,12 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
         radioGood.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                redactorViewModel.setupType(Type.GOOD)
+                redactorViewModel.setupType(TypeEntity.GOOD)
             }
         }
         radioBad.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                redactorViewModel.setupType(Type.BAD)
+                redactorViewModel.setupType(TypeEntity.BAD)
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.example.newapppp.ui.habitadapter
 
 import androidx.recyclerview.widget.RecyclerView
-import com.example.newapppp.data.HabitEntity
+import com.example.newapppp.database.HabitEntity
 import com.example.newapppp.databinding.ItemLayoutBinding
 
 class HabitViewHolder(

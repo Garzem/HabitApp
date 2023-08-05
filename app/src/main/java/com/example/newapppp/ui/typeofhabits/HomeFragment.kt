@@ -10,8 +10,8 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.data.Constants.HABIT_KEY
 import com.example.newapppp.data.Constants.HABIT_ID_FROM_REDACTOR_KEY
-import com.example.newapppp.data.HabitEntity
-import com.example.newapppp.data.Type
+import com.example.newapppp.database.HabitEntity
+import com.example.newapppp.database.TypeEntity
 import com.example.newapppp.databinding.ViewPagerFragmentBinding
 import com.example.newapppp.ui.habitlist.HabitListFragment
 import com.google.android.material.tabs.TabLayoutMediator
@@ -28,8 +28,8 @@ class HomeFragment : Fragment(R.layout.view_pager_fragment) {
         val adapter = HomeFragmentAdapter(
             this,
             listOf<Fragment>(
-                HabitListFragment.newInstance(Type.GOOD),
-                HabitListFragment.newInstance(Type.BAD)
+                HabitListFragment.newInstance(TypeEntity.GOOD),
+                HabitListFragment.newInstance(TypeEntity.BAD)
             )
         )
 

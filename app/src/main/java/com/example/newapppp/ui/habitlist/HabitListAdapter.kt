@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.newapppp.databinding.ItemLayoutBinding
-import com.example.newapppp.data.HabitEntity
+import com.example.newapppp.database.HabitEntity
 import com.example.newapppp.ui.habitadapter.HabitDiffUtilCallback
 import com.example.newapppp.ui.habitadapter.HabitViewHolder
 

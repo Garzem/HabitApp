@@ -3,10 +3,10 @@ package com.example.newapppp.ui.redactor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newapppp.data.HabitEntity
+import com.example.newapppp.database.HabitEntity
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.Priority
-import com.example.newapppp.data.Type
+import com.example.newapppp.database.TypeEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -103,7 +103,7 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
-    fun setupType(type: Type) {
+    fun setupType(type: TypeEntity) {
         _uiState.update { state ->
             state.copy(
                 type = getPositionType(type)
@@ -119,12 +119,12 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
-    private fun getChosenType(typePosition: Int): Type {
-        return Type.values()[typePosition]
+    private fun getChosenType(typePosition: Int): TypeEntity {
+        return TypeEntity.values()[typePosition]
     }
 
-    private fun getPositionType(type: Type): Int {
-        return Type.values().indexOf(type)
+    private fun getPositionType(type: TypeEntity): Int {
+        return TypeEntity.values().indexOf(type)
     }
 
     private fun getChosenPriority(priorityPosition: Int): Priority {

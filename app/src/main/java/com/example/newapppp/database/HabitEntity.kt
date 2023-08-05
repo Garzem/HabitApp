@@ -1,7 +1,8 @@
-package com.example.newapppp.data
+package com.example.newapppp.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.newapppp.data.HabitColor
 
 
 @Entity(tableName = "habit")
@@ -12,28 +13,28 @@ data class HabitEntity(
     val description: String,
     val period: String,
     val color: HabitColor,
-    val priority: Priority,
-    val type: Type,
+    val priority: PriorityEntity,
+    val type: TypeEntity,
     val quantity: String
 ) {
     fun getPriorityName() : String {
         return when (priority) {
-            Priority.CHOOSE -> "Приоритет"
-            Priority.LOW -> "Низкий"
-            Priority.MEDIUM -> "Средний"
-            Priority.HIGH -> "Высокий"
+            PriorityEntity.CHOOSE -> "Приоритет"
+            PriorityEntity.LOW -> "Низкий"
+            PriorityEntity.MEDIUM -> "Средний"
+            PriorityEntity.HIGH -> "Высокий"
         }
     }
 }
 
-enum class Priority {
+enum class PriorityEntity {
     CHOOSE,
     LOW,
     MEDIUM,
     HIGH
 }
 
-enum class Type {
+enum class TypeEntity {
     GOOD,
     BAD
 }

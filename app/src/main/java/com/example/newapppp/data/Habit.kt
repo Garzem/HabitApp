@@ -1,6 +1,7 @@
 package com.example.newapppp.data
 
 import android.os.Parcelable
+import com.example.newapppp.database.TypeEntity
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -11,7 +12,7 @@ data class Habit(
     val period: String,
     val color: HabitColor,
     val priority: Priority,
-    val type: Type,
+    val type: TypeEntity,
     val quantity: String
 ) : Parcelable {
     fun getPriorityName(): String {
