@@ -1,14 +1,10 @@
 package com.example.newapppp.data
 
 import android.os.Parcelable
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
-@Entity(tableName = "habit")
 @Parcelize
-data class Habit(
-    @PrimaryKey
+data class HabitParcelable(
     val id: String?,
     val title: String,
     val description: String,
@@ -18,7 +14,7 @@ data class Habit(
     val type: Type,
     val quantity: String
 ) : Parcelable {
-    fun getPriorityName() : String {
+    fun getPriorityName(): String {
         return when (priority) {
             Priority.CHOOSE -> "Приоритет"
             Priority.LOW -> "Низкий"

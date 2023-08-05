@@ -10,7 +10,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.data.Constants.HABIT_KEY
 import com.example.newapppp.data.Constants.HABIT_ID_FROM_REDACTOR_KEY
-import com.example.newapppp.data.Habit
+import com.example.newapppp.data.HabitEntity
 import com.example.newapppp.data.Type
 import com.example.newapppp.databinding.ViewPagerFragmentBinding
 import com.example.newapppp.ui.habitlist.HabitListFragment
@@ -45,10 +45,10 @@ class HomeFragment : Fragment(R.layout.view_pager_fragment) {
 
     private fun setupOrUpdateNewHabit() {
         findNavController().currentBackStackEntry?.let { entry ->
-            entry.savedStateHandle.getLiveData<Habit>(HABIT_KEY).observe(viewLifecycleOwner)
+            entry.savedStateHandle.getLiveData<HabitEntity>(HABIT_KEY).observe(viewLifecycleOwner)
             { updatedHabit ->
                 homeViewModel.updateHabitList(updatedHabit)
-                entry.savedStateHandle.remove<Habit>(HABIT_KEY)
+                entry.savedStateHandle.remove<HabitEntity>(HABIT_KEY)
             }
         }
     }

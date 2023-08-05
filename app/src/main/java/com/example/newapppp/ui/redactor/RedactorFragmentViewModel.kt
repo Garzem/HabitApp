@@ -3,7 +3,7 @@ package com.example.newapppp.ui.redactor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newapppp.data.Habit
+import com.example.newapppp.data.HabitEntity
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.Priority
 import com.example.newapppp.data.Type
@@ -37,10 +37,10 @@ class RedactorFragmentViewModel : ViewModel() {
     private val _showErrorToast = SingleLiveEvent<Unit>()
     val showErrorToast: LiveData<Unit> get() = _showErrorToast
 
-    private val _goBackWithResult = SingleLiveEvent<Habit>()
-    val goBackWithResult: LiveData<Habit> get() = _goBackWithResult
+    private val _goBackWithResult = SingleLiveEvent<HabitEntity>()
+    val goBackWithResult: LiveData<HabitEntity> get() = _goBackWithResult
 
-    fun setHabit(habit: Habit?) {
+    fun setHabit(habit: HabitEntity?) {
         if (habit != null) {
             _uiState.value = UiState(
                 id = habit.id,
@@ -158,7 +158,7 @@ class RedactorFragmentViewModel : ViewModel() {
         val uiState = _uiState.value
         if (validation()) {
             val habit = uiState.run {
-                Habit(
+                HabitEntity(
                     id = id ?: UUID.randomUUID().toString(),
                     title = title,
                     description = description,

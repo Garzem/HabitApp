@@ -1,7 +1,7 @@
 package com.example.newapppp
 
 import android.app.Application
-import com.example.newapppp.data.AppHabitDataBase
+import com.example.newapppp.database.AppHabitDataBase
 
 class HApp: Application() {
 

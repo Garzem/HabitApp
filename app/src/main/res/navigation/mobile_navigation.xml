@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_view_pager_filter">
+    app:startDestination="@+id/nav_home_fragment">
 
     <fragment
         android:id="@+id/nav_app_info_fragment"
@@ -18,10 +18,10 @@
         tools:layout="@layout/redactor_fragment">
         <argument
             android:name="habit"
-            app:argType="com.example.newapppp.data.Habit"
+            app:argType="com.example.newapppp.data.HabitParcelable"
             app:nullable="true"/>
         <action
-            android:id="@+id/action_redactor_fragment_to_view_pager_filter"
+            android:id="@+id/action_redactor_fragment_to_home_fragment"
             app:destination="@+id/view_pager_filter"/>
         <action
             android:id="@+id/action_habit_redactor_fragment_to_color_choose_dialog"
@@ -35,7 +35,7 @@
         tools:layout="@layout/horizontal_color_choose" />
 
     <fragment
-        android:id="@+id/nav_view_pager_filter"
+        android:id="@+id/nav_home_fragment"
         android:name="com.example.newapppp.ui.typeofhabits.HomeFragment"
         android:label="@string/view_pager_title">
         <action

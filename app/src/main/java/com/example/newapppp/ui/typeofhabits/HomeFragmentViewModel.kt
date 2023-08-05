@@ -4,15 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
-import com.example.newapppp.data.Habit
+import com.example.newapppp.data.HabitEntity
 import com.example.newapppp.data.Type
 
 
 class HomeFragmentViewModel : ViewModel() {
-    private val _habitList = MutableLiveData<List<Habit>>(emptyList())
-    val habitList: LiveData<List<Habit>> get() = _habitList
+    private val _habitList = MutableLiveData<List<HabitEntity>>(emptyList())
+    val habitList: LiveData<List<HabitEntity>> get() = _habitList
 
-    fun updateHabitList(updatedHabit: Habit) {
+    fun updateHabitList(updatedHabit: HabitEntity) {
         val isUpdated = _habitList.value?.any { it.id == updatedHabit.id } ?: false
         if (isUpdated) {
             _habitList.value = habitList.value?.map { habit ->
@@ -27,7 +27,7 @@ class HomeFragmentViewModel : ViewModel() {
         }
     }
 
-    fun habitFilter(type: Type): LiveData<List<Habit>> {
+    fun habitFilter(type: Type): LiveData<List<HabitEntity>> {
         return habitList.map {
             it.filter { habit ->
                 habit.type == type

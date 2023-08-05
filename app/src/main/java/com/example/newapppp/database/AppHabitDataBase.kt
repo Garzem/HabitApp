@@ -1,11 +1,7 @@
-package com.example.newapppp.data
+package com.example.newapppp.database
 
 import android.content.Context
-import androidx.room.DatabaseConfiguration
-import androidx.room.InvalidationTracker
 import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteOpenHelper
 
 
 object AppHabitDataBase {

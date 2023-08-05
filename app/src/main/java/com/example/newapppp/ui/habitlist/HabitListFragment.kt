@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.data.Constants.HABIT_TYPE_KEY
-import com.example.newapppp.data.Habit
+import com.example.newapppp.data.HabitEntity
 import com.example.newapppp.data.Type
 import com.example.newapppp.ui.habitlist.HabitListSerializable.Companion.serializable
 import com.example.newapppp.ui.typeofhabits.ViewPagerFilterFragmentDirections
@@ -48,7 +48,7 @@ class HabitListFragment : Fragment(R.layout.home_fragment) {
         swipeToDelete(adapter)
     }
 
-    private fun openHabitClick(habit: Habit) {
+    private fun openHabitClick(habit: HabitEntity) {
         val action = ViewPagerFilterFragmentDirections.navPagerToRedactorFragment(habit)
         findNavController().navigate(action)
     }
