@@ -166,8 +166,13 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
                 Toast.LENGTH_SHORT
             ).show()
         }
-        redactorViewModel.goBackWithResult.observe(viewLifecycleOwner) {
-            findNavController().popBackStack()
+        redactorViewModel.apply {
+            goBackWithResult.observe(viewLifecycleOwner) {
+                findNavController().popBackStack()
+            }
+            goBack.observe(viewLifecycleOwner) {
+                findNavController().popBackStack()
+            }
         }
     }
 

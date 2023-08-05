@@ -11,7 +11,7 @@ class HabitRepository {
         AppHabitDataBase.habitDao.upsertHabit(convertedHabit)
     }
 
-    suspend fun deleteHabit(habit: Habit) {
+    suspend fun deleteHabitById(habitId: String) {
         val convertedHabit = convertHabitToHabitEntity(habit)
         AppHabitDataBase.habitDao.deleteHabit(convertedHabit)
     }

@@ -41,6 +41,9 @@ class RedactorFragmentViewModel : ViewModel() {
     private val _goBackWithResult = SingleLiveEvent<Habit>()
     val goBackWithResult: LiveData<Habit> get() = _goBackWithResult
 
+    private val _goBack = SingleLiveEvent<Unit>()
+    val goBack: LiveData<Unit> get() = _goBack
+
     fun setHabit(habit: Habit?) {
         if (habit != null) {
             _uiState.value = UiState(
@@ -149,21 +152,9 @@ class RedactorFragmentViewModel : ViewModel() {
     }
 
     fun deleteHabit() {
-        val habit = _uiState.value.run {
-            Habit(
-                id = id,
-                title = title,
-                description = description,
-                period = period,
-                color = color,
-                priority = getChosenPriority(priorityPosition),
-                type = getChosenType(type),
-                quantity = quantity
-            )
-        }
         viewModelScope.launch {
-            HabitRepository().deleteHabit(habit)
-            _goBackWithResult.emit(habit)
+            HabitRepository().deleteHabitById(_uiState.value.id ?: return@launch)
+            _goBack.emit()
         }
     }
 
