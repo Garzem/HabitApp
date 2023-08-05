@@ -6,23 +6,51 @@ import com.example.newapppp.database.HabitEntity
 import com.example.newapppp.database.AppHabitDataBase
 
 class HabitRepository {
-    fun saveHabit(habit: Habit) {
-        AppHabitDataBase.habitDao.upsertHabit(habit)
+    suspend fun saveHabit(habit: Habit) {
+        val convertedHabit = convertHabitToHabitEntity(habit)
+        AppHabitDataBase.habitDao.upsertHabit(convertedHabit)
     }
 
-    fun deleteHabit(habit: Habit) {
-        AppHabitDataBase.habitDao.deleteHabit(habit)
+    suspend fun deleteHabit(habit: Habit) {
+        val convertedHabit = convertHabitToHabitEntity(habit)
+        AppHabitDataBase.habitDao.deleteHabit(convertedHabit)
     }
 
-    fun getHabitById(habitId: String): HabitEntity {
+    fun getHabitById(habitId: String): Habit {
         AppHabitDataBase.habitDao.getHabitById(habitId)
     }
 
-    fun getHabitListById(type: HabitType) : HabitEntity {
+    fun getHabitListById(type: HabitType): Habit {
         AppHabitDataBase.habitDao.getHabitListByType()
     }
 
-    fun setupHabitFromDataBase() {
+    fun setupHabitFromDataBase(habit: Habit) {
 
     }
+
+    private fun convertHabitToHabitEntity(habit: Habit): HabitEntity {
+        return HabitEntity(
+            id = habit.id,
+            title = habit.title,
+            description = habit.description,
+            period = habit.period,
+            color = habit.color,
+            priority = habit.priority,
+            type = habit.type,
+            quantity = habit.quantity,
+        )
+    }
+
+//    private fun convertHabitEntityToHabit(habitEntity: HabitEntity): Habit {
+//        return Habit(
+//            id = habitEntity.id,
+//            title = habitEntity.title,
+//            description = habitEntity.description,
+//            period = habitEntity.period,
+//            color = habitEntity.color,
+//            priority = habitEntity.priority,
+//            type = habitEntity.type,
+//            quantity = habitEntity.quantity,
+//        )
+//    }
 }

@@ -7,6 +7,7 @@ import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
+import com.example.newapppp.habitrepository.HabitRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -148,9 +149,21 @@ class RedactorFragmentViewModel : ViewModel() {
     }
 
     fun deleteHabit() {
+        val habit = _uiState.value.run {
+            Habit(
+                id = id,
+                title = title,
+                description = description,
+                period = period,
+                color = color,
+                priority = getChosenPriority(priorityPosition),
+                type = getChosenType(type),
+                quantity = quantity
+            )
+        }
         viewModelScope.launch {
-//            AppHabitDataBase.habitDao.deleteHabit(_uiState.value)
-            _goBackWithResult.emit()
+            HabitRepository().deleteHabit(habit)
+            _goBackWithResult.emit(habit)
         }
     }
 
@@ -170,7 +183,7 @@ class RedactorFragmentViewModel : ViewModel() {
                 )
             }
             viewModelScope.launch {
-
+                HabitRepository().saveHabit(habit)
                 _goBackWithResult.emit(habit)
             }
         } else {
