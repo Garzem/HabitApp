@@ -1,8 +1,8 @@
 package com.example.newapppp.habitrepository
 
 import com.example.newapppp.data.Habit
+import com.example.newapppp.data.HabitType
 import com.example.newapppp.database.HabitEntity
-import com.example.newapppp.database.TypeEntity
 import com.example.newapppp.database.AppHabitDataBase
 
 class HabitRepository {
@@ -18,7 +18,7 @@ class HabitRepository {
         AppHabitDataBase.habitDao.getHabitById(habitId)
     }
 
-    fun getHabitListById(type: TypeEntity) : HabitEntity {
+    fun getHabitListById(type: HabitType) : HabitEntity {
         AppHabitDataBase.habitDao.getHabitListByType()
     }
 

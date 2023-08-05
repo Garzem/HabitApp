@@ -18,7 +18,7 @@
         tools:layout="@layout/redactor_fragment">
         <argument
             android:name="habit"
-            app:argType="com.example.newapppp.data.HabitParcelable"
+            app:argType="com.example.newapppp.data.Habit"
             app:nullable="true"/>
         <action
             android:id="@+id/action_redactor_fragment_to_home_fragment"

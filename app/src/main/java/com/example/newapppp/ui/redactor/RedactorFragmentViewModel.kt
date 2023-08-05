@@ -4,10 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newapppp.data.Habit
-import com.example.newapppp.database.Habit
 import com.example.newapppp.data.HabitColor
-import com.example.newapppp.data.Priority
-import com.example.newapppp.database.TypeEntity
+import com.example.newapppp.data.HabitPriority
+import com.example.newapppp.data.HabitType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -104,7 +103,7 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
-    fun setupType(type: TypeEntity) {
+    fun setupType(type: HabitType) {
         _uiState.update { state ->
             state.copy(
                 type = getPositionType(type)
@@ -120,30 +119,30 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
-    private fun getChosenType(typePosition: Int): TypeEntity {
-        return TypeEntity.values()[typePosition]
+    private fun getChosenType(typePosition: Int): HabitType {
+        return HabitType.values()[typePosition]
     }
 
-    private fun getPositionType(type: TypeEntity): Int {
-        return TypeEntity.values().indexOf(type)
+    private fun getPositionType(type: HabitType): Int {
+        return HabitType.values().indexOf(type)
     }
 
-    private fun getChosenPriority(priorityPosition: Int): Priority {
-        return Priority.values()[priorityPosition]
+    private fun getChosenPriority(priorityPosition: Int): HabitPriority {
+        return HabitPriority.values()[priorityPosition]
     }
 
-    private fun getPositionPriority(priority: Priority): Int {
-        return Priority.values().indexOf(priority)
+    private fun getPositionPriority(priority: HabitPriority): Int {
+        return HabitPriority.values().indexOf(priority)
 
     }
 
     fun getList(): List<String> {
-        return Priority.values().map {
+        return HabitPriority.values().map {
             when (it) {
-                Priority.CHOOSE -> "Приоритет"
-                Priority.LOW -> "Низкий"
-                Priority.MEDIUM -> "Средний"
-                Priority.HIGH -> "Высокий"
+                HabitPriority.CHOOSE -> "Приоритет"
+                HabitPriority.LOW -> "Низкий"
+                HabitPriority.MEDIUM -> "Средний"
+                HabitPriority.HIGH -> "Высокий"
             }
         }
     }
@@ -185,7 +184,7 @@ class RedactorFragmentViewModel : ViewModel() {
                 title.isNotBlank()
                         && description.isNotBlank()
                         && period.isNotBlank()
-                        && priorityPosition != Priority.CHOOSE.ordinal
+                        && priorityPosition != HabitPriority.CHOOSE.ordinal
                         && quantity.isNotBlank()
             }
         }
