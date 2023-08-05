@@ -14,10 +14,10 @@ interface HabitDao {
     @Delete
     suspend fun deleteHabit(habit: HabitEntity)
 
-    @Query("SELECT * FROM Habit WHERE id = :habitId")
+    @Query("SELECT * FROM habit WHERE id = :habitId")
     suspend fun getHabitById(habitId: String) : HabitEntity
 
-    @Query("SELECT color FROM Habit WHERE type = :type")
+    @Query("SELECT color FROM habit WHERE type = :type")
     suspend fun getHabitListByType(type: TypeEntity) : HabitEntity
 
 }
