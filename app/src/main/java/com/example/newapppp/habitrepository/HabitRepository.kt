@@ -3,6 +3,7 @@ package com.example.newapppp.habitrepository
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.database.AppHabitDataBase
+import com.example.newapppp.database.HabitEntity
 
 class HabitRepository {
     suspend fun saveHabit(habit: Habit) {
@@ -27,8 +28,8 @@ class HabitRepository {
 //
 //    }
 
-    private fun convertHabitToHabitEntity(habit: Habit): com.example.newapppp.database.HabitEntity {
-        return com.example.newapppp.database.HabitEntity(
+    private fun convertHabitToHabitEntity(habit: Habit): HabitEntity {
+        return HabitEntity(
             id = habit.id,
             title = habit.title,
             description = habit.description,
@@ -40,7 +41,7 @@ class HabitRepository {
         )
     }
 
-    private fun convertHabitEntityListToHabitList(habitListByType: List<com.example.newapppp.database.HabitEntity>): List<Habit> {
+    private fun convertHabitEntityListToHabitList(habitListByType: List<HabitEntity>): List<Habit> {
         return habitListByType.map { habitEntity ->
             Habit(
                 id = habitEntity.id,
