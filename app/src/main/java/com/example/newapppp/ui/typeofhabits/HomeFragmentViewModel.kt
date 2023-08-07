@@ -1,26 +1,20 @@
 package com.example.newapppp.ui.typeofhabits
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
-import androidx.lifecycle.viewModelScope
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitType
-import com.example.newapppp.database.HabitEntity
 import com.example.newapppp.habitrepository.HabitRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 
 class HomeFragmentViewModel : ViewModel() {
-    private val _habitList = MutableStateFlow<List<Habit>>(emptyList())
-    val habitList: StateFlow<List<Habit>> = _habitList.asStateFlow()
+    private val _homeHabitList = MutableStateFlow<List<Habit>>(emptyList())
+    val homeHabitList: StateFlow<List<Habit>> = _homeHabitList.asStateFlow()
 
     fun updateHabitList(updatedHabitList: List<Habit>) {
-        val previousHabitList = _habitList.value.toMutableList()
+        val previousHabitList = _homeHabitList.value.toMutableList()
         updatedHabitList.forEach { updatedHabit ->
             val habitToUpdate = previousHabitList.find { it.id == updatedHabit.id }
             habitToUpdate?.let {
@@ -29,7 +23,7 @@ class HomeFragmentViewModel : ViewModel() {
             }
         }
 
-        _habitList.value = previousHabitList
+        _homeHabitList.value = previousHabitList
     }
 
     suspend fun setupGoodHabits(): List<Habit> {
@@ -54,7 +48,7 @@ class HomeFragmentViewModel : ViewModel() {
 //        }
 }
 
-//    fun habitFilter(type: HabitType): LiveData<List<HabitEntity>> {
+//    fun habitFilter(type: HabitType): LiveData<List<Habit>> {
 //        return habitList.map {
 //            it.filter { habit ->
 //                habit.type == type
@@ -70,4 +64,3 @@ class HomeFragmentViewModel : ViewModel() {
 //            _habitList.value = currentHabitList
 //        }
 //    }
-}

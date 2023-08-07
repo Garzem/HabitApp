@@ -1,14 +1,14 @@
 package com.example.newapppp.ui.habitadapter
 
 import androidx.recyclerview.widget.RecyclerView
-import com.example.newapppp.database.HabitEntity
+import com.example.newapppp.data.Habit
 import com.example.newapppp.databinding.ItemLayoutBinding
 
 class HabitViewHolder(
     private val binding: ItemLayoutBinding,
-    private val openHabitClick: (HabitEntity) -> Unit,
+    private val openHabitClick: (Habit) -> Unit,
 ) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(habit: HabitEntity) {
+    fun bind(habit: Habit) {
         binding.apply {
             title.text = habit.title
             description.text = habit.description
