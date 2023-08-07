@@ -13,7 +13,7 @@ interface HabitDao {
     suspend fun upsertHabit(habit: HabitEntity)
 
     @Query("SELECT * FROM habit WHERE id = :habitId")
-    suspend fun deleteHabitById(habitId: String) : HabitEntity
+    suspend fun deleteHabitById(habitId: String)
 
     @Query("SELECT * FROM habit WHERE id = :habitId")
     suspend fun getHabitById(habitId: String) : HabitEntity
