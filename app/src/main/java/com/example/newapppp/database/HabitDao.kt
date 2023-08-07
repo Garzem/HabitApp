@@ -18,7 +18,7 @@ interface HabitDao {
     @Query("SELECT * FROM habit WHERE id = :habitId")
     suspend fun getHabitById(habitId: String) : HabitEntity
 
-    @Query("SELECT color FROM habit WHERE type = :type")
-    suspend fun getHabitListByType(type: HabitType) : HabitEntity
+    @Query("SELECT * FROM habit WHERE type = :type")
+    suspend fun getHabitListByType(type: HabitType) : List<HabitEntity>
 
 }

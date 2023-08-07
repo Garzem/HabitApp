@@ -39,7 +39,11 @@ class HomeFragment : Fragment(R.layout.view_pager_fragment) {
     }
 
     private fun setupOrUpdateNewHabit() {
-        HabitRepository().getHabitListByType()
+        val goodHabits = HabitRepository().getHabitListByType(HabitType.GOOD)
+        val badHabits = HabitRepository().getHabitListByType(HabitType.BAD)
+
+        homeViewModel.updateHabitList(goodHabits)
+        homeViewModel.updateHabitList(badHabits)
 //        findNavController().currentBackStackEntry?.let { entry ->
 //            entry.savedStateHandle.getLiveData<HabitEntity>(HABIT_KEY).observe(viewLifecycleOwner)
 //            { updatedHabit ->

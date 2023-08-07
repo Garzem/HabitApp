@@ -19,8 +19,9 @@ class HabitRepository {
         AppHabitDataBase.habitDao.getHabitById(habitId)
     }
 
-    fun getHabitListByType(type: HabitType): List<Habit> {
-        AppHabitDataBase.habitDao.getHabitListByType()
+    suspend fun getHabitListByType(type: HabitType): List<Habit> {
+        val habitListByType = AppHabitDataBase.habitDao.getHabitListByType(type)
+        return convertHabitEntityListToHabitList(habitListByType)
     }
 
     fun setupHabitFromDataBase(habit: Habit) {
@@ -38,6 +39,21 @@ class HabitRepository {
             type = habit.type,
             quantity = habit.quantity,
         )
+    }
+
+    private fun convertHabitEntityListToHabitList(habitListByType: List<HabitEntity>): List<Habit> {
+        return habitListByType.map { habitEntity ->
+            Habit(
+                id = habitEntity.id,
+                title = habitEntity.title,
+                description = habitEntity.description,
+                period = habitEntity.period,
+                color = habitEntity.color,
+                priority = habitEntity.priority,
+                type = habitEntity.type,
+                quantity = habitEntity.quantity,
+            )
+        }
     }
 
 //    private fun convertHabitEntityToHabit(habitEntity: HabitEntity): Habit {
