@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
@@ -12,6 +13,7 @@ import com.example.newapppp.databinding.ViewPagerFragmentBinding
 import com.example.newapppp.habitrepository.HabitRepository
 import com.example.newapppp.ui.habitlist.HabitListFragment
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(R.layout.view_pager_fragment) {
     private val homeViewModel: HomeFragmentViewModel by viewModels()
@@ -39,11 +41,13 @@ class HomeFragment : Fragment(R.layout.view_pager_fragment) {
     }
 
     private fun setupOrUpdateNewHabit() {
-        val goodHabits = HabitRepository().getHabitListByType(HabitType.GOOD)
-        val badHabits = HabitRepository().getHabitListByType(HabitType.BAD)
+        lifecycleScope.launch {
+            val goodHabits = homeViewModel.setupGoodHabits()
+            val badHabits = homeViewModel.setupBadHabits()
 
-        homeViewModel.updateHabitList(goodHabits)
-        homeViewModel.updateHabitList(badHabits)
+            homeViewModel.updateHabitList(goodHabits)
+            homeViewModel.updateHabitList(badHabits)
+        }
 //        findNavController().currentBackStackEntry?.let { entry ->
 //            entry.savedStateHandle.getLiveData<HabitEntity>(HABIT_KEY).observe(viewLifecycleOwner)
 //            { updatedHabit ->

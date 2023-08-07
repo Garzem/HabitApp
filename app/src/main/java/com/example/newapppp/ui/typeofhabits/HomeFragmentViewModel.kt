@@ -4,12 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.database.HabitEntity
+import com.example.newapppp.habitrepository.HabitRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 
 class HomeFragmentViewModel : ViewModel() {
@@ -29,7 +32,14 @@ class HomeFragmentViewModel : ViewModel() {
         _habitList.value = previousHabitList
     }
 
+    suspend fun setupGoodHabits(): List<Habit> {
+        return HabitRepository().getHabitListByType(HabitType.GOOD)
 
+    }
+
+    suspend fun setupBadHabits(): List<Habit> {
+        return HabitRepository().getHabitListByType(HabitType.BAD)
+    }
 //        val isUpdated = _habitList.value?.any { it.id == updatedHabit.id } ?: false
 //        if (isUpdated) {
 //            _habitList.value = habitList.value?.map { habit ->
