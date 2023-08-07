@@ -19,7 +19,7 @@ class HabitRepository {
         AppHabitDataBase.habitDao.getHabitById(habitId)
     }
 
-    fun getHabitListById(type: HabitType): Habit {
+    fun getHabitListByType(type: HabitType): List<Habit> {
         AppHabitDataBase.habitDao.getHabitListByType()
     }
 

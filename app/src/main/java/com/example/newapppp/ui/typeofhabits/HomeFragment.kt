@@ -5,14 +5,11 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.widget.ViewPager2
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
-import com.example.newapppp.data.Constants.HABIT_KEY
-import com.example.newapppp.data.Constants.HABIT_ID_FROM_REDACTOR_KEY
 import com.example.newapppp.data.HabitType
-import com.example.newapppp.database.HabitEntity
 import com.example.newapppp.databinding.ViewPagerFragmentBinding
+import com.example.newapppp.habitrepository.HabitRepository
 import com.example.newapppp.ui.habitlist.HabitListFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -23,7 +20,7 @@ class HomeFragment : Fragment(R.layout.view_pager_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupOrUpdateNewHabit()
-        deleteHabit()
+//        deleteHabit()
         val adapter = HomeFragmentAdapter(
             this,
             listOf<Fragment>(
@@ -42,24 +39,25 @@ class HomeFragment : Fragment(R.layout.view_pager_fragment) {
     }
 
     private fun setupOrUpdateNewHabit() {
-        findNavController().currentBackStackEntry?.let { entry ->
-            entry.savedStateHandle.getLiveData<HabitEntity>(HABIT_KEY).observe(viewLifecycleOwner)
-            { updatedHabit ->
-                homeViewModel.updateHabitList(updatedHabit)
-                entry.savedStateHandle.remove<HabitEntity>(HABIT_KEY)
-            }
-        }
+        HabitRepository().getHabitListByType()
+//        findNavController().currentBackStackEntry?.let { entry ->
+//            entry.savedStateHandle.getLiveData<HabitEntity>(HABIT_KEY).observe(viewLifecycleOwner)
+//            { updatedHabit ->
+//                homeViewModel.updateHabitList(updatedHabit)
+//                entry.savedStateHandle.remove<HabitEntity>(HABIT_KEY)
+//            }
+//        }
     }
 
-    private fun deleteHabit() {
-        findNavController().currentBackStackEntry?.let { entry ->
-            entry.savedStateHandle.getLiveData<String>(HABIT_ID_FROM_REDACTOR_KEY).observe(viewLifecycleOwner)
-            {habitId ->
-                homeViewModel.deleteById(habitId)
-                entry.savedStateHandle.remove<String>(HABIT_ID_FROM_REDACTOR_KEY)
-            }
-        }
-    }
+//    private fun deleteHabit() {
+//        findNavController().currentBackStackEntry?.let { entry ->
+//            entry.savedStateHandle.getLiveData<String>(HABIT_ID_FROM_REDACTOR_KEY).observe(viewLifecycleOwner)
+//            {habitId ->
+//                homeViewModel.deleteById(habitId)
+//                entry.savedStateHandle.remove<String>(HABIT_ID_FROM_REDACTOR_KEY)
+//            }
+//        }
+//    }
 
     private fun navigateToRedactorFragment() {
         val action = HomeFragmentDirections.navPagerToRedactorFragment(null)

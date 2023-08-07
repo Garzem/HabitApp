@@ -4,8 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
+import com.example.newapppp.data.HabitType
 import com.example.newapppp.database.HabitEntity
-import com.example.newapppp.database.Type
+
 
 
 class HomeFragmentViewModel : ViewModel() {
@@ -27,7 +28,7 @@ class HomeFragmentViewModel : ViewModel() {
         }
     }
 
-    fun habitFilter(type: Type): LiveData<List<HabitEntity>> {
+    fun habitFilter(type: HabitType): LiveData<List<HabitEntity>> {
         return habitList.map {
             it.filter { habit ->
                 habit.type == type
@@ -35,12 +36,12 @@ class HomeFragmentViewModel : ViewModel() {
         }
     }
 
-    fun deleteById (habitId: String) {
-        val currentHabitList = _habitList.value?.toMutableList() ?: return
-        val habitToRemove = currentHabitList.find { it.id == habitId }
-        habitToRemove?.let {
-            currentHabitList.remove(it)
-            _habitList.value = currentHabitList
-        }
-    }
+//    fun deleteById (habitId: String) {
+//        val currentHabitList = _habitList.value?.toMutableList() ?: return
+//        val habitToRemove = currentHabitList.find { it.id == habitId }
+//        habitToRemove?.let {
+//            currentHabitList.remove(it)
+//            _habitList.value = currentHabitList
+//        }
+//    }
 }
