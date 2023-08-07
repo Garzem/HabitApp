@@ -40,14 +40,14 @@ class HomeFragment : Fragment(R.layout.view_pager_fragment) {
         }
     }
 
-    private fun setupOrUpdateNewHabit() {
-        lifecycleScope.launch {
-            val goodHabits = homeViewModel.setupGoodHabits()
-            val badHabits = homeViewModel.setupBadHabits()
-
-            homeViewModel.updateHabitList(goodHabits)
-            homeViewModel.updateHabitList(badHabits)
-        }
+//    private fun setupOrUpdateNewHabit() {
+//        lifecycleScope.launch {
+//            val goodHabits = homeViewModel.setupGoodHabits()
+//            val badHabits = homeViewModel.setupBadHabits()
+//
+//            homeViewModel.updateHabitList(goodHabits)
+//            homeViewModel.updateHabitList(badHabits)
+//        }
 //        findNavController().currentBackStackEntry?.let { entry ->
 //            entry.savedStateHandle.getLiveData<HabitEntity>(HABIT_KEY).observe(viewLifecycleOwner)
 //            { updatedHabit ->
@@ -55,7 +55,7 @@ class HomeFragment : Fragment(R.layout.view_pager_fragment) {
 //                entry.savedStateHandle.remove<HabitEntity>(HABIT_KEY)
 //            }
 //        }
-    }
+//    }
 
 //    private fun deleteHabit() {
 //        findNavController().currentBackStackEntry?.let { entry ->

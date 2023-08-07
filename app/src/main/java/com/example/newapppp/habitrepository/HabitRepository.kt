@@ -14,18 +14,18 @@ class HabitRepository {
         AppHabitDataBase.habitDao.deleteHabitById(habitId)
     }
 
-    fun getHabitById(habitId: String): Habit {
-        AppHabitDataBase.habitDao.getHabitById(habitId)
-    }
+//    fun getHabitById(habitId: String): Habit {
+//        AppHabitDataBase.habitDao.getHabitById(habitId)
+//    }
 
     suspend fun getHabitListByType(type: HabitType): List<Habit> {
         val habitListByType = AppHabitDataBase.habitDao.getHabitListByType(type)
         return convertHabitEntityListToHabitList(habitListByType)
     }
 
-    fun setupHabitFromDataBase(habit: Habit) {
-
-    }
+//    fun setupHabitFromDataBase(habit: Habit) {
+//
+//    }
 
     private fun convertHabitToHabitEntity(habit: Habit): com.example.newapppp.database.HabitEntity {
         return com.example.newapppp.database.HabitEntity(

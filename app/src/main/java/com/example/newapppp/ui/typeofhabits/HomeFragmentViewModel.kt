@@ -13,27 +13,27 @@ class HomeFragmentViewModel : ViewModel() {
     private val _homeHabitList = MutableStateFlow<List<Habit>>(emptyList())
     val homeHabitList: StateFlow<List<Habit>> = _homeHabitList.asStateFlow()
 
-    fun updateHabitList(updatedHabitList: List<Habit>) {
-        val previousHabitList = _homeHabitList.value.toMutableList()
-        updatedHabitList.forEach { updatedHabit ->
-            val habitToUpdate = previousHabitList.find { it.id == updatedHabit.id }
-            habitToUpdate?.let {
-                val index = previousHabitList.indexOf(it)
-                previousHabitList[index] = updatedHabit
-            }
-        }
-
-        _homeHabitList.value = previousHabitList
-    }
-
-    suspend fun setupGoodHabits(): List<Habit> {
-        return HabitRepository().getHabitListByType(HabitType.GOOD)
-
-    }
-
-    suspend fun setupBadHabits(): List<Habit> {
-        return HabitRepository().getHabitListByType(HabitType.BAD)
-    }
+//    fun updateHabitList(updatedHabitList: List<Habit>) {
+//        val previousHabitList = _homeHabitList.value.toMutableList()
+//        updatedHabitList.forEach { updatedHabit ->
+//            val habitToUpdate = previousHabitList.find { it.id == updatedHabit.id }
+//            habitToUpdate?.let {
+//                val index = previousHabitList.indexOf(it)
+//                previousHabitList[index] = updatedHabit
+//            }
+//        }
+//
+//        _homeHabitList.value = previousHabitList
+//    }
+//
+//    suspend fun setupGoodHabits(): List<Habit> {
+//        return HabitRepository().getHabitListByType(HabitType.GOOD)
+//
+//    }
+//
+//    suspend fun setupBadHabits(): List<Habit> {
+//        return HabitRepository().getHabitListByType(HabitType.BAD)
+//    }
 //        val isUpdated = _habitList.value?.any { it.id == updatedHabit.id } ?: false
 //        if (isUpdated) {
 //            _habitList.value = habitList.value?.map { habit ->
@@ -46,7 +46,7 @@ class HomeFragmentViewModel : ViewModel() {
 //        } else {
 //            _habitList.value = _habitList.value?.plus(updatedHabit)
 //        }
-}
+//}
 
 //    fun habitFilter(type: HabitType): LiveData<List<Habit>> {
 //        return habitList.map {
