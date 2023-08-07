@@ -12,8 +12,7 @@ class HabitRepository {
     }
 
     suspend fun deleteHabitById(habitId: String) {
-        val convertedHabit = convertHabitToHabitEntity(habit)
-        AppHabitDataBase.habitDao.deleteHabit(convertedHabit)
+        AppHabitDataBase.habitDao.deleteHabitById(habitId)
     }
 
     fun getHabitById(habitId: String): Habit {
