@@ -10,8 +10,8 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.data.Constants.HABIT_KEY
 import com.example.newapppp.data.Constants.HABIT_ID_FROM_REDACTOR_KEY
+import com.example.newapppp.data.HabitType
 import com.example.newapppp.database.HabitEntity
-import com.example.newapppp.database.Type
 import com.example.newapppp.databinding.ViewPagerFragmentBinding
 import com.example.newapppp.ui.habitlist.HabitListFragment
 import com.google.android.material.tabs.TabLayoutMediator
@@ -19,7 +19,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 class HomeFragment : Fragment(R.layout.view_pager_fragment) {
     private val homeViewModel: HomeFragmentViewModel by viewModels()
     private val binding by viewBinding(ViewPagerFragmentBinding::bind)
-    private lateinit var viewPager: ViewPager2
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -28,13 +27,12 @@ class HomeFragment : Fragment(R.layout.view_pager_fragment) {
         val adapter = HomeFragmentAdapter(
             this,
             listOf<Fragment>(
-                HabitListFragment.newInstance(Type.GOOD),
-                HabitListFragment.newInstance(Type.BAD)
+                HabitListFragment.newInstance(HabitType.GOOD),
+                HabitListFragment.newInstance(HabitType.BAD)
             )
         )
 
-        viewPager = binding.pagerChooseHabit
-        viewPager.adapter = adapter
+        binding.pagerChooseHabit.adapter = adapter
         tabMediator()
 
         val fab = binding.fab
@@ -64,18 +62,19 @@ class HomeFragment : Fragment(R.layout.view_pager_fragment) {
     }
 
     private fun navigateToRedactorFragment() {
-        val action = ViewPagerFilterFragmentDirections.navPagerToRedactorFragment(null)
+        val action = HomeFragmentDirections.navPagerToRedactorFragment(null)
         findNavController().navigate(action)
     }
 
     private fun tabMediator() {
         val tabLayout = binding.tabLayout
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+        val pagerChooseHabit = binding.pagerChooseHabit
+        TabLayoutMediator(tabLayout, pagerChooseHabit) { tab, position ->
             tab.text = if (position == 0)
                 getString(R.string.good_habit)
             else
                 getString(R.string.bad_habit)
-            viewPager.setCurrentItem(tab.position, true)
+            pagerChooseHabit.setCurrentItem(tab.position, true)
         }.attach()
     }
 }
