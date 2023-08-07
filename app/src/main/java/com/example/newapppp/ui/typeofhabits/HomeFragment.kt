@@ -16,12 +16,12 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(R.layout.view_pager_fragment) {
-    private val homeViewModel: HomeFragmentViewModel by viewModels()
+//    private val homeViewModel: HomeFragmentViewModel by viewModels()
     private val binding by viewBinding(ViewPagerFragmentBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupOrUpdateNewHabit()
+//        setupOrUpdateNewHabit()
 //        deleteHabit()
         val adapter = HomeFragmentAdapter(
             this,

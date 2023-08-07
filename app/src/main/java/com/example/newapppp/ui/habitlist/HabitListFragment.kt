@@ -77,10 +77,10 @@ class HabitListFragment : Fragment(R.layout.home_fragment) {
         val itemTouchHelper = ItemTouchHelper(object : SwipeToDelete() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                val habit = adapter.getHabitAtPosition(position)
-                habit?.let {
+                val habit = adapter.getHabitAtPosition(position) ?: return
+                habit.apply {
                     adapter.deleteHabitByPosition(position)
-                    HLViewModel.deleteHabit(it.id)
+                    id?.let { HLViewModel.deleteHabit(it) }
                 }
             }
         })

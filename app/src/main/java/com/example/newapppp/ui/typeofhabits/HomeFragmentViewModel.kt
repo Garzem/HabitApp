@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 
 
 class HomeFragmentViewModel : ViewModel() {
-    private val _homeHabitList = MutableStateFlow<List<Habit>>(emptyList())
-    val homeHabitList: StateFlow<List<Habit>> = _homeHabitList.asStateFlow()
+//    private val _homeHabitList = MutableStateFlow<List<Habit>>(emptyList())
+//    val homeHabitList: StateFlow<List<Habit>> = _homeHabitList.asStateFlow()
 
 //    fun updateHabitList(updatedHabitList: List<Habit>) {
 //        val previousHabitList = _homeHabitList.value.toMutableList()
@@ -63,4 +63,4 @@ class HomeFragmentViewModel : ViewModel() {
 //            currentHabitList.remove(it)
 //            _habitList.value = currentHabitList
 //        }
-//    }
+    }

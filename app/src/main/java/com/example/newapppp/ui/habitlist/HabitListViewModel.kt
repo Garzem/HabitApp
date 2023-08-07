@@ -17,7 +17,7 @@ class HabitListViewModel: ViewModel() {
 
     fun deleteHabit(id: String) {
         viewModelScope.launch {
-            HabitRepository().deleteHabitById(_habitList.value.id ?: return@launch)
+            HabitRepository().deleteHabitById(id)
         }
     }
 
