@@ -19,7 +19,7 @@ class RedactorFragmentViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(
         UiState(
-            id = null,
+            id = UUID.randomUUID().toString(),
             title = "",
             titleCursorPosition = 0,
             description = "",
@@ -153,7 +153,7 @@ class RedactorFragmentViewModel : ViewModel() {
 
     fun deleteHabit() {
         viewModelScope.launch {
-            HabitRepository().deleteHabitById(_uiState.value.id ?: return@launch)
+            HabitRepository().deleteHabitById(_uiState.value.id)
             _goBack.emit()
         }
     }
@@ -163,7 +163,7 @@ class RedactorFragmentViewModel : ViewModel() {
         if (validation()) {
             val habit = uiState.run {
                 Habit(
-                    id = id ?: UUID.randomUUID().toString(),
+                    id = id,
                     title = title,
                     description = description,
                     period = period,

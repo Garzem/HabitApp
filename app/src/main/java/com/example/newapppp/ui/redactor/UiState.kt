@@ -4,7 +4,7 @@ import com.example.newapppp.data.HabitColor
 import java.io.Serializable
 
 data class UiState(
-    val id: String?,
+    val id: String,
     val title: String,
     val titleCursorPosition: Int,
     val description: String,
