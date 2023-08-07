@@ -33,6 +33,18 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = '1.8'
+        }
+    }
+
+    kapt {
+        javacOptions {
+            option("-source", "1.8")
+            option("-target", "1.8")
+        }
+    }
     buildFeatures {
         viewBinding true
     }

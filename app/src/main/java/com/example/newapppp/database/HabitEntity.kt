@@ -10,7 +10,7 @@ import com.example.newapppp.data.HabitType
 @Entity(tableName = "habit")
 data class HabitEntity(
     @PrimaryKey
-    val id: String?,
+    val id: String,
     val title: String,
     val description: String,
     val period: String,
