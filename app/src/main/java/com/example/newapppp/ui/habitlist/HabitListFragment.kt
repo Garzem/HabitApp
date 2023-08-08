@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -14,12 +13,9 @@ import com.example.newapppp.data.Constants.HABIT_TYPE_KEY
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.databinding.HabitListFragmentBinding
-import com.example.newapppp.extension.FlowExtension
-import com.example.newapppp.extension.HabitListSerializable.Companion.serializable
 import com.example.newapppp.extension.collectWithLifecycle
 import com.example.newapppp.extension.serializable
 import com.example.newapppp.ui.home.HomeFragmentDirections
-import kotlinx.coroutines.launch
 
 
 class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
@@ -45,13 +41,6 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
 
         val adapter = HabitListAdapter(::openHabitClick)
         binding.recycleViewHabit.adapter = adapter
-
-
-//        habitType?.let { type ->
-//            HLViewModel.habitFilter(type).observe(viewLifecycleOwner) {
-//                adapter.submitList(it)
-//            }
-//        }
         habitType?.let {
             HLViewModel.setHabitType(it)
         }
