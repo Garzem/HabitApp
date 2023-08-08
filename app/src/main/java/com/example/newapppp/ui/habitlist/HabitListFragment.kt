@@ -5,7 +5,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.example.newapppp.databinding.HomeFragmentBinding
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +13,7 @@ import com.example.newapppp.R
 import com.example.newapppp.data.Constants.HABIT_TYPE_KEY
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitType
+import com.example.newapppp.databinding.HabitListFragmentBinding
 import com.example.newapppp.extension.FlowExtension
 import com.example.newapppp.ui.habitlist.HabitListSerializable.Companion.serializable
 import com.example.newapppp.ui.typeofhabits.HomeFragmentDirections
@@ -33,7 +33,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
     }
 
     private val HLViewModel: HabitListViewModel by viewModels()
-    private val binding by viewBinding(HomeFragmentBinding::bind)
+    private val binding by viewBinding(HabitListFragmentBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,7 +59,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
     }
 
     private fun openHabitClick(habit: Habit) {
-        val action = HomeFragmentDirections.navPagerToRedactorFragment(habit)
+        val action = HomeFragmentDirections.homeFragmentToRedactorFragment(habit)
         findNavController().navigate(action)
     }
 

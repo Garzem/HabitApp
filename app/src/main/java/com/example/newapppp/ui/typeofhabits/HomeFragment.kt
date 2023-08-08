@@ -7,13 +7,13 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.data.HabitType
-import com.example.newapppp.databinding.ViewPagerFragmentBinding
+import com.example.newapppp.databinding.HomeFragmentBinding
 import com.example.newapppp.ui.habitlist.HabitListFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 class HomeFragment : Fragment(R.layout.home_fragment) {
 //    private val homeViewModel: HomeFragmentViewModel by viewModels()
-    private val binding by viewBinding(ViewPagerFragmentBinding::bind)
+    private val binding by viewBinding(HomeFragmentBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,7 +64,7 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
 //    }
 
     private fun navigateToRedactorFragment() {
-        val action = HomeFragmentDirections.navPagerToRedactorFragment(null)
+        val action = HomeFragmentDirections.homeFragmentToRedactorFragment(null)
         findNavController().navigate(action)
     }
 
