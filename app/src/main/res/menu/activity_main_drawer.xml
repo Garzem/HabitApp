@@ -5,7 +5,7 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_view_pager_filter"
+            android:id="@+id/nav_home_fragment"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/home_page_title" />
         <item
