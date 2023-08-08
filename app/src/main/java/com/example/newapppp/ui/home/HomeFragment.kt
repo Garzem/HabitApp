@@ -1,4 +1,4 @@
-package com.example.newapppp.ui.typeofhabits
+package com.example.newapppp.ui.home
 
 import android.os.Bundle
 import android.view.View

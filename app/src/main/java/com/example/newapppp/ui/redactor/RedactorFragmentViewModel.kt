@@ -38,9 +38,6 @@ class RedactorFragmentViewModel : ViewModel() {
     private val _showErrorToast = SingleLiveEvent<Unit>()
     val showErrorToast: LiveData<Unit> get() = _showErrorToast
 
-    private val _goBackWithResult = SingleLiveEvent<Habit>()
-    val goBackWithResult: LiveData<Habit> get() = _goBackWithResult
-
     private val _goBack = SingleLiveEvent<Unit>()
     val goBack: LiveData<Unit> get() = _goBack
 
@@ -175,7 +172,7 @@ class RedactorFragmentViewModel : ViewModel() {
             }
             viewModelScope.launch {
                 HabitRepository().saveHabit(habit)
-                _goBackWithResult.emit(habit)
+                _goBack.emit()
             }
         } else {
             _showErrorToast.emit()

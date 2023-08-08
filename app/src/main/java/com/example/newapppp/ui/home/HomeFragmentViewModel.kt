@@ -1,12 +1,6 @@
-package com.example.newapppp.ui.typeofhabits
+package com.example.newapppp.ui.home
 
 import androidx.lifecycle.ViewModel
-import com.example.newapppp.data.Habit
-import com.example.newapppp.data.HabitType
-import com.example.newapppp.habitrepository.HabitRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 
 class HomeFragmentViewModel : ViewModel() {

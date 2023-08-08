@@ -1,4 +1,4 @@
-package com.example.newapppp.ui.typeofhabits
+package com.example.newapppp.ui.home
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter

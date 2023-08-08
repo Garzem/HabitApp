@@ -36,7 +36,7 @@
 
     <fragment
         android:id="@+id/nav_home_fragment"
-        android:name="com.example.newapppp.ui.typeofhabits.HomeFragment"
+        android:name="com.example.newapppp.ui.home.HomeFragment"
         android:label="@string/view_pager_title">
         <action
             android:id="@+id/home_fragment_to_redactor_fragment"

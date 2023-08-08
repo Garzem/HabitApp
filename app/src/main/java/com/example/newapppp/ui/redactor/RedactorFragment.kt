@@ -167,9 +167,6 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
             ).show()
         }
         redactorViewModel.apply {
-            goBackWithResult.observe(viewLifecycleOwner) {
-                findNavController().popBackStack()
-            }
             goBack.observe(viewLifecycleOwner) {
                 findNavController().popBackStack()
             }

@@ -15,8 +15,8 @@ import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.databinding.HabitListFragmentBinding
 import com.example.newapppp.extension.FlowExtension
-import com.example.newapppp.ui.habitlist.HabitListSerializable.Companion.serializable
-import com.example.newapppp.ui.typeofhabits.HomeFragmentDirections
+import com.example.newapppp.extension.HabitListSerializable.Companion.serializable
+import com.example.newapppp.ui.home.HomeFragmentDirections
 import kotlinx.coroutines.launch
 
 
