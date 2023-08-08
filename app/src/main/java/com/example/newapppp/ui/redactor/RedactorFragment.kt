@@ -18,6 +18,7 @@ import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.databinding.RedactorFragmentBinding
 import com.example.newapppp.extension.FlowExtension
+import com.example.newapppp.extension.collectWithLifecycle
 
 class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
@@ -138,11 +139,10 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
     }
 
     private fun observeColorResult() {
-        FlowExtension().apply {
-            collectWithLifecycle(redactorViewModel.uiState) { uiState ->
-                redactorViewModel.saveColor(uiState.color)
-            }
+        collectWithLifecycle(redactorViewModel.uiState) { uiState ->
+            redactorViewModel.saveColor(uiState.color)
         }
+
         findNavController().currentBackStackEntry?.let { entry ->
             entry.savedStateHandle.getLiveData<HabitColor>(COLOR_KEY).observe(viewLifecycleOwner)
             { color ->
