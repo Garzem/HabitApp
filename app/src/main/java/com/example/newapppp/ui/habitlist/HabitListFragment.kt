@@ -16,6 +16,8 @@ import com.example.newapppp.data.HabitType
 import com.example.newapppp.databinding.HabitListFragmentBinding
 import com.example.newapppp.extension.FlowExtension
 import com.example.newapppp.extension.HabitListSerializable.Companion.serializable
+import com.example.newapppp.extension.collectWithLifecycle
+import com.example.newapppp.extension.serializable
 import com.example.newapppp.ui.home.HomeFragmentDirections
 import kotlinx.coroutines.launch
 
@@ -34,6 +36,9 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
 
     private val HLViewModel: HabitListViewModel by viewModels()
     private val binding by viewBinding(HabitListFragmentBinding::bind)
+    private val habitType: HabitType? by lazy {
+        arguments?.serializable(HABIT_TYPE_KEY, HabitType::class.java)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,19 +46,17 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         val adapter = HabitListAdapter(::openHabitClick)
         binding.recycleViewHabit.adapter = adapter
 
-        val habitType = arguments?.serializable(HABIT_TYPE_KEY, HabitType::class.java)
+
 //        habitType?.let { type ->
 //            HLViewModel.habitFilter(type).observe(viewLifecycleOwner) {
 //                adapter.submitList(it)
 //            }
 //        }
         habitType?.let { type ->
-            getHabitByType(type)
-            FlowExtension().apply {
-                collectWithLifecycle(HLViewModel.habitList) { habits ->
-                    adapter.submitList(habits)
-                }
-            }
+            HLViewModel.setHabitType(type)
+        }
+        collectWithLifecycle(HLViewModel.habitList) { habits ->
+            adapter.submitList(habits)
         }
         swipeToDelete(adapter)
     }
@@ -61,16 +64,6 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
     private fun openHabitClick(habit: Habit) {
         val action = HomeFragmentDirections.homeFragmentToRedactorFragment(habit)
         findNavController().navigate(action)
-    }
-
-    private fun getHabitByType(type: HabitType) {
-        lifecycleScope.launch {
-            val habitList = when (type) {
-                HabitType.GOOD -> HLViewModel.setupGoodHabits()
-                HabitType.BAD -> HLViewModel.setupBadHabits()
-            }
-            HLViewModel.updateHabitList(habitList)
-        }
     }
 
     private fun swipeToDelete(adapter: HabitListAdapter) {

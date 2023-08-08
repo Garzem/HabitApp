@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class HabitListViewModel: ViewModel() {
+class HabitListViewModel : ViewModel() {
 
     private val _habitList = MutableStateFlow<List<Habit>>(emptyList())
     val habitList: StateFlow<List<Habit>> = _habitList.asStateFlow()
@@ -21,13 +21,10 @@ class HabitListViewModel: ViewModel() {
         }
     }
 
-    suspend fun setupGoodHabits(): List<Habit> {
-        return HabitRepository().getHabitListByType(HabitType.GOOD)
-
-    }
-
-    suspend fun setupBadHabits(): List<Habit> {
-        return HabitRepository().getHabitListByType(HabitType.BAD)
+    fun setHabitType(habitType: HabitType) {
+        viewModelScope.launch {
+            val list = HabitRepository().getHabitListByType(habitType)
+        }
     }
 
     fun updateHabitList(updatedHabitList: List<Habit>) {
