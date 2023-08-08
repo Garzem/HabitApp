@@ -52,8 +52,8 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
 //                adapter.submitList(it)
 //            }
 //        }
-        habitType?.let { type ->
-            HLViewModel.setHabitType(type)
+        habitType?.let {
+            HLViewModel.setHabitType(it)
         }
         collectWithLifecycle(HLViewModel.habitList) { habits ->
             adapter.submitList(habits)

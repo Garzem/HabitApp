@@ -23,20 +23,7 @@ class HabitListViewModel : ViewModel() {
 
     fun setHabitType(habitType: HabitType) {
         viewModelScope.launch {
-            val list = HabitRepository().getHabitListByType(habitType)
+            _habitList.value = HabitRepository().getHabitListByType(habitType)
         }
-    }
-
-    fun updateHabitList(updatedHabitList: List<Habit>) {
-        val previousHabitList = _habitList.value.toMutableList()
-        updatedHabitList.forEach { updatedHabit ->
-            val habitToUpdate = previousHabitList.find { it.id == updatedHabit.id }
-            habitToUpdate?.let {
-                val index = previousHabitList.indexOf(it)
-                previousHabitList[index] = updatedHabit
-            }
-        }
-
-        _habitList.value = previousHabitList
     }
 }
