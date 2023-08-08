@@ -20,7 +20,7 @@ import com.example.newapppp.ui.typeofhabits.HomeFragmentDirections
 import kotlinx.coroutines.launch
 
 
-class HabitListFragment : Fragment(R.layout.home_fragment) {
+class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
 
     companion object {
         fun newInstance(habitType: HabitType): HabitListFragment {
