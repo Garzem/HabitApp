@@ -15,18 +15,16 @@ class HabitRepository {
         AppHabitDataBase.habitDao.deleteHabitById(habitId)
     }
 
-//    fun getHabitById(habitId: String): Habit {
-//        AppHabitDataBase.habitDao.getHabitById(habitId)
-//    }
+    suspend fun getHabitById(habitId: String): Habit {
+        return convertHabitEntityToHabit(AppHabitDataBase.habitDao.getHabitById(habitId))
+    }
 
     suspend fun getHabitListByType(type: HabitType): List<Habit> {
         val habitListByType = AppHabitDataBase.habitDao.getHabitListByType(type)
-        return convertHabitEntityListToHabitList(habitListByType)
+        return habitListByType.map {
+            convertHabitEntityToHabit(it)
+        }
     }
-
-//    fun setupHabitFromDataBase(habit: Habit) {
-//
-//    }
 
     private fun convertHabitToHabitEntity(habit: Habit): HabitEntity {
         return HabitEntity(
@@ -41,31 +39,16 @@ class HabitRepository {
         )
     }
 
-    private fun convertHabitEntityListToHabitList(habitListByType: List<HabitEntity>): List<Habit> {
-        return habitListByType.map { habitEntity ->
-            Habit(
-                id = habitEntity.id,
-                title = habitEntity.title,
-                description = habitEntity.description,
-                period = habitEntity.period,
-                color = habitEntity.color,
-                priority = habitEntity.priority,
-                type = habitEntity.type,
-                quantity = habitEntity.quantity,
-            )
-        }
+    private fun convertHabitEntityToHabit(habitEntity: HabitEntity): Habit {
+        return Habit(
+            id = habitEntity.id,
+            title = habitEntity.title,
+            description = habitEntity.description,
+            period = habitEntity.period,
+            color = habitEntity.color,
+            priority = habitEntity.priority,
+            type = habitEntity.type,
+            quantity = habitEntity.quantity,
+        )
     }
-
-//    private fun convertHabitEntityToHabit(habitEntity: HabitEntity): Habit {
-//        return Habit(
-//            id = habitEntity.id,
-//            title = habitEntity.title,
-//            description = habitEntity.description,
-//            period = habitEntity.period,
-//            color = habitEntity.color,
-//            priority = habitEntity.priority,
-//            type = habitEntity.type,
-//            quantity = habitEntity.quantity,
-//        )
-//    }
 }
