@@ -36,33 +36,6 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
         }
     }
 
-//    private fun setupOrUpdateNewHabit() {
-//        lifecycleScope.launch {
-//            val goodHabits = homeViewModel.setupGoodHabits()
-//            val badHabits = homeViewModel.setupBadHabits()
-//
-//            homeViewModel.updateHabitList(goodHabits)
-//            homeViewModel.updateHabitList(badHabits)
-//        }
-//        findNavController().currentBackStackEntry?.let { entry ->
-//            entry.savedStateHandle.getLiveData<HabitEntity>(HABIT_KEY).observe(viewLifecycleOwner)
-//            { updatedHabit ->
-//                homeViewModel.updateHabitList(updatedHabit)
-//                entry.savedStateHandle.remove<HabitEntity>(HABIT_KEY)
-//            }
-//        }
-//    }
-
-//    private fun deleteHabit() {
-//        findNavController().currentBackStackEntry?.let { entry ->
-//            entry.savedStateHandle.getLiveData<String>(HABIT_ID_FROM_REDACTOR_KEY).observe(viewLifecycleOwner)
-//            {habitId ->
-//                homeViewModel.deleteById(habitId)
-//                entry.savedStateHandle.remove<String>(HABIT_ID_FROM_REDACTOR_KEY)
-//            }
-//        }
-//    }
-
     private fun navigateToRedactorFragment() {
         val action = HomeFragmentDirections.homeFragmentToRedactorFragment(null)
         findNavController().navigate(action)
