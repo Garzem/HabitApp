@@ -17,7 +17,6 @@ import com.example.newapppp.data.Constants.COLOR_KEY
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.databinding.RedactorFragmentBinding
-import com.example.newapppp.extension.FlowExtension
 import com.example.newapppp.extension.collectWithLifecycle
 
 class RedactorFragment : Fragment(R.layout.redactor_fragment) {
@@ -37,13 +36,12 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         setupColorButton()
         observeColorResult()
 
-        redactorViewModel.setHabit(args.habit)
+        redactorViewModel.setHabit(args.habitId)
 
-        FlowExtension().apply {
-            collectWithLifecycle(redactorViewModel.uiState) { uiState ->
-                onChangedHabit(uiState)
-            }
+        collectWithLifecycle(redactorViewModel.uiState) { uiState ->
+            onChangedHabit(uiState)
         }
+
 
         setupButtons()
         observeEvents()
