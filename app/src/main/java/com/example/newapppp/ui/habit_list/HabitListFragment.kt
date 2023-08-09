@@ -35,12 +35,11 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
     private val habitType: HabitType? by lazy {
         arguments?.serializable(HABIT_TYPE_KEY, HabitType::class.java)
     }
-    private val habitPriorityMapper = HabitPriorityMapper(requireContext())
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = HabitListAdapter(habitPriorityMapper, ::openHabitClick)
+        val adapter = HabitListAdapter(HabitPriorityMapper(requireContext()), ::openHabitClick)
         binding.recycleViewHabit.adapter = adapter
         habitType?.let {
             HLViewModel.setHabitType(it)
