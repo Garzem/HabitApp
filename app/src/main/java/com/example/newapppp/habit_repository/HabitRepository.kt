@@ -26,6 +26,11 @@ class HabitRepository {
         }
     }
 
+    suspend fun getFilteredHabitByName(titleFilter: String): Habit {
+        val filteredHabit = AppHabitDataBase.habitDao.getFilteredHabitByName(titleFilter)
+        return convertHabitEntityToHabit(filteredHabit)
+    }
+
     private fun convertHabitToHabitEntity(habit: Habit): HabitEntity {
         return HabitEntity(
             id = habit.id,

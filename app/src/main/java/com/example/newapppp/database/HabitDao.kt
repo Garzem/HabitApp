@@ -21,4 +21,6 @@ interface HabitDao {
     @Query("SELECT * FROM habit WHERE type = :type")
     suspend fun getHabitListByType(type: HabitType) : List<HabitEntity>
 
+    @Query("SELECT * FROM habit WHERE title = :titleFilter")
+    suspend fun getFilteredHabitByName(titleFilter: String): HabitEntity
 }
