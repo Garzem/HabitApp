@@ -50,8 +50,8 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         swipeToDelete(adapter)
     }
 
-    private fun openHabitClick(habit: Habit) {
-        val action = HomeFragmentDirections.homeFragmentToRedactorFragment(habit.id)
+    private fun openHabitClick(habitId: String) {
+        val action = HomeFragmentDirections.homeFragmentToRedactorFragment(habitId)
         findNavController().navigate(action)
     }
 

@@ -6,7 +6,7 @@ import com.example.newapppp.databinding.ItemLayoutBinding
 
 class HabitViewHolder(
     private val binding: ItemLayoutBinding,
-    private val openHabitClick: (Habit) -> Unit,
+    private val openHabitClick: (String) -> Unit,
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(habit: Habit) {
         binding.apply {
@@ -18,7 +18,7 @@ class HabitViewHolder(
             priority.text = habit.getPriorityName()
             quantity.text = habit.quantity
             root.setOnClickListener {
-                openHabitClick(habit)
+                openHabitClick(habit.id)
             }
         }
     }

@@ -9,7 +9,7 @@ import com.example.newapppp.ui.habitadapter.HabitDiffUtilCallback
 import com.example.newapppp.ui.habitadapter.HabitViewHolder
 
 class HabitListAdapter(
-    private val openHabitClick: (Habit) -> Unit
+    private val openHabitClick: (String) -> Unit
 ) : ListAdapter<Habit, HabitViewHolder>(HabitDiffUtilCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {

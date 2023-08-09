@@ -132,7 +132,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
             setOnClickListener {
                 redactorViewModel.deleteHabit()
             }
-            isVisible = args.habit != null
+            isVisible = args.habitId != null
         }
     }
 

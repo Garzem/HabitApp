@@ -41,22 +41,25 @@ class RedactorFragmentViewModel : ViewModel() {
     private val _goBack = SingleLiveEvent<Unit>()
     val goBack: LiveData<Unit> get() = _goBack
 
-    fun setHabit(habit: Habit?) {
-        if (habit != null) {
-            _uiState.value = UiState(
-                id = habit.id,
-                title = habit.title,
-                titleCursorPosition = 0,
-                description = habit.description,
-                descriptionCursorPosition = 0,
-                period = habit.period,
-                periodCursorPosition = 0,
-                color = habit.color,
-                priorityPosition = getPositionPriority(habit.priority),
-                type = getPositionType(habit.type),
-                quantity = habit.quantity,
-                quantityCursorPosition = 0
-            )
+    fun setHabit(habitId: String?) {
+        if (habitId != null) {
+            viewModelScope.launch {
+                val habit = HabitRepository().getHabitById(habitId)
+                _uiState.value = UiState(
+                    id = habit.id,
+                    title = habit.title,
+                    titleCursorPosition = 0,
+                    description = habit.description,
+                    descriptionCursorPosition = 0,
+                    period = habit.period,
+                    periodCursorPosition = 0,
+                    color = habit.color,
+                    priorityPosition = getPositionPriority(habit.priority),
+                    type = getPositionType(habit.type),
+                    quantity = habit.quantity,
+                    quantityCursorPosition = 0
+                )
+            }
         }
     }
 
