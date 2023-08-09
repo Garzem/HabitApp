@@ -1,4 +1,4 @@
-package com.example.newapppp.habitrepository
+package com.example.newapppp.habit_repository
 
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitType

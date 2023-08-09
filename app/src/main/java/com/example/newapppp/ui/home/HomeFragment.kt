@@ -8,7 +8,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.databinding.HomeFragmentBinding
-import com.example.newapppp.ui.habitlist.HabitListFragment
+import com.example.newapppp.ui.habit_list.HabitListFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 class HomeFragment : Fragment(R.layout.home_fragment) {

@@ -1,12 +1,12 @@
-package com.example.newapppp.ui.habitlist
+package com.example.newapppp.ui.habit_list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.newapppp.data.Habit
 import com.example.newapppp.databinding.ItemLayoutBinding
-import com.example.newapppp.ui.habitadapter.HabitDiffUtilCallback
-import com.example.newapppp.ui.habitadapter.HabitViewHolder
+import com.example.newapppp.ui.habit_list.habit_adapter.HabitDiffUtilCallback
+import com.example.newapppp.ui.habit_list.habit_adapter.HabitViewHolder
 
 class HabitListAdapter(
     private val openHabitClick: (String) -> Unit

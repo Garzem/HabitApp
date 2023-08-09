@@ -1,4 +1,4 @@
-package com.example.newapppp.ui.appinfo
+package com.example.newapppp.ui.app_info
 
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding

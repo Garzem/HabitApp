@@ -1,4 +1,4 @@
-package com.example.newapppp.ui.habitlist
+package com.example.newapppp.ui.habit_list
 
 import android.os.Bundle
 import android.view.View
@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.data.Constants.HABIT_TYPE_KEY
-import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.databinding.HabitListFragmentBinding
 import com.example.newapppp.extension.collectWithLifecycle

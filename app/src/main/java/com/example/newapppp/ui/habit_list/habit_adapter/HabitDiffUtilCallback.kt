@@ -1,4 +1,4 @@
-package com.example.newapppp.ui.habitadapter
+package com.example.newapppp.ui.habit_list.habit_adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.newapppp.data.Habit

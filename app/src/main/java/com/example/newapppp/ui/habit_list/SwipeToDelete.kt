@@ -1,4 +1,4 @@
-package com.example.newapppp.ui.habitlist
+package com.example.newapppp.ui.habit_list
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView

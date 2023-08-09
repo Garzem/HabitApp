@@ -1,10 +1,10 @@
-package com.example.newapppp.ui.habitlist
+package com.example.newapppp.ui.habit_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitType
-import com.example.newapppp.habitrepository.HabitRepository
+import com.example.newapppp.habit_repository.HabitRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
