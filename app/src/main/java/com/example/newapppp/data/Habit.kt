@@ -13,13 +13,4 @@ data class Habit(
     val priority: HabitPriority,
     val type: HabitType,
     val quantity: String
-) : Parcelable {
-    fun getPriorityName(): String {
-        return when (priority) {
-            HabitPriority.CHOOSE -> "Приоритет"
-            HabitPriority.LOW -> "Низкий"
-            HabitPriority.MEDIUM -> "Средний"
-            HabitPriority.HIGH -> "Высокий"
-        }
-    }
-}
+) : Parcelable

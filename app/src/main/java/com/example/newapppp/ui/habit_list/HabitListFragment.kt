@@ -14,6 +14,7 @@ import com.example.newapppp.data.HabitType
 import com.example.newapppp.databinding.HabitListFragmentBinding
 import com.example.newapppp.extension.collectWithLifecycle
 import com.example.newapppp.extension.serializable
+import com.example.newapppp.ui.home.HabitPriorityMapper
 import com.example.newapppp.ui.home.HomeFragmentDirections
 
 
@@ -34,11 +35,12 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
     private val habitType: HabitType? by lazy {
         arguments?.serializable(HABIT_TYPE_KEY, HabitType::class.java)
     }
+    private val habitPriorityMapper = HabitPriorityMapper(requireContext())
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = HabitListAdapter(::openHabitClick)
+        val adapter = HabitListAdapter(habitPriorityMapper, ::openHabitClick)
         binding.recycleViewHabit.adapter = adapter
         habitType?.let {
             HLViewModel.setHabitType(it)
