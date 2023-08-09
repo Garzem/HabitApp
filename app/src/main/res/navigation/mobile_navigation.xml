@@ -17,8 +17,8 @@
         android:label="@string/redactor_habit_title"
         tools:layout="@layout/redactor_fragment">
         <argument
-            android:name="habit"
-            app:argType="com.example.newapppp.data.Habit"
+            android:name="habitId"
+            app:argType="string"
             app:nullable="true"/>
         <action
             android:id="@+id/action_redactor_fragment_to_home_fragment"
