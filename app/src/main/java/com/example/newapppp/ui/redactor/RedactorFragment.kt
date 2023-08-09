@@ -35,7 +35,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         setupRadioButtons()
         setupColorButton()
         observeColorResult()
-
+        redactorViewModel.setType(args.habitType ?: return)
         redactorViewModel.setHabit(args.habitId)
 
         collectWithLifecycle(redactorViewModel.uiState) { uiState ->

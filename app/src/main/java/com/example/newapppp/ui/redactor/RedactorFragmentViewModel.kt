@@ -63,6 +63,15 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
+    fun setType(habitType: HabitType) {
+        val type = HabitType.values().indexOf(habitType)
+        _uiState.update { state ->
+            state.copy(
+                type = type
+            )
+        }
+    }
+
     fun saveColor(color: HabitColor) {
         _uiState.update { state ->
             state.copy(

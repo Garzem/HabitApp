@@ -20,6 +20,10 @@
             android:name="habitId"
             app:argType="string"
             app:nullable="true"/>
+        <argument
+            android:name="habitType"
+            app:argType="com.example.newapppp.data.HabitType"
+            app:nullable="true"/>
         <action
             android:id="@+id/action_redactor_fragment_to_home_fragment"
             app:destination="@+id/view_pager_filter"/>

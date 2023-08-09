@@ -51,7 +51,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
     }
 
     private fun openHabitClick(habitId: String) {
-        val action = HomeFragmentDirections.homeFragmentToRedactorFragment(habitId)
+        val action = HomeFragmentDirections.homeFragmentToRedactorFragment(habitId, null)
         findNavController().navigate(action)
     }
 

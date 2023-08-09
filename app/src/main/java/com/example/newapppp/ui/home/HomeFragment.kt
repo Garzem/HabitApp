@@ -31,13 +31,12 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
 
         val fab = binding.fab
         fab.setOnClickListener {
-            navigateToRedactorFragment()
-        }
-    }
+            val selectedTabPosition = binding.tabLayout.selectedTabPosition
+            val habitType = if (selectedTabPosition == 0) HabitType.GOOD else HabitType.BAD
 
-    private fun navigateToRedactorFragment() {
-        val action = HomeFragmentDirections.homeFragmentToRedactorFragment(null)
-        findNavController().navigate(action)
+            val action = HomeFragmentDirections.homeFragmentToRedactorFragment(null, habitType)
+            findNavController().navigate(action)
+        }
     }
 
     private fun tabMediator() {
