@@ -1,4 +1,4 @@
-package com.example.newapppp.ui.home
+package com.example.newapppp.ui.habit_list
 
 import android.content.Context
 import com.example.newapppp.R

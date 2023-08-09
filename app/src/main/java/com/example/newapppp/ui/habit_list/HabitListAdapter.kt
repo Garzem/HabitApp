@@ -7,7 +7,6 @@ import com.example.newapppp.data.Habit
 import com.example.newapppp.databinding.ItemLayoutBinding
 import com.example.newapppp.ui.habit_list.habit_adapter.HabitDiffUtilCallback
 import com.example.newapppp.ui.habit_list.habit_adapter.HabitViewHolder
-import com.example.newapppp.ui.home.HabitPriorityMapper
 
 class HabitListAdapter(
     private val habitPriorityMapper: HabitPriorityMapper,

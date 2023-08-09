@@ -3,7 +3,7 @@ package com.example.newapppp.ui.habit_list.habit_adapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newapppp.data.Habit
 import com.example.newapppp.databinding.ItemLayoutBinding
-import com.example.newapppp.ui.home.HabitPriorityMapper
+import com.example.newapppp.ui.habit_list.HabitPriorityMapper
 
 class HabitViewHolder(
     private val binding: ItemLayoutBinding,
