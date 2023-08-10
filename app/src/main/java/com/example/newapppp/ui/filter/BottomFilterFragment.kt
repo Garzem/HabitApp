@@ -6,6 +6,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.databinding.FilterBottomSheetBinding
@@ -15,12 +16,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class BottomFilterFragment: BottomSheetDialogFragment(R.layout.filter_bottom_sheet) {
     private val binding by viewBinding(FilterBottomSheetBinding::bind)
-    private val BFViewModel: RedactorFragmentViewModel by viewModels()
+    private val BFViewModel: BottomFilterViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFindHabitText()
         setupFilterSpinner()
+        setupFilterButton()
     }
 
     private fun setupFindHabitText() {
@@ -46,10 +48,16 @@ class BottomFilterFragment: BottomSheetDialogFragment(R.layout.filter_bottom_she
                     position: Int,
                     id: Long
                 ) {
-                    BFViewModel.onNewPrioritySelected(position)
+                    BFViewModel.onPriorityChanged(position)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {}
             }
+    }
+
+    private fun setupFilterButton() {
+        binding.startFilterButton.setOnClickListener {
+            BFViewModel.filterHabit()
+        }
     }
 }
