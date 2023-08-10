@@ -3,6 +3,7 @@ package com.example.newapppp.ui.filter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.habit_repository.HabitRepository
@@ -19,11 +20,13 @@ class BottomFilterViewModel : ViewModel() {
     private val _filteredHabitList = MutableStateFlow(
         FilterState(
             title = null,
-            priority = 0,
-            type = HabitType.GOOD
+            priority = 0
         )
     )
     val filteredHabitList: StateFlow<FilterState> = _filteredHabitList.asStateFlow()
+
+    private val _filteredHabitListInt = MutableStateFlow<Int?>(null)
+    val filteredHabitListInt: StateFlow<Int?> = _filteredHabitListInt.asStateFlow()
 
     private val _showErrorToast = SingleLiveEvent<Unit>()
     val showErrorToast: LiveData<Unit> get() = _showErrorToast
@@ -31,14 +34,14 @@ class BottomFilterViewModel : ViewModel() {
     private val _goBack = SingleLiveEvent<Unit>()
     val goBack: LiveData<Unit> get() = _goBack
 
-    fun getType(type: HabitType) {
-        _filteredHabitList.update { state ->
-            state.copy(
-                type = type,
-            )
-
-        }
-    }
+//    fun getType(type: HabitType) {
+//        _filteredHabitList.update { state ->
+//            state.copy(
+//                type = type,
+//            )
+//
+//        }
+//    }
 
     fun onTitleChanged(title: String) {
         _filteredHabitList.update { state ->
@@ -60,22 +63,22 @@ class BottomFilterViewModel : ViewModel() {
         viewModelScope.launch {
             val title = filteredHabitList.value.title
             val priority = filteredHabitList.value.priority
-            val type = filteredHabitList.value.type
             val filteredList = when {
                 title != null && priority != 0 -> {
-                    HabitRepository().getHabitListByTitleAndPriority(title, priority, type)
+                    0
                 }
                 title == null && priority != 0 -> {
-                    HabitRepository().getFilteredHabitListByPriority(priority, type)
+                    1
                 }
                 title != null && priority == 0 -> {
-                    HabitRepository().getFilteredHabitByTitle(title, type)
+                    2
                 }
                 else -> {
                     _showErrorToast.emit()
                     return@launch
                 }
             }
+            _filteredHabitListInt.value = filteredList
             _goBack.emit()
         }
     }

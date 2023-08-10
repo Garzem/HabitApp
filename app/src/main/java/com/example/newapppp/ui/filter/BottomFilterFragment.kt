@@ -11,17 +11,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
+import com.example.newapppp.data.Constants.HABIT_LIST_INT_KEY
+import com.example.newapppp.data.Habit
 import com.example.newapppp.databinding.FilterBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class BottomFilterFragment: BottomSheetDialogFragment(R.layout.filter_bottom_sheet) {
     private val binding by viewBinding(FilterBottomSheetBinding::bind)
     private val BFViewModel: BottomFilterViewModel by viewModels()
-    private val args: BottomFilterFragmentArgs by navArgs()
+//    private val args: BottomFilterFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        BFViewModel.getType(args.habitType)
+//        BFViewModel.getType(args.habitType)
         setupFindHabitText()
         setupFilterSpinner()
         setupFilterButton()
@@ -61,6 +63,9 @@ class BottomFilterFragment: BottomSheetDialogFragment(R.layout.filter_bottom_she
     private fun setupFilterButton() {
         binding.startFilterButton.setOnClickListener {
             BFViewModel.filterHabit()
+//            val filteredArrayList = ArrayList(BFViewModel.filteredList.value)
+//            val action =
+//                BottomFilterFragmentDirections.actionFilterDialogHomeFragment(filteredArrayList)
         }
     }
 
@@ -74,7 +79,11 @@ class BottomFilterFragment: BottomSheetDialogFragment(R.layout.filter_bottom_she
         }
         BFViewModel.apply {
             goBack.observe(viewLifecycleOwner) {
-                findNavController().popBackStack()
+                findNavController().apply {
+                    popBackStack()
+                    val entry = currentBackStackEntry ?: return@observe
+                    entry.savedStateHandle[HABIT_LIST_INT_KEY] = BFViewModel.filteredHabitListInt
+                }
             }
         }
     }
