@@ -42,7 +42,12 @@
         android:id="@+id/nav_filter_dialog"
         android:name="com.example.newapppp.ui.filter.BottomFilterFragment"
         android:label="@string/filter_title"
-        tools:layout="@layout/filter_bottom_sheet" />
+        tools:layout="@layout/filter_bottom_sheet" >
+        <argument
+            android:name="habitType"
+            app:argType="com.example.newapppp.data.HabitType"
+            app:nullable="true"/>
+    </dialog>
 
     <fragment
         android:id="@+id/nav_home_fragment"

@@ -49,7 +49,6 @@ class BottomFilterViewModel : ViewModel() {
         viewModelScope.launch {
             val title = filteredHabitList.value.title
             val priority = filteredHabitList.value.priority
-            val type = when (requireParentFragment())
             val filteredList = when {
                 title != null && priority != 0 -> {
                     HabitRepository().getHabitListByTitleAndPriority(title, priority)

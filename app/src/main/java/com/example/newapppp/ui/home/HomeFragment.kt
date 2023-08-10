@@ -28,15 +28,8 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
 
         binding.pagerChooseHabit.adapter = adapter
         tabMediator()
-
-        val fab = binding.fab
-        fab.setOnClickListener {
-            val selectedTabPosition = binding.tabLayout.selectedTabPosition
-            val habitType = if (selectedTabPosition == 0) HabitType.GOOD else HabitType.BAD
-
-            val action = HomeFragmentDirections.homeFragmentToRedactorFragment(null, habitType)
-            findNavController().navigate(action)
-        }
+        makeNewHabit()
+        openFilter()
     }
 
     private fun tabMediator() {
@@ -49,5 +42,27 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
                 getString(R.string.bad_habit)
             pagerChooseHabit.setCurrentItem(tab.position, true)
         }.attach()
+    }
+
+    private fun makeNewHabit() {
+        val fab = binding.fab
+        fab.setOnClickListener {
+            val selectedTabPosition = binding.tabLayout.selectedTabPosition
+            val habitType = if (selectedTabPosition == 0) HabitType.GOOD else HabitType.BAD
+
+            val action = HomeFragmentDirections.homeFragmentToRedactorFragment(null, habitType)
+            findNavController().navigate(action)
+        }
+    }
+
+    private fun openFilter() {
+        val filterFab = binding.filterFab
+        filterFab.setOnClickListener {
+            val selectedTabPosition = binding.tabLayout.selectedTabPosition
+            val habitType = if (selectedTabPosition == 0) HabitType.GOOD else HabitType.BAD
+
+            val action = HomeFragmentDirections.homeFragmentToFilterDialog(habitType)
+            findNavController().navigate(action)
+        }
     }
 }
