@@ -26,23 +26,27 @@ class HabitRepository {
         }
     }
 
-    suspend fun getFilteredHabitByTitle(titleFilter: String): List<Habit> {
-        val filteredHabit = AppHabitDataBase.habitDao.getFilteredHabitByTitle(titleFilter)
+    suspend fun getFilteredHabitByTitle(titleFilter: String, type: HabitType): List<Habit> {
+        val filteredHabit =
+            AppHabitDataBase.habitDao.getFilteredHabitByTitle(titleFilter, type)
         return filteredHabit.map {
             convertHabitEntityToHabit(it)
         }
     }
 
-    suspend fun getFilteredHabitListByPriority(priorityFilter: Int): List<Habit> {
-        val filteredHabitList = AppHabitDataBase.habitDao.getHabitListByPriority(priorityFilter)
+    suspend fun getFilteredHabitListByPriority(priorityFilter: Int, type: HabitType):
+            List<Habit> {
+        val filteredHabitList =
+            AppHabitDataBase.habitDao.getHabitListByPriority(priorityFilter, type)
         return filteredHabitList.map {
             convertHabitEntityToHabit(it)
         }
     }
 
-    suspend fun getHabitListByTitleAndPriority(titleFilter: String, priorityFilter: Int): List<Habit> {
+    suspend fun getHabitListByTitleAndPriority(titleFilter: String, priorityFilter: Int, type: HabitType):
+            List<Habit> {
         val filteredHabitList =
-            AppHabitDataBase.habitDao.getHabitListByTitleAndPriority(titleFilter, priorityFilter)
+            AppHabitDataBase.habitDao.getHabitListByTitleAndPriority(titleFilter, priorityFilter, type)
         return filteredHabitList.map {
             convertHabitEntityToHabit(it)
         }

@@ -45,8 +45,7 @@
         tools:layout="@layout/filter_bottom_sheet" >
         <argument
             android:name="habitType"
-            app:argType="com.example.newapppp.data.HabitType"
-            app:nullable="true"/>
+            app:argType="com.example.newapppp.data.HabitType" />
     </dialog>
 
     <fragment

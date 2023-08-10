@@ -8,19 +8,20 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.databinding.FilterBottomSheetBinding
-import com.example.newapppp.extension.collectWithLifecycle
-import com.example.newapppp.ui.redactor.RedactorFragmentViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class BottomFilterFragment: BottomSheetDialogFragment(R.layout.filter_bottom_sheet) {
     private val binding by viewBinding(FilterBottomSheetBinding::bind)
     private val BFViewModel: BottomFilterViewModel by viewModels()
+    private val args: BottomFilterFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        BFViewModel.getType(args.habitType)
         setupFindHabitText()
         setupFilterSpinner()
         setupFilterButton()
