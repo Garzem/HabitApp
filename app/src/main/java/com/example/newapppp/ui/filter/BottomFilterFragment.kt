@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -23,6 +24,7 @@ class BottomFilterFragment: BottomSheetDialogFragment(R.layout.filter_bottom_she
         setupFindHabitText()
         setupFilterSpinner()
         setupFilterButton()
+        observeEvents()
     }
 
     private fun setupFindHabitText() {
@@ -58,6 +60,21 @@ class BottomFilterFragment: BottomSheetDialogFragment(R.layout.filter_bottom_she
     private fun setupFilterButton() {
         binding.startFilterButton.setOnClickListener {
             BFViewModel.filterHabit()
+        }
+    }
+
+    private fun observeEvents() {
+        BFViewModel.showErrorToast.observe(viewLifecycleOwner) {
+            Toast.makeText(
+                requireContext(),
+                R.string.fill_the_filter_line,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        BFViewModel.apply {
+            goBack.observe(viewLifecycleOwner) {
+                findNavController().popBackStack()
+            }
         }
     }
 }

@@ -3,10 +3,10 @@ package com.example.newapppp.ui.filter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.habit_repository.HabitRepository
 import com.example.newapppp.ui.redactor.SingleLiveEvent
+import com.example.newapppp.ui.redactor.emit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,8 +23,10 @@ class BottomFilterViewModel : ViewModel() {
     )
     val filteredHabitList: StateFlow<FilterState> = _filteredHabitList.asStateFlow()
 
-    private val _goBack = SingleLiveEvent<Unit>()
+    private val _showErrorToast = SingleLiveEvent<Unit>()
+    val showErrorToast: LiveData<Unit> get() = _showErrorToast
 
+    private val _goBack = SingleLiveEvent<Unit>()
     val goBack: LiveData<Unit> get() = _goBack
 
     fun onTitleChanged(title: String) {
@@ -45,10 +47,25 @@ class BottomFilterViewModel : ViewModel() {
 
     fun filterHabit() {
         viewModelScope.launch {
-            val filteredList = HabitRepository().getFilteredHabitByTitle(title)
-            val filteredList = HabitRepository().getFilteredHabitListByPriority(priority)
-            val filteredList =
-                HabitRepository().getHabitListByTitleAndPriority(title, priority)
+            val title = filteredHabitList.value.title
+            val priority = filteredHabitList.value.priority
+            val type = when (requireParentFragment())
+            val filteredList = when {
+                title != null && priority != 0 -> {
+                    HabitRepository().getHabitListByTitleAndPriority(title, priority)
+                }
+                title == null && priority != 0 -> {
+                    HabitRepository().getFilteredHabitListByPriority(priority)
+                }
+                title != null && priority == 0 -> {
+                    HabitRepository().getFilteredHabitByTitle(title)
+                }
+                else -> {
+                    _showErrorToast.emit()
+                    return@launch
+                }
+            }
+            _goBack.emit()
         }
     }
 

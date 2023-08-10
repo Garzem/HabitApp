@@ -39,6 +39,8 @@
     <string name="color_choose_text">Выберите цвет</string>
 
     <string name="fill_the_line">"Пожалуйста, заполните все поля и выберете значения"</string>
+    <string name="fill_the_filter_line">"Пожалуйста, укажите фильтрацию"</string>
+
     <string name="title">title</string>
     <string name="priority">priority</string>
     <string name="type">type</string>
@@ -53,7 +55,10 @@
     <string name="developer_one_name">Сахан</string>
     <string name="developer_two_name">Палкан</string>
     <string name="redactor_habit_title">Редактор привычки</string>
+
     <string name="color_choose_title">Выбор цвета</string>
+    <string name="filter_title">Фильрация</string>
+
     <string name="view_pager_title">Фильтр хобби</string>
 
     <string name="priority_choose">Приоритет</string>
