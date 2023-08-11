@@ -67,27 +67,30 @@ class HabitListViewModel : ViewModel() {
 
     fun getType(type: HabitType) {
         _filteredHabitList.update { state ->
-          state.copy(
-              type = type
-          )
+            state.copy(
+                type = type
+            )
         }
     }
 
     fun getFilteredHabit() {
+        val title = filteredHabitList.value.title
+        val priority = filteredHabitList.value.priority
+        val type = filteredHabitList.value.type ?: return
         viewModelScope.launch {
-            val title = filteredHabitList.value.title
-            val priority = filteredHabitList.value.priority
-            val type = filteredHabitList.value.type ?: return@launch
             val filteredList = when {
                 title != "" && priority != 0 -> {
                     HabitRepository().getHabitListByTitleAndPriority(title, priority, type)
                 }
+
                 title == "" && priority != 0 -> {
                     HabitRepository().getFilteredHabitListByPriority(priority, type)
                 }
+
                 title != "" && priority == 0 -> {
                     HabitRepository().getFilteredHabitByTitle(title, type)
                 }
+
                 else -> {
                     _showErrorToast.emit()
                     return@launch
