@@ -21,15 +21,11 @@ class HabitListViewModel : ViewModel() {
     private val _habitList = MutableStateFlow<List<Habit>>(emptyList())
     val habitList: StateFlow<List<Habit>> = _habitList.asStateFlow()
 
-    private val _filteredHabitList = MutableStateFlow(
-        FilterState(
-            title = "",
-            priority = 0,
-            type = null
-        )
+    private var habitType: HabitType? = null
+    private var filterState = FilterState(
+        title = "",
+        priority = HabitPriority.CHOOSE.toString()
     )
-
-    val filteredHabitList: StateFlow<FilterState> = _filteredHabitList.asStateFlow()
 
     private val _showErrorToast = SingleLiveEvent<Unit>()
     val showErrorToast: LiveData<Unit> get() = _showErrorToast
@@ -44,50 +40,40 @@ class HabitListViewModel : ViewModel() {
     }
 
     fun setHabitType(habitType: HabitType) {
+        this.habitType = habitType
         viewModelScope.launch {
             _habitList.value = HabitRepository().getHabitListByType(habitType)
         }
     }
 
     fun onTitleChanged(title: String) {
-        _filteredHabitList.update { state ->
-            state.copy(
+        filterState = filterState.copy(
                 title = title,
             )
-        }
+
     }
 
     fun onPriorityChanged(priority: Int) {
-        _filteredHabitList.update { state ->
-            state.copy(
-                priority = priority,
-            )
-        }
-    }
-
-    fun getType(type: HabitType) {
-        _filteredHabitList.update { state ->
-            state.copy(
-                type = type
-            )
-        }
+        filterState = filterState.copy(
+            priority = HabitPriority.values()[priority].name,
+        )
     }
 
     fun getFilteredHabit() {
-        val title = filteredHabitList.value.title
-        val priority = filteredHabitList.value.priority
-        val type = filteredHabitList.value.type ?: return
+        val type = habitType ?: return
+        val title = filterState.title
+        val priority = filterState.priority
         viewModelScope.launch {
             val filteredList = when {
-                title != "" && priority != 0 -> {
+                title != "" && priority != HabitPriority.CHOOSE.toString() -> {
                     HabitRepository().getHabitListByTitleAndPriority(title, priority, type)
                 }
 
-                title == "" && priority != 0 -> {
+                title == "" && priority != HabitPriority.CHOOSE.toString() -> {
                     HabitRepository().getFilteredHabitListByPriority(priority, type)
                 }
 
-                title != "" && priority == 0 -> {
+                title != "" && priority == HabitPriority.CHOOSE.toString() -> {
                     HabitRepository().getFilteredHabitByTitle(title, type)
                 }
 

@@ -24,9 +24,9 @@ interface HabitDao {
     suspend fun getFilteredHabitByTitle(titleFilter: String, type: HabitType): List<HabitEntity>
 
     @Query("SELECT * FROM habit WHERE priority = :priorityFilter AND type = :type")
-    suspend fun getHabitListByPriority(priorityFilter: Int, type: HabitType) : List<HabitEntity>
+    suspend fun getHabitListByPriority(priorityFilter: String, type: HabitType) : List<HabitEntity>
 
     @Query("SELECT * FROM habit WHERE title = :titleFilter AND priority = :priorityFilter AND type = :type")
-    suspend fun getHabitListByTitleAndPriority(titleFilter: String, priorityFilter: Int, type: HabitType):
+    suspend fun getHabitListByTitleAndPriority(titleFilter: String, priorityFilter: String, type: HabitType):
             List<HabitEntity>
 }

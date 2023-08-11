@@ -9,14 +9,11 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
-import com.example.newapppp.data.Constants
 import com.example.newapppp.data.Constants.HABIT_TYPE_KEY
-import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.databinding.HabitListFragmentBinding
 import com.example.newapppp.extension.collectWithLifecycle
 import com.example.newapppp.extension.serializable
-import com.example.newapppp.ui.filter.FilterState
 import com.example.newapppp.ui.home.HomeFragmentDirections
 
 
@@ -32,7 +29,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         }
     }
 
-    private val HLViewModel: HabitListViewModel by viewModels()
+    private val viewModel: HabitListViewModel by viewModels()
     private val binding by viewBinding(HabitListFragmentBinding::bind)
     private val habitType: HabitType? by lazy {
         arguments?.serializable(HABIT_TYPE_KEY, HabitType::class.java)
@@ -44,10 +41,9 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         val adapter = HabitListAdapter(HabitPriorityMapper(requireContext()), ::openHabitClick)
         binding.recycleViewHabit.adapter = adapter
         habitType?.let {
-            HLViewModel.setHabitType(it)
-            HLViewModel.getType(it)
+            viewModel.setHabitType(it)
         }
-        collectWithLifecycle(HLViewModel.habitList) { habits ->
+        collectWithLifecycle(viewModel.habitList) { habits ->
             adapter.submitList(habits)
         }
         swipeToDelete(adapter)
@@ -65,7 +61,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
                 val habit = adapter.getHabitAtPosition(position) ?: return
                 habit.apply {
                     adapter.deleteHabitByPosition(position)
-                    id.let { HLViewModel.deleteHabit(it) }
+                    id.let { viewModel.deleteHabit(it) }
                 }
             }
         })

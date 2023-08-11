@@ -34,7 +34,7 @@ class HabitRepository {
         }
     }
 
-    suspend fun getFilteredHabitListByPriority(priorityFilter: Int, type: HabitType):
+    suspend fun getFilteredHabitListByPriority(priorityFilter: String, type: HabitType):
             List<Habit> {
         val filteredHabitList =
             AppHabitDataBase.habitDao.getHabitListByPriority(priorityFilter, type)
@@ -43,7 +43,7 @@ class HabitRepository {
         }
     }
 
-    suspend fun getHabitListByTitleAndPriority(titleFilter: String, priorityFilter: Int, type: HabitType):
+    suspend fun getHabitListByTitleAndPriority(titleFilter: String, priorityFilter: String, type: HabitType):
             List<Habit> {
         val filteredHabitList =
             AppHabitDataBase.habitDao.getHabitListByTitleAndPriority(titleFilter, priorityFilter, type)

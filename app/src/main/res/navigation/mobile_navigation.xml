@@ -42,27 +42,14 @@
         android:id="@+id/nav_filter_dialog"
         android:name="com.example.newapppp.ui.filter.BottomFilterFragment"
         android:label="@string/filter_title"
-        tools:layout="@layout/filter_bottom_sheet" >
-<!--        <argument-->
-<!--            android:name="habitType"-->
-<!--            app:argType="com.example.newapppp.data.HabitType" />-->
-        <action
-            android:id="@+id/action_filter_dialog_home_fragment"
-            app:destination="@id/nav_home_fragment"/>
-    </dialog>
+        tools:layout="@layout/filter_bottom_sheet" />
 
     <fragment
         android:id="@+id/nav_home_fragment"
         android:name="com.example.newapppp.ui.home.HomeFragment"
         android:label="@string/view_pager_title">
-<!--        <argument-->
-<!--            android:name="filteredList"-->
-<!--            app:argType="com.example.newapppp.data.Habit[]" />-->
         <action
             android:id="@+id/home_fragment_to_redactor_fragment"
             app:destination="@+id/nav_redactor_fragment"/>
-        <action
-            android:id="@+id/home_fragment_to_filter_dialog"
-            app:destination="@id/nav_filter_dialog" />
     </fragment>
 </navigation>
