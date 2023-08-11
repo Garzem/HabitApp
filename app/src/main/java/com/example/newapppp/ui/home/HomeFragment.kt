@@ -58,9 +58,6 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
     private fun openFilter() {
         val filterFab = binding.filterFab
         filterFab.setOnClickListener {
-//            val selectedTabPosition = binding.tabLayout.selectedTabPosition
-//            val habitType = if (selectedTabPosition == 0) HabitType.GOOD else HabitType.BAD
-
             val action = HomeFragmentDirections.homeFragmentToFilterDialog()
             findNavController().navigate(action)
         }
