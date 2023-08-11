@@ -14,16 +14,15 @@ import com.example.newapppp.R
 import com.example.newapppp.data.Constants.HABIT_LIST_INT_KEY
 import com.example.newapppp.data.Habit
 import com.example.newapppp.databinding.FilterBottomSheetBinding
+import com.example.newapppp.ui.habit_list.HabitListViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class BottomFilterFragment: BottomSheetDialogFragment(R.layout.filter_bottom_sheet) {
+class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sheet) {
     private val binding by viewBinding(FilterBottomSheetBinding::bind)
-    private val BFViewModel: BottomFilterViewModel by viewModels()
-//    private val args: BottomFilterFragmentArgs by navArgs()
+    private val HLViewModel: HabitListViewModel by viewModels(ownerProducer = { requireParentFragment() })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        BFViewModel.getType(args.habitType)
         setupFindHabitText()
         setupFilterSpinner()
         setupFilterButton()
@@ -33,7 +32,7 @@ class BottomFilterFragment: BottomSheetDialogFragment(R.layout.filter_bottom_she
     private fun setupFindHabitText() {
         binding.findHabitByName.addTextChangedListener(
             onTextChanged = { text, _, _, _ ->
-                BFViewModel.onTitleChanged(text.toString())
+                HLViewModel.onTitleChanged(text.toString())
             }
         )
     }
@@ -42,7 +41,7 @@ class BottomFilterFragment: BottomSheetDialogFragment(R.layout.filter_bottom_she
         binding.priorityFilter.adapter = ArrayAdapter(
             requireContext(),
             R.layout.filter_spinner_item,
-            BFViewModel.getList()
+            HLViewModel.getList()
         )
 
         binding.priorityFilter.onItemSelectedListener =
@@ -53,7 +52,7 @@ class BottomFilterFragment: BottomSheetDialogFragment(R.layout.filter_bottom_she
                     position: Int,
                     id: Long
                 ) {
-                    BFViewModel.onPriorityChanged(position)
+                    HLViewModel.onPriorityChanged(position)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -62,28 +61,21 @@ class BottomFilterFragment: BottomSheetDialogFragment(R.layout.filter_bottom_she
 
     private fun setupFilterButton() {
         binding.startFilterButton.setOnClickListener {
-            BFViewModel.filterHabit()
-//            val filteredArrayList = ArrayList(BFViewModel.filteredList.value)
-//            val action =
-//                BottomFilterFragmentDirections.actionFilterDialogHomeFragment(filteredArrayList)
+            HLViewModel.getFilteredHabit()
         }
     }
 
     private fun observeEvents() {
-        BFViewModel.showErrorToast.observe(viewLifecycleOwner) {
+        HLViewModel.showErrorToast.observe(viewLifecycleOwner) {
             Toast.makeText(
                 requireContext(),
                 R.string.fill_the_filter_line,
                 Toast.LENGTH_SHORT
             ).show()
         }
-        BFViewModel.apply {
+        HLViewModel.apply {
             goBack.observe(viewLifecycleOwner) {
-                findNavController().apply {
-                    popBackStack()
-                    val entry = currentBackStackEntry ?: return@observe
-                    entry.savedStateHandle[HABIT_LIST_INT_KEY] = BFViewModel.filteredHabitListInt
-                }
+                findNavController().popBackStack()
             }
         }
     }
