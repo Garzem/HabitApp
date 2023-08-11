@@ -28,6 +28,7 @@ class HabitListViewModel : ViewModel() {
             type = null
         )
     )
+
     val filteredHabitList: StateFlow<FilterState> = _filteredHabitList.asStateFlow()
 
     private val _showErrorToast = SingleLiveEvent<Unit>()
