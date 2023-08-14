@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -22,6 +23,7 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
         setupFindHabitText()
         setupFilterSpinner()
         setupFilterButton()
+        setupCancelFilterButton()
         observeEvents()
     }
 
@@ -58,6 +60,20 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
     private fun setupFilterButton() {
         binding.startFilterButton.setOnClickListener {
             viewModel.getFilteredHabit()
+        }
+    }
+
+    private fun setupCancelFilterButton() {
+        val cancelButton = binding.cancelFilterButton
+        cancelButton.isVisible = viewModel.isFilterApplied
+        cancelButton.setOnClickListener {
+            viewModel.apply {
+                cancelFilter()
+                habitType?.let {
+                    setHabitType(it)
+                }
+                dismiss()
+            }
         }
     }
 

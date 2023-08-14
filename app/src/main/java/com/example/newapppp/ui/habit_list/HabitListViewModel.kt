@@ -13,7 +13,6 @@ import com.example.newapppp.ui.redactor.emit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HabitListViewModel : ViewModel() {
@@ -21,11 +20,16 @@ class HabitListViewModel : ViewModel() {
     private val _habitList = MutableStateFlow<List<Habit>>(emptyList())
     val habitList: StateFlow<List<Habit>> = _habitList.asStateFlow()
 
-    private var habitType: HabitType? = null
+    private var _habitType: HabitType? = null
+    val habitType: HabitType? get() = _habitType
+
     private var filterState = FilterState(
         title = "",
         priority = HabitPriority.CHOOSE.toString()
     )
+
+    private var _isFilterApplied: Boolean = false
+    val isFilterApplied: Boolean get() = _isFilterApplied
 
     private val _showErrorToast = SingleLiveEvent<Unit>()
     val showErrorToast: LiveData<Unit> get() = _showErrorToast
@@ -40,7 +44,7 @@ class HabitListViewModel : ViewModel() {
     }
 
     fun setHabitType(habitType: HabitType) {
-        this.habitType = habitType
+        this._habitType = habitType
         viewModelScope.launch {
             _habitList.value = HabitRepository().getHabitListByType(habitType)
         }
@@ -48,8 +52,8 @@ class HabitListViewModel : ViewModel() {
 
     fun onTitleChanged(title: String) {
         filterState = filterState.copy(
-                title = title,
-            )
+            title = title,
+        )
 
     }
 
@@ -60,7 +64,7 @@ class HabitListViewModel : ViewModel() {
     }
 
     fun getFilteredHabit() {
-        val type = habitType ?: return
+        val type = _habitType ?: return
         val title = filterState.title
         val priority = filterState.priority
         viewModelScope.launch {
@@ -83,8 +87,13 @@ class HabitListViewModel : ViewModel() {
                 }
             }
             _habitList.value = filteredList
+            _isFilterApplied = true
             _goBack.emit()
         }
+    }
+
+    fun cancelFilter() {
+        _isFilterApplied = false
     }
 
     fun getList(): List<String> {

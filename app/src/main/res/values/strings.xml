@@ -67,4 +67,5 @@
     <string name="priority_high">Высокий</string>
     <string name="find_habit_by_name_string">Поиск по названию</string>
     <string name="filter_button_string">Фильтровать</string>
+    <string name="cancel_filter_button">Отменить</string>
 </resources>

@@ -67,8 +67,20 @@
         style="?android:attr/borderlessButtonStyle"
         android:textColor="@color/white"
         app:layout_constraintTop_toTopOf="@+id/background_for_buttons"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/background_for_buttons"
+        app:layout_constraintEnd_toStartOf="@+id/cancel_filter_button"
         app:layout_constraintBottom_toBottomOf="@+id/background_for_buttons" />
+
+    <Button
+        android:id="@+id/cancel_filter_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel_filter_button"
+        style="?android:attr/borderlessButtonStyle"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toEndOf="@+id/start_filter_button"
+        app:layout_constraintEnd_toEndOf="@+id/background_for_buttons"
+        app:layout_constraintBottom_toBottomOf="@+id/background_for_buttons"
+        app:layout_constraintTop_toTopOf="@+id/background_for_buttons"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
