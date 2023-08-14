@@ -72,7 +72,7 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
 
     private fun setupCancelFilterButton() {
         val cancelButton = binding.cancelFilterButton
-        cancelButton.isVisible = viewModel.isFilterApplied
+        cancelButton.isVisible = viewModel.isFilterApplied.value
         cancelButton.setOnClickListener {
             viewModel.apply {
                 cancelFilter()

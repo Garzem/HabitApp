@@ -15,6 +15,7 @@ import com.example.newapppp.databinding.HabitListFragmentBinding
 
 import com.example.newapppp.extension.collectWithLifecycle
 import com.example.newapppp.extension.serializable
+import com.example.newapppp.ui.home.HomeFragment
 import com.example.newapppp.ui.home.HomeFragmentDirections
 
 
@@ -47,12 +48,19 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         collectWithLifecycle(viewModel.habitList) { habits ->
             adapter.submitList(habits)
         }
+        filterObserver()
         swipeToDelete(adapter)
     }
 
     private fun openHabitClick(habitId: String) {
         val action = HomeFragmentDirections.homeFragmentToRedactorFragment(habitId, null)
         findNavController().navigate(action)
+    }
+
+    private fun filterObserver () {
+        collectWithLifecycle(viewModel.isFilterApplied) { result ->
+            (requireParentFragment() as HomeFragment).setupFilterBadge(result)
+        }
     }
 
     private fun swipeToDelete(adapter: HabitListAdapter) {

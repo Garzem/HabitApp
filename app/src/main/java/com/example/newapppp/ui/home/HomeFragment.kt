@@ -2,6 +2,7 @@ package com.example.newapppp.ui.home
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -57,12 +58,16 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
     }
 
     private fun openFilter() {
-        binding.filterFab.setOnClickListener {
-            val selectedTabPosition = binding.tabLayout.selectedTabPosition
-            BottomFilterFragment().show(
-                habitListFragments[selectedTabPosition].childFragmentManager,
-                "BottomFilterFragment"
-            )
+            binding.filterFab.setOnClickListener {
+                val selectedTabPosition = binding.tabLayout.selectedTabPosition
+                BottomFilterFragment().show(
+                    habitListFragments[selectedTabPosition].childFragmentManager,
+                    "BottomFilterFragment"
+                )
         }
+    }
+
+    fun setupFilterBadge(isFilterApplied: Boolean) {
+        binding.filterFabBadge.isVisible = isFilterApplied
     }
 }

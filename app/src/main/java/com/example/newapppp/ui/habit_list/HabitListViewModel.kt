@@ -9,6 +9,7 @@ import com.example.newapppp.data.HabitType
 import com.example.newapppp.habit_repository.HabitRepository
 import com.example.newapppp.ui.filter.FilterState
 import com.example.newapppp.ui.redactor.SingleLiveEvent
+import com.example.newapppp.ui.redactor.UiState
 import com.example.newapppp.ui.redactor.emit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,13 +24,15 @@ class HabitListViewModel : ViewModel() {
     private var _habitType: HabitType? = null
     val habitType: HabitType? get() = _habitType
 
-    private var filterState = FilterState(
+    private var _filterState = FilterState(
         title = "",
         priority = HabitPriority.CHOOSE.toString()
     )
+    val filterState get() = _filterState
 
-    private var _isFilterApplied: Boolean = false
-    val isFilterApplied: Boolean get() = _isFilterApplied
+    private val _isFilterApplied = MutableStateFlow(false)
+
+    val isFilterApplied: StateFlow<Boolean> = _isFilterApplied.asStateFlow()
 
     private val _showErrorToast = SingleLiveEvent<Unit>()
     val showErrorToast: LiveData<Unit> get() = _showErrorToast
@@ -51,22 +54,26 @@ class HabitListViewModel : ViewModel() {
     }
 
     fun onTitleChanged(title: String) {
-        filterState = filterState.copy(
+        _filterState = _filterState.copy(
             title = title,
         )
 
     }
 
     fun onPriorityChanged(priority: Int) {
-        filterState = filterState.copy(
+        _filterState = _filterState.copy(
             priority = HabitPriority.values()[priority].name,
         )
     }
 
+    fun setPriorityInt(priority: String): Int {
+        return HabitPriority.values().indexOfFirst { it.name == priority }
+    }
+
     fun getFilteredHabit() {
         val type = _habitType ?: return
-        val title = filterState.title
-        val priority = filterState.priority
+        val title = _filterState.title
+        val priority = _filterState.priority
         viewModelScope.launch {
             val filteredList = when {
                 title != "" && priority != HabitPriority.CHOOSE.toString() -> {
@@ -87,13 +94,17 @@ class HabitListViewModel : ViewModel() {
                 }
             }
             _habitList.value = filteredList
-            _isFilterApplied = true
+            _isFilterApplied.value = true
             _goBack.emit()
         }
     }
 
     fun cancelFilter() {
-        _isFilterApplied = false
+        _isFilterApplied.value = false
+        _filterState = FilterState(
+            title = "",
+            priority = HabitPriority.CHOOSE.toString()
+        )
     }
 
     fun getList(): List<String> {

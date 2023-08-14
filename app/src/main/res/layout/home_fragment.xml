@@ -27,6 +27,22 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/view_pager_app_bar"/>
 
+    <TextView
+        android:id="@+id/filter_fab_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/filter_fab"
+        android:layout_alignTop="@+id/filter_fab"
+        android:background="@drawable/badge_item_count"
+        android:layout_marginTop="-8dp"
+        android:gravity="center"
+        android:minWidth="20dp"
+        android:minHeight="20dp"
+        android:textColor="@color/colorBlack"
+        android:textSize="12sp"
+        android:elevation="8dp"
+        android:visibility="gone"/>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/filter_fab"
         android:layout_width="wrap_content"
@@ -46,5 +62,6 @@
         android:layout_margin="@dimen/large_margin"
         app:srcCompat="@drawable/plus_habit_icon"
         android:contentDescription="@string/add_new_habit_button" />
+
 
 </RelativeLayout>
