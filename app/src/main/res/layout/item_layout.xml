@@ -5,6 +5,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="10dp">
 
+    <View
+        android:id="@+id/color_main"
+        android:background="@drawable/color_button_orange"
+        android:alpha="0.35"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="85dp" />
+
     <TextView
         android:id="@+id/title"
         app:layout_constraintTop_toTopOf="@+id/color_main"
@@ -14,14 +23,13 @@
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/text_size_big"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/elevation" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/description"
-        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintBottom_toBottomOf="@+id/color_main"
         app:layout_constraintStart_toStartOf="@+id/color_main"
-        android:layout_marginStart="@dimen/large_margin"
+        android:layout_margin="@dimen/large_margin"
         android:text="@string/button_to_add"
         android:textSize="@dimen/text_size"
         android:textColor="@color/colorGreyLight"
@@ -33,7 +41,7 @@
         android:id="@+id/quantity"
         app:layout_constraintTop_toTopOf="@+id/color_main"
         app:layout_constraintEnd_toEndOf="@+id/color_main"
-        android:layout_marginTop="@dimen/huge_margin"
+        app:layout_constraintBottom_toBottomOf="@id/color_main"
         android:layout_marginEnd="@dimen/large_margin"
         android:text="@string/something"
         android:textColor="@color/colorGreyDark"
@@ -41,6 +49,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="@dimen/elevation" />
+
+    <View
+        android:id="@+id/color_support"
+        android:background="@drawable/color_button_orange"
+        android:alpha="0.35"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/color_main"
+        android:layout_width="wrap_content"
+        android:layout_height="85dp" />
 
     <TextView
         android:id="@+id/priority"
@@ -51,8 +68,7 @@
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/text_size"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/elevation" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/period"
@@ -62,27 +78,6 @@
         android:textColor="@color/colorGreyLight"
         android:text="@string/period"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/elevation" />
-
-    <View
-        android:id="@+id/color_main"
-        android:background="@drawable/color_button_orange"
-        android:alpha="0.35"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="85dp"
-        android:elevation="@dimen/elevation_color" />
-
-    <View
-        android:id="@+id/color_support"
-        android:background="@drawable/color_button_orange"
-        android:alpha="0.35"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/color_main"
-        android:layout_width="wrap_content"
-        android:layout_height="85dp"
-        android:elevation="@dimen/elevation_color" />
+        android:layout_height="wrap_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
