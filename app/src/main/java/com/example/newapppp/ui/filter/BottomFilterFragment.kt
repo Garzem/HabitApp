@@ -34,13 +34,13 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
     }
 
     private fun setupFilterSpinner() {
-        binding.priorityFilter.adapter = ArrayAdapter(
+        binding.findHabitByPriority.adapter = ArrayAdapter(
             requireContext(),
             R.layout.filter_spinner_item,
             viewModel.getList()
         )
 
-        binding.priorityFilter.onItemSelectedListener =
+        binding.findHabitByPriority.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>?,

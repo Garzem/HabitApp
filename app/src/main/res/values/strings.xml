@@ -65,6 +65,6 @@
     <string name="priority_low">Низкий</string>
     <string name="priority_medium">Средний</string>
     <string name="priority_high">Высокий</string>
-    <string name="find_habit_by_name_string">Напишите название привычки для поиска</string>
-    <string name="filter_button_string">Фильрировать</string>
+    <string name="find_habit_by_name_string">Поиск по названию</string>
+    <string name="filter_button_string">Фильтровать</string>
 </resources>
