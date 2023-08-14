@@ -10,6 +10,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
+import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.databinding.FilterBottomSheetBinding
 import com.example.newapppp.ui.habit_list.HabitListViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -24,6 +25,12 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
         setupFilterSpinner()
         setupFilterButton()
         setupCancelFilterButton()
+        binding.apply {
+            with(viewModel) {
+                findHabitByName.setText(filterState.title)
+                findHabitByPriority.setSelection(setPriorityInt(filterState.priority))
+            }
+        }
         observeEvents()
     }
 
