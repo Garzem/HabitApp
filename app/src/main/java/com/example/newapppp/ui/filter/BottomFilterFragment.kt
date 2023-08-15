@@ -64,26 +64,6 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
                 }
             }
         }
-
-//        binding.findHabitByPriority.adapter = ArrayAdapter(
-//            requireContext(),
-//            R.layout.filter_spinner_item,
-//            viewModel.getList()
-//        )
-//
-//        binding.findHabitByPriority.editText.setOnClickListener =
-//            object : AdapterView.OnItemSelectedListener {
-//                override fun onItemSelected(
-//                    parent: AdapterView<*>?,
-//                    view: View?,
-//                    position: Int,
-//                    id: Long
-//                ) {
-//                    viewModel.onPriorityChanged(position)
-//                }
-//
-//                override fun onNothingSelected(parent: AdapterView<*>) {}
-//            }
     }
 
     private fun setupFilterButton() {
