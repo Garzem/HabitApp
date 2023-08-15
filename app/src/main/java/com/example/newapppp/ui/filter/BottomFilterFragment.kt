@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
@@ -22,46 +23,67 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFindHabitText()
+        clearTextInFindHabit()
         setupFilterSpinner()
         setupFilterButton()
         setupCancelFilterButton()
         binding.apply {
             with(viewModel) {
-                findHabitByName.setText(filterState.title)
-                findHabitByPriority.setSelection(setPriorityInt(filterState.priority))
+                findHabitByName.editText?.setText(filterState.title)
+//                findHabitByPriority.setSelection(setPriorityInt(filterState.priority))
             }
         }
         observeEvents()
     }
 
     private fun setupFindHabitText() {
-        binding.findHabitByName.addTextChangedListener(
+        binding.findHabitByName.editText?.addTextChangedListener(
             onTextChanged = { text, _, _, _ ->
                 viewModel.onTitleChanged(text.toString())
             }
         )
     }
 
+    private fun clearTextInFindHabit() {
+        val habitByName = binding.findHabitByName
+        habitByName.setEndIconOnClickListener{
+            habitByName.editText?.text?.clear()
+        }
+    }
+
     private fun setupFilterSpinner() {
-        binding.findHabitByPriority.adapter = ArrayAdapter(
+        val priorityAdapter = ArrayAdapter(
             requireContext(),
             R.layout.filter_spinner_item,
-            viewModel.getList()
-        )
-
-        binding.findHabitByPriority.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
+            viewModel.getList())
+        (binding.findHabitByPriority.editText as? AutoCompleteTextView)?.apply {
+            setAdapter(priorityAdapter)
+            setOnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+                if (position > 0) {
                     viewModel.onPriorityChanged(position)
                 }
-
-                override fun onNothingSelected(parent: AdapterView<*>) {}
             }
+        }
+
+//        binding.findHabitByPriority.adapter = ArrayAdapter(
+//            requireContext(),
+//            R.layout.filter_spinner_item,
+//            viewModel.getList()
+//        )
+//
+//        binding.findHabitByPriority.editText.setOnClickListener =
+//            object : AdapterView.OnItemSelectedListener {
+//                override fun onItemSelected(
+//                    parent: AdapterView<*>?,
+//                    view: View?,
+//                    position: Int,
+//                    id: Long
+//                ) {
+//                    viewModel.onPriorityChanged(position)
+//                }
+//
+//                override fun onNothingSelected(parent: AdapterView<*>) {}
+//            }
     }
 
     private fun setupFilterButton() {

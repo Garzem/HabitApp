@@ -17,48 +17,52 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageView
-        android:id="@+id/find_habit_by_name_image"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/find_habit_by_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/filters"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.05"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/find_by_name" />
-
-    <EditText
-        android:id="@+id/find_habit_by_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/small_margin"
+        android:layout_marginTop="@dimen/large_margin"
         android:hint="@string/find_habit_by_name_string"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintTop_toTopOf="@+id/find_habit_by_name_image"
-        app:layout_constraintStart_toEndOf="@id/find_habit_by_name_image"
-        app:layout_constraintBottom_toBottomOf="@+id/find_habit_by_name_image"
-        app:layout_constraintEnd_toEndOf="parent" />
+        style="?attr/textInputOutlinedStyle"
+        app:endIconMode="clear_text"
+        app:boxStrokeWidth="2dp"
+        app:startIconDrawable="@drawable/find_by_name"
+        app:startIconContentDescription="@string/find_habit_by_name_icon">
 
-    <ImageView
-        android:id="@+id/find_habit_by_priority_image"
-        app:layout_constraintTop_toBottomOf="@+id/find_habit_by_name_image"
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/find_habit_by_priority"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/find_habit_by_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.05"
+        android:layout_marginStart="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/small_margin"
         android:layout_marginTop="@dimen/large_margin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/find_by_priority"/>
+        style="?attr/textInputOutlinedStyle"
+        app:startIconDrawable="@drawable/find_by_priority"
+        app:startIconContentDescription="@string/find_habit_by_priority_icon">
 
-    <Spinner
-        android:id="@+id/find_habit_by_priority"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintTop_toTopOf="@id/find_habit_by_priority_image"
-        app:layout_constraintBottom_toBottomOf="@id/find_habit_by_priority_image"
-        app:layout_constraintStart_toEndOf="@+id/find_habit_by_priority_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/find_habit_by_priority_string"
+            android:inputType="none"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <View
         android:id="@+id/background_for_buttons"
@@ -69,7 +73,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/find_habit_by_priority_image"/>
+        app:layout_constraintTop_toBottomOf="@+id/find_habit_by_priority"/>
 
     <Button
         android:id="@+id/start_filter_button"

@@ -57,7 +57,6 @@ class HabitListViewModel : ViewModel() {
         _filterState = _filterState.copy(
             title = title,
         )
-
     }
 
     fun onPriorityChanged(priority: Int) {
