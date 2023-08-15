@@ -18,7 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sheet) {
     private val binding by viewBinding(FilterBottomSheetBinding::bind)
-    private val viewModel: HabitListViewModel by viewModels(ownerProducer = { requireParentFragment() })
+    private val viewModel: HabitListViewModel by viewModels(ownerProducer = { requireParentFragment().requireParentFragment() })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -30,7 +30,7 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
         binding.apply {
             with(viewModel) {
                 findHabitByName.editText?.setText(filterState.title)
-//                findHabitByPriority.setSelection(setPriorityInt(filterState.priority))
+                findHabitByPriority.editText?.setText(filterState.priority)
             }
         }
         observeEvents()

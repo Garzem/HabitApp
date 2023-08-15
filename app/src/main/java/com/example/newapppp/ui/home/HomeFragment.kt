@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
@@ -11,11 +12,14 @@ import com.example.newapppp.data.HabitType
 import com.example.newapppp.databinding.HomeFragmentBinding
 import com.example.newapppp.ui.filter.BottomFilterFragment
 import com.example.newapppp.ui.habit_list.HabitListFragment
+import com.example.newapppp.ui.habit_list.HabitListViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 
 class HomeFragment : Fragment(R.layout.home_fragment) {
 //    private val homeViewModel: HomeFragmentViewModel by viewModels()
     private val binding by viewBinding(HomeFragmentBinding::bind)
+
+    private val viewModel: HabitListViewModel by viewModels()
 
     private val habitListFragments = listOf(
         HabitListFragment.newInstance(HabitType.GOOD),

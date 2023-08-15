@@ -31,7 +31,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         }
     }
 
-    private val viewModel: HabitListViewModel by viewModels()
+    private val viewModel: HabitListViewModel by viewModels(ownerProducer = { requireParentFragment() })
     private val binding by viewBinding(HabitListFragmentBinding::bind)
     private val habitType: HabitType? by lazy {
         arguments?.serializable(HABIT_TYPE_KEY, HabitType::class.java)
