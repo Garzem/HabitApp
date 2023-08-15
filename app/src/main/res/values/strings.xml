@@ -68,4 +68,5 @@
     <string name="find_habit_by_name_string">Поиск по названию</string>
     <string name="filter_button_string">Фильтровать</string>
     <string name="cancel_filter_button">Отменить</string>
+    <string name="filters_string">Фильтры</string>
 </resources>
