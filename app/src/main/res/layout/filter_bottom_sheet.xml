@@ -51,15 +51,18 @@
         android:layout_marginStart="@dimen/small_margin"
         android:layout_marginEnd="@dimen/small_margin"
         android:layout_marginTop="@dimen/large_margin"
-        style="?attr/textInputOutlinedStyle"
         app:startIconDrawable="@drawable/find_by_priority"
-        app:startIconContentDescription="@string/find_habit_by_priority_icon">
+        app:startIconContentDescription="@string/find_habit_by_priority_icon"
+        android:theme="@style/ThemeOverlay.MaterialComponents"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        app:boxStrokeWidth="2dp">
 
         <AutoCompleteTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/find_habit_by_priority_string"
             android:inputType="none"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             />
 
     </com.google.android.material.textfield.TextInputLayout>
