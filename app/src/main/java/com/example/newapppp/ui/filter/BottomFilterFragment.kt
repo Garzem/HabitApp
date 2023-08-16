@@ -1,6 +1,7 @@
 package com.example.newapppp.ui.filter
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -18,30 +19,22 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sheet) {
     private val binding by viewBinding(FilterBottomSheetBinding::bind)
-    private val viewModel: HabitListViewModel by viewModels(ownerProducer = { requireParentFragment().requireParentFragment() })
+    private val viewModel: HabitListViewModel by viewModels(ownerProducer = { requireParentFragment() })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupFindHabitText()
         clearTextInFindHabit()
         setupFilterSpinner()
         setupFilterButton()
         setupCancelFilterButton()
         binding.apply {
             with(viewModel) {
-                findHabitByName.editText?.setText(filterState.title)
-                findHabitByPriority.editText?.setText(filterState.priority)
+                findHabitByName.editText?.setText(habitState.value.filterByTitle)
+                val autoCompleteTextView = findHabitByPriority.editText as? AutoCompleteTextView
+                autoCompleteTextView?.setText(habitState.value.filterByPriority.toString(), false)
             }
         }
         observeEvents()
-    }
-
-    private fun setupFindHabitText() {
-        binding.findHabitByName.editText?.addTextChangedListener(
-            onTextChanged = { text, _, _, _ ->
-                viewModel.onTitleChanged(text.toString())
-            }
-        )
     }
 
     private fun clearTextInFindHabit() {
@@ -58,7 +51,7 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
             viewModel.getList())
         (binding.findHabitByPriority.editText as? AutoCompleteTextView)?.apply {
             setAdapter(priorityAdapter)
-            setOnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+            setOnItemClickListener { _, _, position: Int, _ ->
                 if (position > 0) {
                     viewModel.onPriorityChanged(position)
                 }
@@ -68,19 +61,17 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
 
     private fun setupFilterButton() {
         binding.startFilterButton.setOnClickListener {
+            viewModel.onTitleChanged(binding.findHabitByName.editText?.text.toString())
             viewModel.getFilteredHabit()
         }
     }
 
     private fun setupCancelFilterButton() {
         val cancelButton = binding.cancelFilterButton
-        cancelButton.isVisible = viewModel.isFilterApplied.value
+        cancelButton.isVisible = viewModel.habitState.value.isFilterApplied
         cancelButton.setOnClickListener {
             viewModel.apply {
                 cancelFilter()
-                habitType?.let {
-                    setHabitType(it)
-                }
                 dismiss()
             }
         }

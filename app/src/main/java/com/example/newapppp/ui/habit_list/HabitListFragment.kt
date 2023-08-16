@@ -31,7 +31,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         }
     }
 
-    private val viewModel: HabitListViewModel by viewModels(ownerProducer = { requireParentFragment() })
+    private val viewModel: HabitListViewModel by viewModels()
     private val binding by viewBinding(HabitListFragmentBinding::bind)
     private val habitType: HabitType? by lazy {
         arguments?.serializable(HABIT_TYPE_KEY, HabitType::class.java)
@@ -43,10 +43,11 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         val adapter = HabitListAdapter(HabitPriorityMapper(requireContext()), ::openHabitClick)
         binding.recycleViewHabit.adapter = adapter
         habitType?.let {
-            viewModel.setHabitType(it)
+            viewModel.onTypeChanged(it)
         }
-        collectWithLifecycle(viewModel.habitList) { habits ->
-            adapter.submitList(habits)
+        viewModel.setHabitByType()
+        collectWithLifecycle(viewModel.habitState) { state ->
+            adapter.submitList(state.filteredHabits)
         }
         filterObserver()
         swipeToDelete(adapter)
@@ -58,8 +59,8 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
     }
 
     private fun filterObserver () {
-        collectWithLifecycle(viewModel.isFilterApplied) { result ->
-            (requireParentFragment() as HomeFragment).setupFilterBadge(result)
+        collectWithLifecycle(viewModel.habitState) { state ->
+            (requireParentFragment() as HomeFragment).setupFilterBadge(state.isFilterApplied)
         }
     }
 

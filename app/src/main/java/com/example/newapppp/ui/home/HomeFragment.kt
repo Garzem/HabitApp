@@ -19,8 +19,6 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
 //    private val homeViewModel: HomeFragmentViewModel by viewModels()
     private val binding by viewBinding(HomeFragmentBinding::bind)
 
-    private val viewModel: HabitListViewModel by viewModels()
-
     private val habitListFragments = listOf(
         HabitListFragment.newInstance(HabitType.GOOD),
         HabitListFragment.newInstance(HabitType.BAD)
