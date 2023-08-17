@@ -1,6 +1,7 @@
 package com.example.newapppp.ui.habit_list
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels

@@ -1,6 +1,7 @@
 package com.example.newapppp.ui.redactor
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -35,13 +36,14 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         setupRadioButtons()
         setupColorButton()
         observeColorResult()
-        redactorViewModel.setType(args.habitType ?: return)
+        args.habitType?.let {
+            redactorViewModel.setType(it)
+        }
         redactorViewModel.setHabit(args.habitId)
 
         collectWithLifecycle(redactorViewModel.uiState) { uiState ->
             onChangedHabit(uiState)
         }
-
 
         setupButtons()
         observeEvents()
