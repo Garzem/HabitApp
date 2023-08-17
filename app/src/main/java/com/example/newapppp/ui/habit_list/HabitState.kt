@@ -2,20 +2,22 @@ package com.example.newapppp.ui.habit_list
 
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitPriority
-import com.example.newapppp.data.HabitType
+import com.example.newapppp.habit_repository.FilterRepository
+
 
 data class HabitState(
-    val allHabits: List<Habit>,
-    val filterByType: HabitType?,
-    val filterByTitle: String,
-    val filterByPriority: HabitPriority,
+    val habitList: List<Habit>,
+    val originalList: List<Habit>,
+    val filters: FilterRepository
 ) {
-    val isFilterApplied: Boolean = filterByTitle.isNotBlank() || filterByPriority != HabitPriority.CHOOSE
-    val filteredHabits = allHabits.filter { habit ->
-        val matchType = habit.type == filterByType
-        val matchTitle = habit.title.contains(filterByTitle, ignoreCase = true)
-        val matchPriority = habit.priority == filterByPriority
+    val isFilterApplied: Boolean get() =
+        filters.filterByTitle.isNotBlank() || filters.filterByPriority != HabitPriority.CHOOSE
+
+    val filteredHabits get() =
+        habitList.filter { habit ->
+        val matchTitle = habit.title.contains(filters.filterByTitle, ignoreCase = true)
+        val matchPriority = habit.priority == filters.filterByPriority
                 && habit.priority != HabitPriority.CHOOSE
-        matchType && (matchPriority || matchTitle)
+        matchPriority || matchTitle
     }
 }

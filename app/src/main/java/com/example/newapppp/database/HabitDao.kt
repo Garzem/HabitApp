@@ -17,11 +17,11 @@ interface HabitDao {
     @Query("SELECT * FROM habit WHERE id = :habitId")
     suspend fun getHabitById(habitId: String) : HabitEntity
 
-//    @Query("SELECT * FROM habit WHERE type = :type")
-//    suspend fun getHabitListByType(type: HabitType) : List<HabitEntity>
+    @Query("SELECT * FROM habit WHERE type = :type")
+    suspend fun getHabitListByType(type: HabitType) : List<HabitEntity>
 
-    @Query("SELECT * FROM habit")
-    suspend fun getAllHabits() : List<HabitEntity>
+//    @Query("SELECT * FROM habit")
+//    suspend fun getAllHabits() : List<HabitEntity>
 
     @Query("SELECT * FROM habit WHERE title = :titleFilter AND type = :type")
     suspend fun getFilteredHabitByTitle(titleFilter: String, type: HabitType): List<HabitEntity>

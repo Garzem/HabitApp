@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
+import com.example.newapppp.habit_repository.FilterRepository
 import com.example.newapppp.habit_repository.HabitRepository
 import com.example.newapppp.ui.redactor.SingleLiveEvent
 import com.example.newapppp.ui.redactor.emit
@@ -18,10 +19,9 @@ class HabitListViewModel : ViewModel() {
 
     private val _habitState = MutableStateFlow(
         HabitState(
-            allHabits = emptyList(),
-            filterByType = null,
-            filterByTitle = "",
-            filterByPriority = HabitPriority.CHOOSE
+            habitList = emptyList(),
+            originalList = emptyList(),
+            filters = FilterRepository
         )
     )
 
@@ -39,37 +39,44 @@ class HabitListViewModel : ViewModel() {
         }
     }
 
-    fun setHabitByType() {
+    fun setHabitByType(habitType: HabitType) {
         viewModelScope.launch {
             _habitState.update { state ->
+                val habitListByType = HabitRepository().getHabitListByType(habitType)
                 state.copy(
-                    allHabits = HabitRepository().getAllHabits()
+                    habitList = habitListByType,
+                    originalList = habitListByType
                 )
             }
         }
     }
 
-    fun onTypeChanged(habitType: HabitType) {
-        _habitState.update { state ->
-            state.copy(
-                filterByType = habitType
-            )
-        }
-    }
-
     fun onTitleChanged(title: String) {
-        _habitState.update { state ->
-            state.copy(
-                filterByTitle = title
-            )
+        viewModelScope.launch {
+            _habitState.update { state ->
+                val updatedFilters = FilterRepository.apply {
+                    filterByTitle = title
+                    filterByPriority = state.filters.filterByPriority
+                }
+                state.copy(
+                    filters = updatedFilters
+                )
+            }
         }
     }
 
-    fun onPriorityChanged(priority: Int) {
-        _habitState.update { state ->
-            state.copy(
-                filterByPriority = HabitPriority.values()[priority]
-            )
+    fun onPriorityChanged(priorityInt: Int) {
+        viewModelScope.launch {
+            _habitState.update { state ->
+                val updatedFilters = FilterRepository.apply {
+                    filterByTitle = state.filters.filterByTitle
+                    val priority = HabitPriority.values()[priorityInt]
+                    filterByPriority = priority
+                }
+                state.copy(
+                    filters = updatedFilters
+                )
+            }
         }
     }
 
@@ -78,7 +85,7 @@ class HabitListViewModel : ViewModel() {
             val filteredHabits = _habitState.value.filteredHabits
             _habitState.update { state ->
                 state.copy(
-                    allHabits = filteredHabits
+                    habitList = filteredHabits
                 )
             }
             _goBack.emit()
@@ -88,11 +95,17 @@ class HabitListViewModel : ViewModel() {
     }
 
     fun cancelFilter() {
-        _habitState.update { state ->
-            state.copy(
-             filterByTitle = "",
-             filterByPriority = HabitPriority.CHOOSE
-            )
+        viewModelScope.launch {
+            _habitState.update { state ->
+                val canceledFilters = FilterRepository.apply {
+                    filterByTitle = ""
+                    filterByPriority = HabitPriority.CHOOSE
+                }
+                state.copy(
+                    habitList = state.originalList,
+                    filters = canceledFilters
+                )
+            }
         }
     }
 

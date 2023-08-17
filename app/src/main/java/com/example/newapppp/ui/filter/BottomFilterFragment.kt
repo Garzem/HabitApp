@@ -29,9 +29,9 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
         setupCancelFilterButton()
         binding.apply {
             with(viewModel) {
-                findHabitByName.editText?.setText(habitState.value.filterByTitle)
+                findHabitByName.editText?.setText(habitState.value.filters.filterByTitle)
                 val autoCompleteTextView = findHabitByPriority.editText as? AutoCompleteTextView
-                autoCompleteTextView?.setText(habitState.value.filterByPriority.toString(), false)
+                autoCompleteTextView?.setText(habitState.value.filters.filterByPriority.toString(), false)
             }
         }
         observeEvents()

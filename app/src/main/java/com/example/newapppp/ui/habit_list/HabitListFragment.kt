@@ -43,9 +43,8 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         val adapter = HabitListAdapter(HabitPriorityMapper(requireContext()), ::openHabitClick)
         binding.recycleViewHabit.adapter = adapter
         habitType?.let {
-            viewModel.onTypeChanged(it)
+            viewModel.setHabitByType(it)
         }
-        viewModel.setHabitByType()
         collectWithLifecycle(viewModel.habitState) { state ->
             adapter.submitList(state.filteredHabits)
         }
