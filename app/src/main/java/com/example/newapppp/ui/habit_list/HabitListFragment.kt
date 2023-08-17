@@ -46,7 +46,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
             viewModel.setHabitByType(it)
         }
         collectWithLifecycle(viewModel.habitState) { state ->
-            adapter.submitList(state.filteredHabits)
+            adapter.submitList(state.habitList)
         }
         filterObserver()
         swipeToDelete(adapter)

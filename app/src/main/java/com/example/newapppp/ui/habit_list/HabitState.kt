@@ -15,7 +15,9 @@ data class HabitState(
 
     val filteredHabits get() =
         habitList.filter { habit ->
-        val matchTitle = habit.title.contains(filters.filterByTitle, ignoreCase = true)
+        val matchTitle = if (filters.filterByTitle.isNotBlank()) {
+            habit.title.contains(filters.filterByTitle, ignoreCase = true)
+        } else { false }
         val matchPriority = habit.priority == filters.filterByPriority
                 && habit.priority != HabitPriority.CHOOSE
         matchPriority || matchTitle
