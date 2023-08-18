@@ -9,13 +9,9 @@ data class HabitState(
     val habitList: List<Habit>,
     val filter: Filter
 ) {
-    val isFilterApplied: Boolean
-        get() =
-            filter.filterByTitle.isNotBlank() || filter.filterByPriority != HabitPriority.CHOOSE
-
     val filteredHabits
         get() =
-            if (isFilterApplied) {
+            if (filter.isFilterApplied) {
                 habitList.filter { habit ->
                     val matchTitle =
                         if (filter.filterByTitle.isNotBlank()) {
