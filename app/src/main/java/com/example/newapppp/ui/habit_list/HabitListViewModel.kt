@@ -20,7 +20,6 @@ class HabitListViewModel : ViewModel() {
     private val _habitState = MutableStateFlow(
         HabitState(
             habitList = emptyList(),
-            originalList = emptyList(),
             filters = FilterRepository
         )
     )
@@ -45,7 +44,6 @@ class HabitListViewModel : ViewModel() {
                 val habitListByType = HabitRepository().getHabitListByType(habitType)
                 state.copy(
                     habitList = habitListByType,
-                    originalList = habitListByType
                 )
             }
         }
@@ -82,12 +80,6 @@ class HabitListViewModel : ViewModel() {
 
     fun getFilteredHabit() {
         if (_habitState.value.isFilterApplied) {
-            val filteredHabits = _habitState.value.filteredHabits
-            _habitState.update { state ->
-                state.copy(
-                    habitList = filteredHabits
-                )
-            }
             _goBack.emit()
         } else {
             _showErrorToast.emit()
@@ -102,7 +94,6 @@ class HabitListViewModel : ViewModel() {
                     filterByPriority = HabitPriority.CHOOSE
                 }
                 state.copy(
-                    habitList = state.originalList,
                     filters = canceledFilters
                 )
             }

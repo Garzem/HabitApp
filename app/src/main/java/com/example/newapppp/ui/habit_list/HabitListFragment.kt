@@ -11,11 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.data.Constants.HABIT_TYPE_KEY
+import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.databinding.HabitListFragmentBinding
 
 import com.example.newapppp.extension.collectWithLifecycle
 import com.example.newapppp.extension.serializable
+import com.example.newapppp.habit_repository.FilterRepository
 import com.example.newapppp.ui.home.HomeFragment
 import com.example.newapppp.ui.home.HomeFragmentDirections
 
@@ -43,11 +45,12 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
 
         val adapter = HabitListAdapter(HabitPriorityMapper(requireContext()), ::openHabitClick)
         binding.recycleViewHabit.adapter = adapter
+
         habitType?.let {
-            viewModel.setHabitByType(it)
+                viewModel.setHabitByType(it)
         }
         collectWithLifecycle(viewModel.habitState) { state ->
-            adapter.submitList(state.habitList)
+            adapter.submitList(state.filteredHabits)
         }
         filterObserver()
         swipeToDelete(adapter)
@@ -58,7 +61,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         findNavController().navigate(action)
     }
 
-    private fun filterObserver () {
+    private fun filterObserver() {
         collectWithLifecycle(viewModel.habitState) { state ->
             (requireParentFragment() as HomeFragment).setupFilterBadge(state.isFilterApplied)
         }
