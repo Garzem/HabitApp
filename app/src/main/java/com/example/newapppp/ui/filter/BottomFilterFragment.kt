@@ -1,18 +1,14 @@
 package com.example.newapppp.ui.filter
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
-import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.databinding.FilterBottomSheetBinding
 import com.example.newapppp.ui.habit_list.HabitListViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -29,16 +25,16 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
         setupCancelFilterButton()
         binding.apply {
             with(viewModel) {
-                findHabitByName.editText?.setText(habitState.value.filters.filterByTitle)
+                findHabitByTitle.editText?.setText(habitState.value.filter.filterByTitle)
                 val autoCompleteTextView = findHabitByPriority.editText as? AutoCompleteTextView
-                autoCompleteTextView?.setText(habitState.value.filters.filterByPriority.toString(), false)
+                autoCompleteTextView?.setText(habitState.value.filter.filterByPriority.toString(), false)
             }
         }
         observeEvents()
     }
 
     private fun clearTextInFindHabit() {
-        val habitByName = binding.findHabitByName
+        val habitByName = binding.findHabitByTitle
         habitByName.setEndIconOnClickListener{
             habitByName.editText?.text?.clear()
         }
@@ -61,8 +57,7 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
 
     private fun setupFilterButton() {
         binding.startFilterButton.setOnClickListener {
-            viewModel.onTitleChanged(binding.findHabitByName.editText?.text.toString())
-            viewModel.getFilteredHabit()
+            viewModel.onFilterClicked(binding.findHabitByTitle.editText?.text.toString())
         }
     }
 

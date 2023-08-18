@@ -1,29 +1,29 @@
 package com.example.newapppp.ui.habit_list
 
+import com.example.newapppp.data.Filter
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitPriority
-import com.example.newapppp.habit_repository.FilterRepository
 
 
 data class HabitState(
     val habitList: List<Habit>,
-    val filters: FilterRepository
+    val filter: Filter
 ) {
     val isFilterApplied: Boolean
         get() =
-            filters.filterByTitle.isNotBlank() || filters.filterByPriority != HabitPriority.CHOOSE
+            filter.filterByTitle.isNotBlank() || filter.filterByPriority != HabitPriority.CHOOSE
 
     val filteredHabits
         get() =
             if (isFilterApplied) {
                 habitList.filter { habit ->
                     val matchTitle =
-                        if (filters.filterByTitle.isNotBlank()) {
-                            habit.title.contains(filters.filterByTitle, ignoreCase = true)
+                        if (filter.filterByTitle.isNotBlank()) {
+                            habit.title.contains(filter.filterByTitle, ignoreCase = true)
                         } else {
                             false
                         }
-                    val matchPriority = habit.priority == filters.filterByPriority
+                    val matchPriority = habit.priority == filter.filterByPriority
                             && habit.priority != HabitPriority.CHOOSE
                     matchPriority || matchTitle
                 }
