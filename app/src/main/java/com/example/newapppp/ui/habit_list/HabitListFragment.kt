@@ -49,6 +49,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         habitType?.let {
                 viewModel.setHabitByType(it)
         }
+        Log.d("HabitListFragment", "${viewModel.habitState.value.filteredHabits}")
         collectWithLifecycle(viewModel.habitState) { state ->
             adapter.submitList(state.filteredHabits)
         }

@@ -1,5 +1,6 @@
 package com.example.newapppp.ui.habit_list
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -80,7 +81,11 @@ class HabitListViewModel : ViewModel() {
 
     fun getFilteredHabit() {
         if (_habitState.value.isFilterApplied) {
+            Log.d("HabitListFragment", "${habitState.value.filteredHabits}")
             _goBack.emit()
+            _habitState.update { state ->
+                state.copy()
+            }
         } else {
             _showErrorToast.emit()
         }
