@@ -28,7 +28,10 @@ class HApp: Application() {
 
         val retrofit = Retrofit.Builder()
             .baseUrl("https://droid-test-server.doubletapp.ru/")
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+
+        habitApi = retrofit.create(HabitApi::class.java)
     }
 }
