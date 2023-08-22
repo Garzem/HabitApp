@@ -12,6 +12,7 @@ import com.example.newapppp.HApp
 import com.example.newapppp.R
 import com.example.newapppp.data.Constants.HABIT_TYPE_KEY
 import com.example.newapppp.data.HabitType
+import com.example.newapppp.data.remote.status.StatusUiState
 import com.example.newapppp.databinding.HabitListFragmentBinding
 
 import com.example.newapppp.extension.collectWithLifecycle
@@ -46,6 +47,13 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
 
         habitType?.let {
                 habitViewModel.fetchHabitList(HApp.habitApi, it)
+        }
+        collectWithLifecycle(habitViewModel.habitState) { state ->
+            when (state.status) {
+                is StatusUiState.Success -> TODO()
+                is StatusUiState.Loading -> TODO()
+                is StatusUiState.Error -> TODO()
+            }
         }
 
         collectWithLifecycle(habitViewModel.habitState) { state ->
