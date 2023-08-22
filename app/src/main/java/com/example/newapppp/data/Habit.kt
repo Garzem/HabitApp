@@ -12,5 +12,5 @@ data class Habit(
     val color: HabitColor,
     val priority: HabitPriority,
     val type: HabitType,
-    val quantity: String
+    val quantity: Int
 ) : Parcelable

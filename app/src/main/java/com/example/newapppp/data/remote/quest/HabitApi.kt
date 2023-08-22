@@ -5,7 +5,5 @@ import retrofit2.http.GET
 interface HabitApi {
 
     @GET("/api/habit")
-    suspend fun getHabitList(): List<HabitResponse> {
-        TODO()
-    }
+    suspend fun getHabitList(): HabitResponse
 }

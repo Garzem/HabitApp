@@ -8,6 +8,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.newapppp.HApp
 import com.example.newapppp.R
 import com.example.newapppp.data.Constants.HABIT_TYPE_KEY
 import com.example.newapppp.data.HabitType
@@ -44,7 +45,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         binding.recycleViewHabit.adapter = adapter
 
         habitType?.let {
-                habitViewModel.setHabitByType(it)
+                habitViewModel.fetchHabitList(HApp.habitApi, it)
         }
 
         collectWithLifecycle(habitViewModel.habitState) { state ->

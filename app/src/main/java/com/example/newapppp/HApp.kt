@@ -1,6 +1,7 @@
 package com.example.newapppp
 
 import android.app.Application
+import com.example.newapppp.data.Constants.BASE_URL
 import com.example.newapppp.data.remote.quest.HabitApi
 import com.example.newapppp.database.AppHabitDataBase
 import okhttp3.OkHttpClient
@@ -8,12 +9,11 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-private const val BASE_URL =
-    "https://droid-test-server.doubletapp.ru/"
 class HApp: Application() {
 
-    lateinit var habitApi: HabitApi
-
+    companion object {
+        lateinit var habitApi: HabitApi
+    }
 
     override fun onCreate() {
         super.onCreate()
