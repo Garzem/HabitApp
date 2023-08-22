@@ -5,8 +5,8 @@ import retrofit2.http.GET
 
 interface HabitApi {
 
-    @GET("https://droid-test-server.doubletapp.ru/api/habit")
-    suspend fun getHabitList(): Deferred<List<HabitListResponse>> {
+    @GET("/api/habit")
+    suspend fun getHabitList(): List<HabitListResponse> {
         TODO()
     }
 }

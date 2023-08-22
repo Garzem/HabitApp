@@ -8,9 +8,12 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+private const val BASE_URL =
+    "https://droid-test-server.doubletapp.ru/"
 class HApp: Application() {
 
     lateinit var habitApi: HabitApi
+
 
     override fun onCreate() {
         super.onCreate()
@@ -27,7 +30,7 @@ class HApp: Application() {
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://droid-test-server.doubletapp.ru/")
+            .baseUrl(BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
