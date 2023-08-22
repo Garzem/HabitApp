@@ -3,11 +3,13 @@ package com.example.newapppp.ui.habit_list
 import com.example.newapppp.data.Filter
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitPriority
+import com.example.newapppp.data.remote.status.StatusUiState
 
 
 data class HabitState(
     val habitList: List<Habit>,
-    val filter: Filter
+    val filter: Filter,
+    val status: StatusUiState
 ) {
     val filteredHabits
         get() =

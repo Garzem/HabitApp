@@ -1,13 +1,13 @@
 package com.example.newapppp.ui.habit_list
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.newapppp.data.Filter
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.data.remote.quest.HabitApi
+import com.example.newapppp.data.remote.status.StatusUiState
 import com.example.newapppp.habit_repository.FilterRepository
 import com.example.newapppp.habit_repository.HabitRepository
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
 
 class HabitListViewModel : ViewModel() {
 
@@ -31,8 +30,9 @@ class HabitListViewModel : ViewModel() {
             habitList = emptyList(),
             filter = Filter(
                 filterByTitle = "",
-                filterByPriority = HabitPriority.CHOOSE
-            )
+                filterByPriority = HabitPriority.CHOOSE,
+            ),
+            status = StatusUiState.Loading
         )
     )
 
@@ -69,13 +69,15 @@ class HabitListViewModel : ViewModel() {
                 }
                 _habitState.update { state ->
                     state.copy(
-                        habitList = filteredByType
+                        habitList = filteredByType,
+                        status = StatusUiState.Success
                     )
                 }
             } catch (e: Exception) {
                     _habitState.update { state ->
                         state.copy(
                             habitList = HabitRepository().getHabitListByType(habitType),
+                            status = StatusUiState.Error
                         )
                 }
             }
