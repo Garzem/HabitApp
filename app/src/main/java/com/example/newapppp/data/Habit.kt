@@ -8,9 +8,9 @@ data class Habit(
     val id: String,
     val title: String,
     val description: String,
-    val period: String,
+    val creationDate: String,
     val color: HabitColor,
     val priority: HabitPriority,
     val type: HabitType,
-    val quantity: Int
+    val frequency: Int
 ) : Parcelable

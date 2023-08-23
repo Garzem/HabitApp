@@ -1,18 +1,15 @@
 package com.example.newapppp.ui.habit_list
 
 import androidx.lifecycle.ViewModel
-import com.example.newapppp.data.Filter
+import androidx.lifecycle.viewModelScope
+import com.example.newapppp.data.Constants.TOKEN
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.data.remote.quest.HabitApi
-import com.example.newapppp.data.remote.status.StatusUiState
 import com.example.newapppp.habit_repository.FilterRepository
 import com.example.newapppp.habit_repository.HabitRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,64 +20,67 @@ import kotlinx.coroutines.launch
 
 class HabitListViewModel : ViewModel() {
 
-    private val job = Job()
-
-    private val _habitState = MutableStateFlow(
-        HabitState(
-            habitList = emptyList(),
-            filter = Filter(
-                filterByTitle = "",
-                filterByPriority = HabitPriority.CHOOSE,
-            ),
-            status = StatusUiState.Loading
-        )
-    )
+    private val _habitState = MutableStateFlow<HabitState>(HabitState.Loading)
 
     val habitState: StateFlow<HabitState> = _habitState.asStateFlow()
 
-    private val viewModelScope = CoroutineScope(Dispatchers.IO + job)
-
     init {
-        FilterRepository.filter.onEach { filter ->
+        FilterRepository.filterFlow.onEach { filter ->
             _habitState.update { state ->
-                state.copy(filter = filter)
+                if (state is HabitState.Success) state.copy(filter = filter)
+                else state
             }
         }.launchIn(viewModelScope)
     }
 
     fun fetchHabitList(habitApi: HabitApi, habitType: HabitType) {
         viewModelScope.launch {
+            _habitState.update { HabitState.Loading }
             try {
-                val habitListResponse = habitApi.getHabitList()
-                val habitListRemote = habitListResponse.items.map { item ->
+                val habitListResponse = habitApi.getHabitList(TOKEN)
+                val habitListRemote = habitListResponse.map { item ->
                     Habit(
                         id = item.id,
                         title = item.title,
                         description = item.description,
-                        period = item.date.toString(),
+                        creationDate = convertIntToDate(item.creationDate),
                         color = HabitColor.values().getOrNull(item.color) ?: HabitColor.ORANGE,
                         priority = HabitPriority.values().getOrNull(item.priority) ?: HabitPriority.CHOOSE,
                         type = HabitType.values().getOrNull(item.type) ?: HabitType.GOOD,
-                        quantity = item.frequency
+                        frequency = item.frequency
                     )
                 }
+
                 val filteredByType = habitListRemote.filter { habit ->
                     habit.type == habitType
                 }
-                _habitState.update { state ->
-                    state.copy(
+                _habitState.update {
+                    HabitState.Success(
                         habitList = filteredByType,
-                        status = StatusUiState.Success
+                        filter = FilterRepository.filterFlow.value
                     )
                 }
             } catch (e: Exception) {
-                    _habitState.update { state ->
-                        state.copy(
+                    _habitState.update {
+                        HabitState.Success(
                             habitList = HabitRepository().getHabitListByType(habitType),
-                            status = StatusUiState.Error
+                            filter = FilterRepository.filterFlow.value
                         )
                 }
             }
+        }
+    }
+
+    private fun convertIntToDate(dateInt: Int): String {
+        val dateString = dateInt.toString()
+        return if (dateString.length == 8) {
+            val day = dateString.substring(0, 2)
+            val month = dateString.substring(2, 4)
+            val year = dateString.substring(4, 8)
+
+            "$day/$month/$year"
+        } else {
+            ""
         }
     }
 
@@ -88,20 +88,5 @@ class HabitListViewModel : ViewModel() {
         viewModelScope.launch {
             HabitRepository().deleteHabitById(id)
         }
-    }
-
-//    fun setHabitByType(habitType: HabitType) {
-//        viewModelScope.launch {
-//            _habitState.update { state ->
-//                state.copy(
-//                    habitList = HabitRepository().getHabitListByType(habitType),
-//                )
-//            }
-//        }
-//    }
-
-    override fun onCleared() {
-        super.onCleared()
-        job.cancel()
     }
 }

@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import java.util.UUID
 
 class RedactorFragmentViewModel : ViewModel() {
@@ -24,13 +27,12 @@ class RedactorFragmentViewModel : ViewModel() {
             titleCursorPosition = 0,
             description = "",
             descriptionCursorPosition = 0,
-            period = "",
-            periodCursorPosition = 0,
+            creationDate = null,
             color = HabitColor.ORANGE,
             priorityPosition = 0,
             type = 0,
-            quantity = "",
-            quantityCursorPosition = 0
+            frequency = 0,
+            frequencyCursorPosition = 0
         )
     )
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -51,13 +53,12 @@ class RedactorFragmentViewModel : ViewModel() {
                     titleCursorPosition = 0,
                     description = habit.description,
                     descriptionCursorPosition = 0,
-                    period = habit.period,
-                    periodCursorPosition = 0,
+                    creationDate = habit.creationDate,
                     color = habit.color,
                     priorityPosition = getPositionPriority(habit.priority),
                     type = getPositionType(habit.type),
-                    quantity = habit.quantity,
-                    quantityCursorPosition = 0
+                    frequency = habit.frequency,
+                    frequencyCursorPosition = 0
                 )
             }
         }
@@ -98,22 +99,19 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
-    fun onQuantityChanged(quantity: String, cursorPosition: Int) {
+    fun onFrequencyChanged(frequency: Int, cursorPosition: Int) {
         _uiState.update { state ->
             state.copy(
-                quantity = quantity,
-                quantityCursorPosition = cursorPosition
+                frequency = frequency,
+                frequencyCursorPosition = cursorPosition
             )
         }
     }
 
-    fun onPeriodChanged(period: String, cursorPosition: Int) {
-        _uiState.update { state ->
-            state.copy(
-                period = period,
-                periodCursorPosition = cursorPosition
-            )
-        }
+    private fun getCurrentDate(): String {
+        val currentDate = Calendar.getInstance().time
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return dateFormat.format(currentDate)
     }
 
     fun setupType(type: HabitType) {
@@ -178,11 +176,11 @@ class RedactorFragmentViewModel : ViewModel() {
                     id = id ?: UUID.randomUUID().toString(),
                     title = title,
                     description = description,
-                    period = period,
+                    creationDate = creationDate ?: getCurrentDate(),
                     color = color,
                     priority = getChosenPriority(priorityPosition),
                     type = getChosenType(type),
-                    quantity = quantity
+                    frequency = frequency
                 )
             }
             viewModelScope.launch {
@@ -199,9 +197,8 @@ class RedactorFragmentViewModel : ViewModel() {
             currentState.run {
                 title.isNotBlank()
                         && description.isNotBlank()
-                        && period.isNotBlank()
                         && priorityPosition != HabitPriority.CHOOSE.ordinal
-                        && quantity.isNotBlank()
+                        && frequency != 0
             }
         }
     }

@@ -9,11 +9,11 @@ data class UiState(
     val titleCursorPosition: Int,
     val description: String,
     val descriptionCursorPosition: Int,
-    val period: String,
-    val periodCursorPosition: Int,
+    val creationDate: String?,
+//    val creationDateCursorPosition: Int,
     val color: HabitColor,
     val priorityPosition: Int,
     val type: Int,
-    val quantity: String,
-    val quantityCursorPosition: Int
+    val frequency: Int,
+    val frequencyCursorPosition: Int
 ) : Serializable

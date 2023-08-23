@@ -2,12 +2,10 @@ package com.example.newapppp.data.remote.quest
 
 import com.google.gson.annotations.SerializedName
 
-data class HabitResponse(val items: List<HabitItem>)
-
-data class HabitItem(
+data class HabitServer(
     val color: Int,
     val count: Int,
-    val date: Int,
+    val creationDate: Int,
     val description: String,
     val done_dates: List<Int>,
     val frequency: Int,

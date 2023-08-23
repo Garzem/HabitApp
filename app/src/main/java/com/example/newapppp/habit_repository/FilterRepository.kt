@@ -5,7 +5,7 @@ import com.example.newapppp.data.HabitPriority
 import kotlinx.coroutines.flow.MutableStateFlow
 
 object FilterRepository {
-    val filter = MutableStateFlow(
+    val filterFlow = MutableStateFlow(
         Filter(
             filterByTitle = "",
             filterByPriority = HabitPriority.CHOOSE

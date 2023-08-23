@@ -14,11 +14,11 @@ class HabitViewHolder(
         binding.apply {
             title.text = habit.title
             description.text = habit.description
-            period.text = habit.period
+            creationDate.text = habit.creationDate
             colorMain.setBackgroundResource(habit.color.getBackGroundResId())
             colorSupport.setBackgroundResource(habit.color.getBackGroundResId())
             priority.text = habitPriorityMapper.getPriorityName(habit.priority)
-            quantity.text = habit.quantity
+            frequency.text = habit.frequency.toString()
             root.setOnClickListener {
                 openHabitClick(habit.id)
             }

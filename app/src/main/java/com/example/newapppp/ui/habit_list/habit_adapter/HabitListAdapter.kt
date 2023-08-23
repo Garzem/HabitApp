@@ -1,12 +1,11 @@
-package com.example.newapppp.ui.habit_list
+package com.example.newapppp.ui.habit_list.habit_adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.newapppp.data.Habit
 import com.example.newapppp.databinding.ItemLayoutBinding
-import com.example.newapppp.ui.habit_list.habit_adapter.HabitDiffUtilCallback
-import com.example.newapppp.ui.habit_list.habit_adapter.HabitViewHolder
+import com.example.newapppp.ui.habit_list.HabitPriorityMapper
 
 class HabitListAdapter(
     private val habitPriorityMapper: HabitPriorityMapper,

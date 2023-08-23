@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 
 class BottomFilterViewModel: ViewModel() {
 
-    val filterState = FilterRepository.filter.asStateFlow()
+    val filterState = FilterRepository.filterFlow.asStateFlow()
 
     private var selectedPriority = HabitPriority.CHOOSE
 
@@ -30,7 +30,7 @@ class BottomFilterViewModel: ViewModel() {
         if (title.isBlank() && selectedPriority == HabitPriority.CHOOSE) {
             _showErrorToast.emit()
         } else {
-            FilterRepository.filter.update { filter ->
+            FilterRepository.filterFlow.update { filter ->
                 filter.copy(
                     filterByTitle = title,
                     filterByPriority = selectedPriority
@@ -41,7 +41,7 @@ class BottomFilterViewModel: ViewModel() {
     }
 
     fun cancelFilter() {
-        FilterRepository.filter.update {
+        FilterRepository.filterFlow.update {
             Filter(
                 filterByTitle = "",
                 filterByPriority = HabitPriority.CHOOSE

@@ -1,7 +1,6 @@
 package com.example.newapppp.ui.redactor
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -30,8 +29,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         super.onViewCreated(view, savedInstanceState)
         setupTitleText()
         setupDescriptionText()
-        setupQuantityText()
-        setupPeriodText()
+        setupFrequencyText()
         setupPrioritySpinner()
         setupRadioButtons()
         setupColorButton()
@@ -65,18 +63,13 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         )
     }
 
-    private fun setupQuantityText() {
-        binding.editQuantity.addTextChangedListener(
+    private fun setupFrequencyText() {
+        binding.editFrequency.addTextChangedListener(
             onTextChanged = { text, start, _, count ->
-                redactorViewModel.onQuantityChanged(text.toString(), start + count)
-            }
-        )
-    }
-
-    private fun setupPeriodText() {
-        binding.editPeriod.addTextChangedListener(
-            onTextChanged = { text, start, _, count ->
-                redactorViewModel.onPeriodChanged(text.toString(), start + count)
+                val frequency = text.toString().toIntOrNull()
+                if (frequency != null) {
+                    redactorViewModel.onFrequencyChanged(frequency, start + count)
+                }
             }
         )
     }
@@ -178,8 +171,6 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         binding.editTitle.setSelection(uiState.titleCursorPosition)
         binding.editDescription.setText(uiState.description)
         binding.editDescription.setSelection(uiState.descriptionCursorPosition)
-        binding.editPeriod.setText(uiState.period)
-        binding.editPeriod.setSelection(uiState.periodCursorPosition)
 
         binding.chooseColorButton.setBackgroundResource(uiState.color.getBackGroundResId())
         binding.spinnerPriority.setSelection(uiState.priorityPosition)
@@ -189,8 +180,8 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         } else {
             binding.radioBad.isChecked = true
         }
-        binding.editQuantity.setText(uiState.quantity)
-        binding.editQuantity.setSelection(uiState.quantityCursorPosition)
+        binding.editFrequency.setText(uiState.frequency)
+        binding.editFrequency.setSelection(uiState.frequencyCursorPosition)
     }
 }
 

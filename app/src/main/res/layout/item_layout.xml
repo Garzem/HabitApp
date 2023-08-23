@@ -38,7 +38,7 @@
         android:elevation="@dimen/elevation" />
 
     <TextView
-        android:id="@+id/quantity"
+        android:id="@+id/frequency"
         app:layout_constraintTop_toTopOf="@+id/color_main"
         app:layout_constraintEnd_toEndOf="@+id/color_main"
         app:layout_constraintBottom_toBottomOf="@id/color_main"
@@ -71,12 +71,12 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/period"
+        android:id="@+id/creation_date"
         app:layout_constraintBottom_toBottomOf="@+id/color_support"
         app:layout_constraintStart_toStartOf="@+id/color_support"
         android:layout_margin="@dimen/large_margin"
         android:textColor="@color/colorGreyLight"
-        android:text="@string/period"
+        android:text="@string/creation_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

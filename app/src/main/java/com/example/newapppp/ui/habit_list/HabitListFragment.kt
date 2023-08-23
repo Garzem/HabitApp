@@ -2,6 +2,7 @@ package com.example.newapppp.ui.habit_list
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -12,11 +13,11 @@ import com.example.newapppp.HApp
 import com.example.newapppp.R
 import com.example.newapppp.data.Constants.HABIT_TYPE_KEY
 import com.example.newapppp.data.HabitType
-import com.example.newapppp.data.remote.status.StatusUiState
 import com.example.newapppp.databinding.HabitListFragmentBinding
 
 import com.example.newapppp.extension.collectWithLifecycle
 import com.example.newapppp.extension.serializable
+import com.example.newapppp.ui.habit_list.habit_adapter.HabitListAdapter
 import com.example.newapppp.ui.home.HomeFragment
 import com.example.newapppp.ui.home.HomeFragmentDirections
 
@@ -46,18 +47,19 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         binding.recycleViewHabit.adapter = adapter
 
         habitType?.let {
-                habitViewModel.fetchHabitList(HApp.habitApi, it)
+            habitViewModel.fetchHabitList(HApp.habitApi, it)
         }
         collectWithLifecycle(habitViewModel.habitState) { state ->
-            when (state.status) {
-                is StatusUiState.Success -> TODO()
-                is StatusUiState.Loading -> TODO()
-                is StatusUiState.Error -> TODO()
-            }
-        }
+            when (state) {
+                is HabitState.Success -> {
+                    binding.progressBar.isVisible = true
+                    adapter.submitList(state.filteredHabits)
+                }
 
-        collectWithLifecycle(habitViewModel.habitState) { state ->
-            adapter.submitList(state.filteredHabits)
+                is HabitState.Loading -> {
+                    binding.progressBar.isVisible = false
+                }
+            }
         }
         filterObserver()
         swipeToDelete(adapter)
@@ -70,7 +72,9 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
 
     private fun filterObserver() {
         collectWithLifecycle(habitViewModel.habitState) { state ->
-            (requireParentFragment() as HomeFragment).setupFilterBadge(state.filter.isFilterApplied)
+            (requireParentFragment() as HomeFragment).setupFilterBadge(
+                state is HabitState.Success && state.filter.isFilterApplied
+            )
         }
     }
 

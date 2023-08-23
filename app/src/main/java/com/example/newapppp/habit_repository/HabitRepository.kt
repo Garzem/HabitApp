@@ -26,49 +26,16 @@ class HabitRepository {
         }
     }
 
-//    suspend fun getAllHabits(): List<Habit> {
-//        val allHabits = AppHabitDataBase.habitDao.getAllHabits()
-//        return allHabits.map {
-//            convertHabitEntityToHabit(it)
-//        }
-//    }
-
-    suspend fun getFilteredHabitByTitle(titleFilter: String, type: HabitType): List<Habit> {
-        val filteredHabit =
-            AppHabitDataBase.habitDao.getFilteredHabitByTitle(titleFilter, type)
-        return filteredHabit.map {
-            convertHabitEntityToHabit(it)
-        }
-    }
-
-    suspend fun getFilteredHabitListByPriority(priorityFilter: String, type: HabitType):
-            List<Habit> {
-        val filteredHabitList =
-            AppHabitDataBase.habitDao.getHabitListByPriority(priorityFilter, type)
-        return filteredHabitList.map {
-            convertHabitEntityToHabit(it)
-        }
-    }
-
-    suspend fun getHabitListByTitleAndPriority(titleFilter: String, priorityFilter: String, type: HabitType):
-            List<Habit> {
-        val filteredHabitList =
-            AppHabitDataBase.habitDao.getHabitListByTitleAndPriority(titleFilter, priorityFilter, type)
-        return filteredHabitList.map {
-            convertHabitEntityToHabit(it)
-        }
-    }
-
     private fun convertHabitToHabitEntity(habit: Habit): HabitEntity {
         return HabitEntity(
             id = habit.id,
             title = habit.title,
             description = habit.description,
-            period = habit.period,
+            creationDate = habit.creationDate,
             color = habit.color,
             priority = habit.priority,
             type = habit.type,
-            quantity = habit.quantity,
+            frequency = habit.frequency,
         )
     }
 
@@ -77,11 +44,11 @@ class HabitRepository {
             id = habitEntity.id,
             title = habitEntity.title,
             description = habitEntity.description,
-            period = habitEntity.period,
+            creationDate = habitEntity.creationDate,
             color = habitEntity.color,
             priority = habitEntity.priority,
             type = habitEntity.type,
-            quantity = habitEntity.quantity,
+            frequency = habitEntity.frequency,
         )
     }
 }

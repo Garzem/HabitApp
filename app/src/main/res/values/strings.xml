@@ -28,7 +28,7 @@
     <string name="bad_habit">Вредная</string>
     <string name="good_habit">Полезная</string>
 
-    <string name="quantity_doing_habit">Количество выполнения</string>
+    <string name="quantity_doing_habit">Частота выполнений</string>
     <string name="execution_frequency">Периодичность выполнения</string>
 
     <string name="save">Сохранить</string>
@@ -44,7 +44,7 @@
     <string name="title">title</string>
     <string name="priority">priority</string>
     <string name="type">type</string>
-    <string name="period">3 раза в неделю</string>
+    <string name="creation_date">Date of creation</string>
     <string name="colorText">Цвет</string>
     <string name="info_about_app">О приложении</string>
     <string name="home_page_title">Главная</string>
