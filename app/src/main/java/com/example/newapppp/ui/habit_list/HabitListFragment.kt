@@ -52,12 +52,12 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         collectWithLifecycle(habitViewModel.habitState) { state ->
             when (state) {
                 is HabitState.Success -> {
-                    binding.progressBar.isVisible = true
+                    binding.progressBar.isVisible = false
                     adapter.submitList(state.filteredHabits)
                 }
 
                 is HabitState.Loading -> {
-                    binding.progressBar.isVisible = false
+                    binding.progressBar.isVisible = true
                 }
             }
         }

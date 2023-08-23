@@ -5,10 +5,18 @@ import com.example.newapppp.data.HabitType
 import com.example.newapppp.database.AppHabitDataBase
 import com.example.newapppp.database.HabitEntity
 
+
 class HabitRepository {
     suspend fun saveHabit(habit: Habit) {
         val convertedHabit = convertHabitToHabitEntity(habit)
         AppHabitDataBase.habitDao.upsertHabit(convertedHabit)
+    }
+
+    suspend fun sendHabitList(habitList: List<Habit>) {
+        val convertedHabitList = habitList.map { habit ->
+            convertHabitToHabitEntity(habit)
+        }
+        AppHabitDataBase.habitDao.sendHabitList(convertedHabitList)
     }
 
     suspend fun deleteHabitById(habitId: String) {

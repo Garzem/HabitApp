@@ -45,12 +45,13 @@ class HabitListViewModel : ViewModel() {
                         description = item.description,
                         creationDate = convertIntToDate(item.creationDate),
                         color = HabitColor.values().getOrNull(item.color) ?: HabitColor.ORANGE,
-                        priority = HabitPriority.values().getOrNull(item.priority) ?: HabitPriority.CHOOSE,
+                        priority = HabitPriority.values().getOrNull(item.priority)
+                            ?: HabitPriority.CHOOSE,
                         type = HabitType.values().getOrNull(item.type) ?: HabitType.GOOD,
                         frequency = item.frequency
                     )
                 }
-
+                HabitRepository().sendHabitList(habitListRemote)
                 val filteredByType = habitListRemote.filter { habit ->
                     habit.type == habitType
                 }
@@ -61,11 +62,11 @@ class HabitListViewModel : ViewModel() {
                     )
                 }
             } catch (e: Exception) {
-                    _habitState.update {
-                        HabitState.Success(
-                            habitList = HabitRepository().getHabitListByType(habitType),
-                            filter = FilterRepository.filterFlow.value
-                        )
+                _habitState.update {
+                    HabitState.Success(
+                        habitList = HabitRepository().getHabitListByType(habitType),
+                        filter = FilterRepository.filterFlow.value
+                    )
                 }
             }
         }
