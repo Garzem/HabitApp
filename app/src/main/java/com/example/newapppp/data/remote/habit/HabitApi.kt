@@ -1,4 +1,4 @@
-package com.example.newapppp.data.remote.quest
+package com.example.newapppp.data.remote.habit
 
 import retrofit2.http.GET
 import retrofit2.http.Header

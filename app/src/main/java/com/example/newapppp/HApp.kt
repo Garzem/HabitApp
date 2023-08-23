@@ -2,7 +2,7 @@ package com.example.newapppp
 
 import android.app.Application
 import com.example.newapppp.data.Constants.BASE_URL
-import com.example.newapppp.data.remote.quest.HabitApi
+import com.example.newapppp.data.remote.habit.HabitApi
 import com.example.newapppp.database.AppHabitDataBase
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

@@ -1,4 +1,4 @@
-package com.example.newapppp.data.remote.quest
+package com.example.newapppp.data.remote.habit
 
 import com.google.gson.annotations.SerializedName
 

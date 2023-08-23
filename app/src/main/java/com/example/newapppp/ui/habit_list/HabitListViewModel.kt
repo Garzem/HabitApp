@@ -7,7 +7,7 @@ import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
-import com.example.newapppp.data.remote.quest.HabitApi
+import com.example.newapppp.data.remote.habit.HabitApi
 import com.example.newapppp.habit_repository.FilterRepository
 import com.example.newapppp.habit_repository.HabitRepository
 import kotlinx.coroutines.flow.MutableStateFlow
