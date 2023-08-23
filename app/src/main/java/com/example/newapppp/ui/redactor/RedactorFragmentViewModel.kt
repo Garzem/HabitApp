@@ -3,10 +3,13 @@ package com.example.newapppp.ui.redactor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.newapppp.HApp
+import com.example.newapppp.data.Constants.TOKEN
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
+import com.example.newapppp.data.remote.habit.HabitRequest
 import com.example.newapppp.habit_repository.HabitRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,16 +32,20 @@ class RedactorFragmentViewModel : ViewModel() {
             descriptionCursorPosition = 0,
             creationDate = null,
             color = HabitColor.ORANGE,
-            priorityPosition = 0,
+            priority = 0,
             type = 0,
-            frequency = 0,
+            frequency = "",
             frequencyCursorPosition = 0
         )
     )
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
-    private val _showErrorToast = SingleLiveEvent<Unit>()
-    val showErrorToast: LiveData<Unit> get() = _showErrorToast
+    private val _showValidationError = SingleLiveEvent<Unit>()
+    val showValidationError: LiveData<Unit> get() = _showValidationError
+
+    private val _showSendingError = SingleLiveEvent<Unit>()
+
+    val showSendingError: LiveData<Unit> get() = _showSendingError
 
     private val _goBack = SingleLiveEvent<Unit>()
     val goBack: LiveData<Unit> get() = _goBack
@@ -55,9 +62,9 @@ class RedactorFragmentViewModel : ViewModel() {
                     descriptionCursorPosition = 0,
                     creationDate = habit.creationDate,
                     color = habit.color,
-                    priorityPosition = getPositionPriority(habit.priority),
+                    priority = getPositionPriority(habit.priority),
                     type = getPositionType(habit.type),
-                    frequency = habit.frequency,
+                    frequency = habit.frequency.toString(),
                     frequencyCursorPosition = 0
                 )
             }
@@ -99,19 +106,13 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
-    fun onFrequencyChanged(frequency: Int, cursorPosition: Int) {
+    fun onFrequencyChanged(frequency: String, cursorPosition: Int) {
         _uiState.update { state ->
             state.copy(
                 frequency = frequency,
                 frequencyCursorPosition = cursorPosition
             )
         }
-    }
-
-    private fun getCurrentDate(): String {
-        val currentDate = Calendar.getInstance().time
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        return dateFormat.format(currentDate)
     }
 
     fun setupType(type: HabitType) {
@@ -125,7 +126,7 @@ class RedactorFragmentViewModel : ViewModel() {
     fun onNewPrioritySelected(priorityPosition: Int) {
         _uiState.update { state ->
             state.copy(
-                priorityPosition = priorityPosition
+                priority = priorityPosition
             )
         }
     }
@@ -178,17 +179,38 @@ class RedactorFragmentViewModel : ViewModel() {
                     description = description,
                     creationDate = creationDate ?: getCurrentDate(),
                     color = color,
-                    priority = getChosenPriority(priorityPosition),
+                    priority = getChosenPriority(priority),
                     type = getChosenType(type),
-                    frequency = frequency
+                    frequency = frequency.toInt()
                 )
             }
-            viewModelScope.launch {
+            saveOrUpdateHabitToServer(habit)
+        } else {
+            _showValidationError.emit()
+        }
+    }
+
+    private fun saveOrUpdateHabitToServer(habit: Habit) {
+        viewModelScope.launch {
+            val habitRequest = HabitRequest(
+                color = HabitColor.values().indexOf(habit.color),
+                count = 0,
+                creationDate = convertDateToInt(habit.creationDate),
+                description = habit.description,
+                done_dates = emptyList(),
+                frequency = habit.frequency,
+                priority = HabitPriority.values().indexOf(habit.priority),
+                title = habit.title,
+                type = HabitType.values().indexOf(habit.type),
+                id = habit.id
+            )
+            try {
+                HApp.habitApi.putHabit(TOKEN, habitRequest)
                 HabitRepository().saveHabit(habit)
                 _goBack.emit()
+            } catch (e: Exception) {
+                _showSendingError.emit()
             }
-        } else {
-            _showErrorToast.emit()
         }
     }
 
@@ -197,9 +219,30 @@ class RedactorFragmentViewModel : ViewModel() {
             currentState.run {
                 title.isNotBlank()
                         && description.isNotBlank()
-                        && priorityPosition != HabitPriority.CHOOSE.ordinal
-                        && frequency != 0
+                        && priority != HabitPriority.CHOOSE.ordinal
+                        && frequency != ""
             }
         }
+    }
+
+    private fun getCurrentDate(): String {
+        val currentDate = Calendar.getInstance().time
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return dateFormat.format(currentDate)
+    }
+
+    private fun convertDateToInt(dateString: String): Int {
+        val parts = dateString.split("/")
+        if (parts.size == 3) {
+            val day = parts[0]
+            val month = parts[1]
+            val year = parts[2]
+
+            val dateInt = "$day$month$year".toIntOrNull()
+            if (dateInt != null) {
+                return dateInt
+            }
+        }
+        return 20122020
     }
 }

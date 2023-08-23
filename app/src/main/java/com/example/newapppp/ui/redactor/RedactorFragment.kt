@@ -66,10 +66,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
     private fun setupFrequencyText() {
         binding.editFrequency.addTextChangedListener(
             onTextChanged = { text, start, _, count ->
-                val frequency = text.toString().toIntOrNull()
-                if (frequency != null) {
-                    redactorViewModel.onFrequencyChanged(frequency, start + count)
-                }
+                    redactorViewModel.onFrequencyChanged(text.toString(), start + count)
             }
         )
     }
@@ -152,14 +149,22 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
 
     private fun observeEvents() {
-        redactorViewModel.showErrorToast.observe(viewLifecycleOwner) {
-            Toast.makeText(
-                requireContext(),
-                R.string.fill_the_line,
-                Toast.LENGTH_SHORT
-            ).show()
-        }
         redactorViewModel.apply {
+            showValidationError.observe(viewLifecycleOwner) {
+                Toast.makeText(
+                    requireContext(),
+                    R.string.fill_the_line,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            showSendingError.observe(viewLifecycleOwner) {
+                Toast.makeText(
+                    requireContext(),
+                    R.string.error_with_sending_habit_to_server,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
             goBack.observe(viewLifecycleOwner) {
                 findNavController().popBackStack()
             }
@@ -173,14 +178,14 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         binding.editDescription.setSelection(uiState.descriptionCursorPosition)
 
         binding.chooseColorButton.setBackgroundResource(uiState.color.getBackGroundResId())
-        binding.spinnerPriority.setSelection(uiState.priorityPosition)
+        binding.spinnerPriority.setSelection(uiState.priority)
 
         if (uiState.type == 0) {
             binding.radioGood.isChecked = true
         } else {
             binding.radioBad.isChecked = true
         }
-        binding.editFrequency.setText(uiState.frequency)
+        binding.editFrequency.setText(uiState.frequency.toString())
         binding.editFrequency.setSelection(uiState.frequencyCursorPosition)
     }
 }

@@ -10,10 +10,9 @@ data class UiState(
     val description: String,
     val descriptionCursorPosition: Int,
     val creationDate: String?,
-//    val creationDateCursorPosition: Int,
     val color: HabitColor,
-    val priorityPosition: Int,
+    val priority: Int,
     val type: Int,
-    val frequency: Int,
+    val frequency: String,
     val frequencyCursorPosition: Int
 ) : Serializable

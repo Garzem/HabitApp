@@ -5,7 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class HabitRequest(
     val color: Int,
     val count: Int,
-    val date: Int,
+    @SerializedName("date")
+    val creationDate: Int,
     val description: String,
     val done_dates: List<Int>,
     val frequency: Int,
