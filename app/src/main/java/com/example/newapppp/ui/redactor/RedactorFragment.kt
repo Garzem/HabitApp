@@ -118,7 +118,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
     private fun setupButtons() {
         binding.saveHabit.setOnClickListener {
-            redactorViewModel.saveHabit()
+            redactorViewModel.saveOrUpdateHabitToServer()
         }
         binding.deleteHabit.apply {
             setOnClickListener {
