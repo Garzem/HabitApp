@@ -4,10 +4,12 @@ import android.app.Application
 import com.example.newapppp.data.Constants.BASE_URL
 import com.example.newapppp.data.remote.habit.HabitApi
 import com.example.newapppp.database.AppHabitDataBase
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class HApp: Application() {
 
@@ -32,7 +34,7 @@ class HApp: Application() {
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
             .build()
 
         habitApi = retrofit.create(HabitApi::class.java)

@@ -1,11 +1,13 @@
 package com.example.newapppp.data.remote.habit
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class HabitRequest(
     val color: Int,
     val count: Int,
-    @SerializedName("date")
+    @SerialName(value = "date")
     val creationDate: Int,
     val description: String,
     val done_dates: List<Int>,
@@ -13,6 +15,6 @@ data class HabitRequest(
     val priority: Int,
     val title: String,
     val type: Int,
-    @SerializedName("uid")
+    @SerialName(value = "uid")
     val id: String
 )

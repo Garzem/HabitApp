@@ -10,6 +10,7 @@ import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
+import com.example.newapppp.data.remote.habit.HabitDone
 import com.example.newapppp.data.remote.habit.HabitRequest
 import com.example.newapppp.habit_repository.HabitRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -186,58 +187,37 @@ class RedactorFragmentViewModel : ViewModel() {
                 )
             }
             viewModelScope.launch {
-                val habitRequest = HabitRequest(
-                    color = HabitColor.values().indexOf(habit.color),
-                    count = 0,
+                val habitDone = HabitDone(
                     creationDate = convertDateToInt(habit.creationDate),
-                    description = habit.description,
-                    done_dates = emptyList(),
-                    frequency = habit.frequency,
-                    priority = HabitPriority.values().indexOf(habit.priority),
-                    title = habit.title,
-                    type = HabitType.values().indexOf(habit.type),
                     id = habit.id
                 )
                 try {
+                    HApp.habitApi.postHabit(TOKEN, habitDone)
+                    val habitRequest = HabitRequest(
+                        color = HabitColor.values().indexOf(habit.color),
+                        count = 0,
+                        creationDate = convertDateToInt(habit.creationDate),
+                        description = habit.description,
+                        done_dates = emptyList(),
+                        frequency = habit.frequency,
+                        priority = HabitPriority.values().indexOf(habit.priority),
+                        title = habit.title,
+                        type = HabitType.values().indexOf(habit.type),
+                        id = habit.id
+                    )
                     HabitRepository().saveHabit(habit)
                     HApp.habitApi.putHabit(TOKEN, habitRequest)
                     _goBack.emit()
+                    Log.e("wrongSending", "$habitDone")
                 } catch (e: Exception) {
                     _showSendingError.emit()
                     Log.e("wrongSending", "An error occurred: ${e.message}")
-                    Log.d("wrongSending", "$habitRequest")
                 }
             }
         } else {
             _showValidationError.emit()
         }
     }
-
-//    private fun saveOrUpdateHabitToServer(habit: Habit) {
-//        viewModelScope.launch {
-//            val habitRequest = HabitRequest(
-//                color = HabitColor.values().indexOf(habit.color),
-//                count = 0,
-//                creationDate = convertDateToInt(habit.creationDate),
-//                description = habit.description,
-//                done_dates = emptyList(),
-//                frequency = habit.frequency,
-//                priority = HabitPriority.values().indexOf(habit.priority),
-//                title = habit.title,
-//                type = HabitType.values().indexOf(habit.type),
-//                id = habit.id
-//            )
-//            try {
-//                HabitRepository().saveHabit(habit)
-//                HApp.habitApi.putHabit(TOKEN, habitRequest)
-//                _goBack.emit()
-//            } catch (e: Exception) {
-//                _showSendingError.emit()
-//                Log.e("wrongSending", "An error occurred: ${e.message}")
-//                Log.d("wrongSending", "$habitRequest")
-//            }
-//        }
-//    }
 
     private fun validation(): Boolean {
         return _uiState.value.let { currentState ->

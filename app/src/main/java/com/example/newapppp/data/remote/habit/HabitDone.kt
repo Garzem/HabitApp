@@ -1,10 +1,12 @@
 package com.example.newapppp.data.remote.habit
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class HabitDone(
-    @SerializedName("date")
+    @SerialName(value = "date")
     val creationDate: Int,
-    @SerializedName("habit_uid")
+    @SerialName(value = "habit_uid")
     val id: String
 )
