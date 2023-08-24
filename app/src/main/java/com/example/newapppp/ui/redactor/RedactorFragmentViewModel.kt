@@ -1,5 +1,6 @@
 package com.example.newapppp.ui.redactor
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -205,11 +206,13 @@ class RedactorFragmentViewModel : ViewModel() {
                 id = habit.id
             )
             try {
-                HApp.habitApi.putHabit(TOKEN, habitRequest)
                 HabitRepository().saveHabit(habit)
+                HApp.habitApi.putHabit(TOKEN, habitRequest)
                 _goBack.emit()
             } catch (e: Exception) {
                 _showSendingError.emit()
+                Log.e("wrongSending", "An error occurred: ${e.message}")
+                Log.d("wrongSending", "$habitRequest")
             }
         }
     }

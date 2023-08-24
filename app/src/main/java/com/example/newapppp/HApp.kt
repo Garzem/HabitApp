@@ -21,7 +21,7 @@ class HApp: Application() {
         AppHabitDataBase.init(applicationContext)
     }
 
-    fun configureRetrofit() {
+    private fun configureRetrofit() {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
