@@ -13,7 +13,5 @@ data class HabitRequest(
     val frequency: Int,
     val priority: Int,
     val title: String,
-    val type: Int,
-    @SerialName(value = "uid")
-    val id: String
+    val type: Int
 )

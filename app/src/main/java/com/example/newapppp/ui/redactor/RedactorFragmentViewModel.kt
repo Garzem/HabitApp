@@ -201,13 +201,11 @@ class RedactorFragmentViewModel : ViewModel() {
                         frequency = habit.frequency,
                         priority = HabitPriority.values().indexOf(habit.priority),
                         title = habit.title,
-                        type = HabitType.values().indexOf(habit.type),
-                        id = habit.id
+                        type = HabitType.values().indexOf(habit.type)
                     )
                     HabitRepository().saveHabit(habit)
                     HApp.habitApi.putHabit(TOKEN, habitRequest)
                     _goBack.emit()
-                    Log.e("wrongSending", "$habitRequest")
                 } catch (e: Exception) {
                     _showSendingError.emit()
                     Log.e("wrongSending", "$habitDone")
