@@ -198,7 +198,6 @@ class RedactorFragmentViewModel : ViewModel() {
                         count = 0,
                         creationDate = convertDateToInt(habit.creationDate),
                         description = habit.description,
-                        done_dates = emptyList(),
                         frequency = habit.frequency,
                         priority = HabitPriority.values().indexOf(habit.priority),
                         title = habit.title,
@@ -208,9 +207,10 @@ class RedactorFragmentViewModel : ViewModel() {
                     HabitRepository().saveHabit(habit)
                     HApp.habitApi.putHabit(TOKEN, habitRequest)
                     _goBack.emit()
-                    Log.e("wrongSending", "$habitDone")
+                    Log.e("wrongSending", "$habitRequest")
                 } catch (e: Exception) {
                     _showSendingError.emit()
+                    Log.e("wrongSending", "$habitDone")
                     Log.e("wrongSending", "An error occurred: ${e.message}")
                 }
             }

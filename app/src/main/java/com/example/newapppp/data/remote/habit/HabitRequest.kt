@@ -10,7 +10,6 @@ data class HabitRequest(
     @SerialName(value = "date")
     val creationDate: Int,
     val description: String,
-    val done_dates: List<Int>,
     val frequency: Int,
     val priority: Int,
     val title: String,
