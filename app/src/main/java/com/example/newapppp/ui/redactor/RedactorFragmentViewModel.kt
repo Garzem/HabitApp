@@ -174,47 +174,50 @@ class RedactorFragmentViewModel : ViewModel() {
     fun saveOrUpdateHabitToServer() {
         val uiState = _uiState.value
         if (validation()) {
-            val habit = uiState.run {
-                Habit(
-                    id = id ?: UUID.randomUUID().toString(),
-                    title = title,
-                    description = description,
-                    creationDate = creationDate ?: getCurrentDate(),
-                    color = color,
-                    priority = getChosenPriority(priority),
-                    type = getChosenType(type),
-                    frequency = frequency.toInt()
-                )
-            }
             viewModelScope.launch {
-                val habitDone = HabitDone(
-                    creationDate = convertDateToInt(habit.creationDate),
-                    id = habit.id
+                val habitRequest = HabitRequest(
+                    color = HabitColor.values().indexOf(uiState.color),
+                    count = 0,
+                    creationDate = convertDateToInt(uiState.creationDate ?: getCurrentDate()),
+                    description = uiState.description,
+                    frequency = uiState.frequency.toInt(),
+                    priority = uiState.priority,
+                    title = uiState.title,
+                    type = uiState.type
                 )
                 try {
-                    HApp.habitApi.postHabit(TOKEN, habitDone)
-                    val habitRequest = HabitRequest(
-                        color = HabitColor.values().indexOf(habit.color),
-                        count = 0,
-                        creationDate = convertDateToInt(habit.creationDate),
-                        description = habit.description,
-                        frequency = habit.frequency,
-                        priority = HabitPriority.values().indexOf(habit.priority),
-                        title = habit.title,
-                        type = HabitType.values().indexOf(habit.type)
+                    val habitId = HApp.habitApi.putHabit(TOKEN, habitRequest)
+                    val habitPost = HabitDone(
+                        id = habitId.id,
+                        creationDate = habitRequest.creationDate
                     )
+                    HApp.habitApi.postHabit(TOKEN, habitPost)
+                    Log.e("wrongSending", "An error occurred: $habitId")
+                    val habit = makeWholeHabit(habitId.id, habitRequest)
                     HabitRepository().saveHabit(habit)
-                    HApp.habitApi.putHabit(TOKEN, habitRequest)
                     _goBack.emit()
                 } catch (e: Exception) {
                     _showSendingError.emit()
-                    Log.e("wrongSending", "$habitDone")
                     Log.e("wrongSending", "An error occurred: ${e.message}")
                 }
             }
         } else {
             _showValidationError.emit()
         }
+    }
+
+    private fun makeWholeHabit(habitId: String, habitBody: HabitRequest): Habit {
+        return Habit(
+            id = habitId,
+            title = habitBody.title,
+            description = habitBody.description,
+            creationDate = convertIntToDate(habitBody.creationDate),
+            color = HabitColor.values().getOrNull(habitBody.color) ?: HabitColor.ORANGE,
+            priority = HabitPriority.values().getOrNull(habitBody.priority)
+                ?: HabitPriority.CHOOSE,
+            type = HabitType.values().getOrNull(habitBody.type) ?: HabitType.GOOD,
+            frequency = habitBody.frequency
+        )
     }
 
     private fun validation(): Boolean {
@@ -247,5 +250,18 @@ class RedactorFragmentViewModel : ViewModel() {
             }
         }
         return 20122020
+    }
+
+    private fun convertIntToDate(dateInt: Int): String {
+        val dateString = dateInt.toString()
+        return if (dateString.length == 8) {
+            val day = dateString.substring(0, 2)
+            val month = dateString.substring(2, 4)
+            val year = dateString.substring(4, 8)
+
+            "$day/$month/$year"
+        } else {
+            ""
+        }
     }
 }

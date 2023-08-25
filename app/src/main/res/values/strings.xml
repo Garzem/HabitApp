@@ -39,6 +39,7 @@
     <string name="color_choose_text">Выберите цвет</string>
 
     <string name="fill_the_line">Пожалуйста, заполните все поля и выберете значения</string>
+    <string name="delete_error">Произошла ошибка при попытке удаления. Пожалуйста попробуйте позже</string>
     <string name="error_with_sending_habit_to_server">
         Пожалуйста, попробуйте позже. Возникли проблемы с отправкой хобби на сервер</string>
     <string name="fill_the_filter_line">"Пожалуйста, укажите фильтрацию"</string>

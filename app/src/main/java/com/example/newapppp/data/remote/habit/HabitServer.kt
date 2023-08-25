@@ -10,6 +10,8 @@ data class HabitServer(
     @SerialName(value = "date")
     val creationDate: Int,
     val description: String,
+    @SerialName(value = "done_dates")
+    val doneDates: List<Int>,
     val frequency: Int,
     val priority: Int,
     val title: String,

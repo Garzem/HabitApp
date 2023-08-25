@@ -1,15 +1,21 @@
 package com.example.newapppp.ui.habit_list
 
+import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.newapppp.HApp
 import com.example.newapppp.data.Constants.TOKEN
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.data.remote.habit.HabitApi
+import com.example.newapppp.data.remote.habit.HabitDeleteRequest
 import com.example.newapppp.habit_repository.FilterRepository
 import com.example.newapppp.habit_repository.HabitRepository
+import com.example.newapppp.ui.redactor.SingleLiveEvent
+import com.example.newapppp.ui.redactor.emit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,6 +29,11 @@ class HabitListViewModel : ViewModel() {
     private val _habitState = MutableStateFlow<HabitState>(HabitState.Loading)
 
     val habitState: StateFlow<HabitState> = _habitState.asStateFlow()
+
+    private val _showDeleteError = SingleLiveEvent<Unit>()
+
+    val showDeleteError: LiveData<Unit> get() = _showDeleteError
+
 
     init {
         FilterRepository.filterFlow.onEach { filter ->
@@ -68,6 +79,7 @@ class HabitListViewModel : ViewModel() {
                         filter = FilterRepository.filterFlow.value
                     )
                 }
+                Log.e("wrongSending", "An error occurred: ${e.message}")
             }
         }
     }
@@ -87,7 +99,14 @@ class HabitListViewModel : ViewModel() {
 
     fun deleteHabit(id: String) {
         viewModelScope.launch {
-            HabitRepository().deleteHabitById(id)
+            val deleteRequest = HabitDeleteRequest(id)
+            try {
+                HApp.habitApi.deleteHabit(TOKEN, deleteRequest)
+                HabitRepository().deleteHabitById(id)
+            } catch (e: Exception) {
+                _showDeleteError.emit()
+                Log.e("wrongSending", "An error occurred: ${e.message}")
+            }
         }
     }
 }

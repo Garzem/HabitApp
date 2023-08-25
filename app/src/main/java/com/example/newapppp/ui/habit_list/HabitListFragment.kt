@@ -2,6 +2,7 @@ package com.example.newapppp.ui.habit_list
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -63,6 +64,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         }
         filterObserver()
         swipeToDelete(adapter)
+        observeEvents()
     }
 
     private fun openHabitClick(habitId: String) {
@@ -90,5 +92,17 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
             }
         })
         itemTouchHelper.attachToRecyclerView(binding.recycleViewHabit)
+    }
+
+    private fun observeEvents() {
+        habitViewModel.apply {
+            showDeleteError.observe(viewLifecycleOwner) {
+                Toast.makeText(
+                    requireContext(),
+                    R.string.delete_error,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 }
