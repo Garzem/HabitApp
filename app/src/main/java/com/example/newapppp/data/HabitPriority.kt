@@ -1,17 +1,17 @@
 package com.example.newapppp.data
 
 enum class HabitPriority {
-    CHOOSE,
     LOW,
     MEDIUM,
-    HIGH;
+    HIGH,
+    CHOOSE;
 
     override fun toString(): String {
         return when (this) {
-            CHOOSE -> "Приоритет"
             LOW -> "Низкий"
             MEDIUM -> "Средний"
             HIGH -> "Высокий"
+            CHOOSE -> "Приоритет"
         }
     }
 }

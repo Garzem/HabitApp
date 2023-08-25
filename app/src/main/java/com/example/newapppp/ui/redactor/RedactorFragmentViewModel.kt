@@ -192,13 +192,13 @@ class RedactorFragmentViewModel : ViewModel() {
                         creationDate = habitRequest.creationDate
                     )
                     HApp.habitApi.postHabit(TOKEN, habitPost)
-                    Log.e("wrongSending", "An error occurred: $habitId")
+                    Log.e("wrongSendingRMVS", "An error occurred: $habitId")
                     val habit = makeWholeHabit(habitId.id, habitRequest)
                     HabitRepository().saveHabit(habit)
                     _goBack.emit()
                 } catch (e: Exception) {
                     _showSendingError.emit()
-                    Log.e("wrongSending", "An error occurred: ${e.message}")
+                    Log.e("wrongSendingRMVW", "An error occurred: ${e.message}")
                 }
             }
         } else {

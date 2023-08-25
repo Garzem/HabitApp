@@ -105,7 +105,7 @@ class HabitListViewModel : ViewModel() {
                 HabitRepository().deleteHabitById(id)
             } catch (e: Exception) {
                 _showDeleteError.emit()
-                Log.e("wrongSending", "An error occurred: ${e.message}")
+                Log.e("wrongSendingHVM", "An error occurred: ${e.message}")
             }
         }
     }

@@ -16,27 +16,18 @@ interface HabitApi {
         @Header("Authorization") token: String
     ): List<HabitServer>
 
-    @Headers(
-        "Content-Type: application/json"
-    )
     @PUT("/api/habit")
     suspend fun putHabit(
         @Header("Authorization") token: String,
         @Body habitRequest: HabitRequest
     ) : HabitIdGetter
 
-    @Headers(
-        "Content-Type: application/json"
-    )
     @DELETE("/api/habit/{uid}")
     suspend fun deleteHabit(
         @Header("Authorization") token: String,
         @Path("uid") id: HabitDeleteRequest
     )
 
-    @Headers(
-        "Content-Type: application/json"
-    )
     @POST("/api/habit_done")
     suspend fun postHabit(
         @Header("Authorization") token: String,
