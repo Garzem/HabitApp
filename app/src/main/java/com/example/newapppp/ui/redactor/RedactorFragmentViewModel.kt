@@ -34,7 +34,7 @@ class RedactorFragmentViewModel : ViewModel() {
             descriptionCursorPosition = 0,
             creationDate = null,
             color = HabitColor.ORANGE,
-            priority = 0,
+            priority = 3,
             type = 0,
             frequency = "",
             frequencyCursorPosition = 0
