@@ -3,6 +3,7 @@ package com.example.newapppp.data.remote.habit
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -22,10 +23,10 @@ interface HabitApi {
         @Body habitRequest: HabitRequest
     ) : HabitIdGetter
 
-    @DELETE("/api/habit/{uid}")
+    @HTTP(method = "DELETE", path = "/api/habit", hasBody = true)
     suspend fun deleteHabit(
         @Header("Authorization") token: String,
-        @Path("uid") id: HabitDeleteRequest
+        @Body id: HabitDeleteRequest
     )
 
     @POST("/api/habit_done")
