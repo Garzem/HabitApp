@@ -79,7 +79,6 @@ class HabitListViewModel : ViewModel() {
                         filter = FilterRepository.filterFlow.value
                     )
                 }
-                Log.e("wrongSending", "An error occurred: ${e.message}")
             }
         }
     }

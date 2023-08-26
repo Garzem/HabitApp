@@ -11,6 +11,7 @@ import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.data.remote.habit.HabitDone
+import com.example.newapppp.data.remote.habit.HabitIdGetter
 import com.example.newapppp.data.remote.habit.HabitRequest
 import com.example.newapppp.habit_repository.HabitRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -186,24 +188,37 @@ class RedactorFragmentViewModel : ViewModel() {
                     type = uiState.type
                 )
                 try {
-                    val habitId = HApp.habitApi.putHabit(TOKEN, habitRequest)
+                    val habitId = putHabitWithRetry(TOKEN, habitRequest)
                     val habitPost = HabitDone(
                         id = habitId.id,
                         creationDate = habitRequest.creationDate
                     )
                     HApp.habitApi.postHabit(TOKEN, habitPost)
-                    Log.e("wrongSendingRMVS", "An error occurred: $habitId")
                     val habit = makeWholeHabit(habitId.id, habitRequest)
                     HabitRepository().saveHabit(habit)
                     _goBack.emit()
                 } catch (e: Exception) {
                     _showSendingError.emit()
-                    Log.e("wrongSendingRMVW", "An error occurred: ${e.message}")
                 }
             }
         } else {
             _showValidationError.emit()
         }
+    }
+
+    private suspend fun putHabitWithRetry(token: String, habitRequest: HabitRequest): HabitIdGetter {
+        var currentRetryCount = 0
+
+        while (currentRetryCount < 3) {
+            try {
+                return HApp.habitApi.putHabit(token, habitRequest)
+            } catch (e: HttpException) {
+                if (e.code() == 404 || e.code() == 400 || e.code() == 400) {
+                    currentRetryCount++
+                }
+            }
+        }
+        throw Exception("Max retry attempts reached")
     }
 
     private fun makeWholeHabit(habitId: String, habitBody: HabitRequest): Habit {
