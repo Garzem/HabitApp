@@ -44,25 +44,11 @@ class HabitListViewModel : ViewModel() {
         }.launchIn(viewModelScope)
     }
 
-    fun fetchHabitList(habitApi: HabitApi, habitType: HabitType) {
+    fun fetchHabitList(habitType: HabitType) {
         viewModelScope.launch {
             _habitState.update { HabitState.Loading }
             try {
-                val habitListResponse = habitApi.getHabitList(TOKEN)
-                val habitListRemote = habitListResponse.map { item ->
-                    Habit(
-                        id = item.id,
-                        title = item.title,
-                        description = item.description,
-                        creationDate = item.creationDate.toLong(),
-                        color = HabitColor.values().getOrNull(item.color) ?: HabitColor.ORANGE,
-                        priority = HabitPriority.values().getOrNull(item.priority)
-                            ?: HabitPriority.CHOOSE,
-                        type = HabitType.values().getOrNull(item.type) ?: HabitType.GOOD,
-                        frequency = item.frequency
-                    )
-                }
-                HabitRepository().sendHabitList(habitListRemote)
+                val habitListRemote = HabitRepository().getHabitList()
                 val filteredByType = habitListRemote.filter { habit ->
                     habit.type == habitType
                 }
