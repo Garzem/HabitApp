@@ -8,7 +8,7 @@ data class HabitJson(
     val color: Int,
     val count: Int,
     @SerialName(value = "date")
-    val creationDate: Long,
+    val creationDate: Int,
     val description: String,
     val frequency: Int,
     val priority: Int,

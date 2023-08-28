@@ -4,14 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newapppp.HApp
-import com.example.newapppp.data.Constants.TOKEN
 import com.example.newapppp.data.Habit
-import com.example.newapppp.data.HabitColor
-import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
-import com.example.newapppp.data.remote.habit.HabitApi
-import com.example.newapppp.data.remote.habit.HabitDeleteRequest
 import com.example.newapppp.habit_repository.FilterRepository
 import com.example.newapppp.habit_repository.HabitRepository
 import com.example.newapppp.ui.redactor.SingleLiveEvent
@@ -65,6 +59,7 @@ class HabitListViewModel : ViewModel() {
                         filter = FilterRepository.filterFlow.value
                     )
                 }
+                Log.d("exception", "$e")
             }
         }
     }

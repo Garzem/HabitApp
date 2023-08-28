@@ -1,9 +1,9 @@
 package com.example.newapppp.data
 
-data class SaveHabit(
+data class HabitSave(
     val title : String,
     val description : String,
-    val creationDate : Long,
+    val creationDate : String,
     val color : HabitColor,
     val priority : HabitPriority,
     val type : HabitType,

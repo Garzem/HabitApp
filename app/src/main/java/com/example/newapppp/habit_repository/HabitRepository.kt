@@ -6,7 +6,7 @@ import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
-import com.example.newapppp.data.SaveHabit
+import com.example.newapppp.data.HabitSave
 import com.example.newapppp.data.remote.habit.HabitDeleteRequest
 import com.example.newapppp.data.remote.habit.HabitDone
 import com.example.newapppp.data.remote.habit.HabitIdJson
@@ -19,10 +19,14 @@ import retrofit2.HttpException
 
 
 class HabitRepository {
-    suspend fun saveAndPostHabit(saveHabit: SaveHabit) {
-        val habitId = putHabitWithRetry(TOKEN, toHabitJson(saveHabit))
-        postHabitWithRetry(HabitDone(id = habitId.id, creationDate = saveHabit.creationDate))
-        val habitEntity = toHabitEntity(habitId.id, saveHabit)
+    suspend fun saveAndPostHabit(habitSave: HabitSave) {
+        val habitId = putHabitWithRetry(TOKEN, toHabitJson(habitSave))
+        postHabitWithRetry(
+            HabitDone(
+                id = habitId.id, creationDate = toDateInt(habitSave.creationDate)
+            )
+        )
+        val habitEntity = toHabitEntity(habitId.id, habitSave)
         AppHabitDataBase.habitDao.upsertHabit(habitEntity)
     }
 
@@ -60,7 +64,7 @@ class HabitRepository {
     }
 
     private suspend fun getHabitWithRetry(token: String): List<HabitServer> {
-         return callWithRetry {
+        return callWithRetry {
             HApp.habitApi.getHabitList(token)
         }
     }
@@ -93,12 +97,40 @@ class HabitRepository {
         }
     }
 
-    private fun toHabitJson(saveHabit: SaveHabit): HabitJson {
+    private fun toDateInt(dateString: String): Int {
+        val parts = dateString.split("/")
+        if (parts.size == 3) {
+            val day = parts[0]
+            val month = parts[1]
+            val year = parts[2]
+
+            val dateInt = "$day$month$year".toIntOrNull()
+            if (dateInt != null) {
+                return dateInt
+            }
+        }
+        return 20122020
+    }
+
+    private fun toDateString(dateInt: Int): String {
+        val dateString = dateInt.toString()
+        return if (dateString.length == 8) {
+            val day = dateString.substring(0, 2)
+            val month = dateString.substring(2, 4)
+            val year = dateString.substring(4, 8)
+
+            "$day/$month/$year"
+        } else {
+            ""
+        }
+    }
+
+    private fun toHabitJson(saveHabit: HabitSave): HabitJson {
         return with(saveHabit) {
             HabitJson(
                 title = title,
                 description = description,
-                creationDate = creationDate,
+                creationDate = toDateInt(creationDate),
                 color = HabitColor.values().indexOf(color),
                 priority = HabitPriority.values().indexOf(priority),
                 type = HabitType.values().indexOf(type),
@@ -108,7 +140,7 @@ class HabitRepository {
         }
     }
 
-    private fun toHabitEntity(habitId: String, habit: SaveHabit): HabitEntity {
+    private fun toHabitEntity(habitId: String, habit: HabitSave): HabitEntity {
         return HabitEntity(
             id = habitId,
             title = habit.title,
@@ -127,7 +159,7 @@ class HabitRepository {
                 id = it.id,
                 title = it.title,
                 description = it.description,
-                creationDate = it.creationDate.toLong(),
+                creationDate = toDateString(it.creationDate),
                 color = HabitColor.values().getOrNull(it.color) ?: HabitColor.ORANGE,
                 priority = HabitPriority.values().getOrNull(it.priority)
                     ?: HabitPriority.CHOOSE,

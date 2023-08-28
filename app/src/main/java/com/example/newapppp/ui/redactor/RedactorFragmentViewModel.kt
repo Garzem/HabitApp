@@ -6,14 +6,17 @@ import androidx.lifecycle.viewModelScope
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
-import com.example.newapppp.data.SaveHabit
+import com.example.newapppp.data.HabitSave
 import com.example.newapppp.habit_repository.HabitRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.DateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class RedactorFragmentViewModel : ViewModel() {
 
@@ -24,6 +27,7 @@ class RedactorFragmentViewModel : ViewModel() {
             titleCursorPosition = 0,
             description = "",
             descriptionCursorPosition = 0,
+            creationDate = null,
             color = HabitColor.ORANGE,
             priority = 3,
             type = 0,
@@ -32,8 +36,6 @@ class RedactorFragmentViewModel : ViewModel() {
         )
     )
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
-
-    private var creationDate: Long? = null
 
     private val _showValidationError = SingleLiveEvent<Unit>()
     val showValidationError: LiveData<Unit> get() = _showValidationError
@@ -49,13 +51,13 @@ class RedactorFragmentViewModel : ViewModel() {
         if (habitId != null) {
             viewModelScope.launch {
                 val habit = HabitRepository().getHabitById(habitId)
-                creationDate = habit.creationDate
                 _uiState.value = UiState(
                     id = habit.id,
                     title = habit.title,
                     titleCursorPosition = 0,
                     description = habit.description,
                     descriptionCursorPosition = 0,
+                    creationDate = habit.creationDate,
                     color = habit.color,
                     priority = getPositionPriority(habit.priority),
                     type = getPositionType(habit.type),
@@ -160,9 +162,9 @@ class RedactorFragmentViewModel : ViewModel() {
         val uiState = _uiState.value
         if (validation()) {
             viewModelScope.launch {
-                val saveHabit = SaveHabit(
+                val saveHabit = HabitSave(
                     color = uiState.color,
-                    creationDate = creationDate ?: Calendar.getInstance().timeInMillis,
+                    creationDate = uiState.creationDate ?: getCurrentDate(),
                     description = uiState.description,
                     frequency = uiState.frequency.toInt(),
                     priority = HabitPriority.values().getOrNull(uiState.priority) ?: HabitPriority.CHOOSE,
@@ -179,6 +181,12 @@ class RedactorFragmentViewModel : ViewModel() {
         } else {
             _showValidationError.emit()
         }
+    }
+
+    private fun getCurrentDate(): String {
+        val currentDate = Calendar.getInstance().time
+        val dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault())
+        return dateFormat.format(currentDate)
     }
 
     private fun validation(): Boolean {

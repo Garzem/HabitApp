@@ -14,7 +14,7 @@ class HabitViewHolder(
         binding.apply {
             title.text = habit.title
             description.text = habit.description
-            creationDate.text = habit.creationDate.toString()
+            creationDate.text = habit.creationDate
             colorMain.setBackgroundResource(habit.color.getBackGroundResId())
             colorSupport.setBackgroundResource(habit.color.getBackGroundResId())
             priority.text = habitPriorityMapper.getPriorityName(habit.priority)

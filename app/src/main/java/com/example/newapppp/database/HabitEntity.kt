@@ -13,7 +13,7 @@ data class HabitEntity(
     val id: String,
     val title: String,
     val description: String,
-    val creationDate: Long,
+    val creationDate: String,
     val color: HabitColor,
     val priority: HabitPriority,
     val type: HabitType,
