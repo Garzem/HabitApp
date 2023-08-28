@@ -46,6 +46,14 @@ class HabitRepository {
         AppHabitDataBase.habitDao.deleteHabitById(id)
     }
 
+    suspend fun deleteAllHabits() {
+        val stringList = AppHabitDataBase.habitDao.getAllHabitsId()
+        stringList.map { id ->
+            deleteHabitWithRetry(HabitDeleteRequest(id))
+        }
+        AppHabitDataBase.habitDao.deleteAllHabits()
+    }
+
     suspend fun getHabitById(habitId: String): Habit {
         return convertHabitEntityToHabit(AppHabitDataBase.habitDao.getHabitById(habitId))
     }
