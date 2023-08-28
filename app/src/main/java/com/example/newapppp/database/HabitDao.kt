@@ -1,8 +1,6 @@
 package com.example.newapppp.database
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
 import com.example.newapppp.data.HabitType
@@ -14,7 +12,7 @@ interface HabitDao {
     suspend fun upsertHabit(habit: HabitEntity)
 
     @Upsert
-    suspend fun sendHabitList(habitList: List<HabitEntity>)
+    suspend fun upsertHabitList(habitList: List<HabitEntity>)
 
     @Query("DELETE FROM habit WHERE id = :habitId")
     suspend fun deleteHabitById(habitId: String)

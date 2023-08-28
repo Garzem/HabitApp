@@ -30,9 +30,9 @@ class HabitListViewModel : ViewModel() {
 
     val habitState: StateFlow<HabitState> = _habitState.asStateFlow()
 
-    private val _showDeleteError = SingleLiveEvent<Unit>()
+    private val _showDeleteError = SingleLiveEvent<List<Habit>>()
 
-    val showDeleteError: LiveData<Unit> get() = _showDeleteError
+    val showDeleteError: LiveData<List<Habit>> get() = _showDeleteError
 
 
     init {
@@ -54,7 +54,7 @@ class HabitListViewModel : ViewModel() {
                         id = item.id,
                         title = item.title,
                         description = item.description,
-                        creationDate = convertIntToDate(item.creationDate),
+                        creationDate = item.creationDate.toLong(),
                         color = HabitColor.values().getOrNull(item.color) ?: HabitColor.ORANGE,
                         priority = HabitPriority.values().getOrNull(item.priority)
                             ?: HabitPriority.CHOOSE,
@@ -83,19 +83,6 @@ class HabitListViewModel : ViewModel() {
         }
     }
 
-    private fun convertIntToDate(dateInt: Int): String {
-        val dateString = dateInt.toString()
-        return if (dateString.length == 8) {
-            val day = dateString.substring(0, 2)
-            val month = dateString.substring(2, 4)
-            val year = dateString.substring(4, 8)
-
-            "$day/$month/$year"
-        } else {
-            ""
-        }
-    }
-
     fun deleteHabit(id: String) {
         viewModelScope.launch {
             val deleteRequest = HabitDeleteRequest(id)
@@ -103,7 +90,9 @@ class HabitListViewModel : ViewModel() {
                 HApp.habitApi.deleteHabit(TOKEN, deleteRequest)
                 HabitRepository().deleteHabitById(id)
             } catch (e: Exception) {
-                _showDeleteError.emit()
+                (_habitState.value as? HabitState.Success)?.let {
+                    _showDeleteError.emit(it.filteredHabits)
+                }
                 Log.e("wrongSendingHVM", "An error occurred: ${e.message}")
             }
         }

@@ -11,7 +11,9 @@ object AppHabitDataBase {
         instance = Room.databaseBuilder(
             context.applicationContext,
             HabitDataBase::class.java, "database-habit"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     val habitDao: HabitDao

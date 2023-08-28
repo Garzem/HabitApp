@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class HabitIdGetter(
+data class HabitIdJson(
     @SerialName(value = "uid")
     val id: String
 )

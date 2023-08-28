@@ -1,6 +1,5 @@
 package com.example.newapppp.ui.redactor
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,9 +9,10 @@ import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
+import com.example.newapppp.data.SaveHabit
 import com.example.newapppp.data.remote.habit.HabitDone
-import com.example.newapppp.data.remote.habit.HabitIdGetter
-import com.example.newapppp.data.remote.habit.HabitRequest
+import com.example.newapppp.data.remote.habit.HabitIdJson
+import com.example.newapppp.data.remote.habit.HabitJson
 import com.example.newapppp.habit_repository.HabitRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +23,6 @@ import retrofit2.HttpException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import java.util.UUID
 
 class RedactorFragmentViewModel : ViewModel() {
 
@@ -34,7 +33,6 @@ class RedactorFragmentViewModel : ViewModel() {
             titleCursorPosition = 0,
             description = "",
             descriptionCursorPosition = 0,
-            creationDate = null,
             color = HabitColor.ORANGE,
             priority = 3,
             type = 0,
@@ -43,6 +41,8 @@ class RedactorFragmentViewModel : ViewModel() {
         )
     )
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    private var creationDate: Long? = null
 
     private val _showValidationError = SingleLiveEvent<Unit>()
     val showValidationError: LiveData<Unit> get() = _showValidationError
@@ -58,13 +58,13 @@ class RedactorFragmentViewModel : ViewModel() {
         if (habitId != null) {
             viewModelScope.launch {
                 val habit = HabitRepository().getHabitById(habitId)
+                creationDate = habit.creationDate
                 _uiState.value = UiState(
                     id = habit.id,
                     title = habit.title,
                     titleCursorPosition = 0,
                     description = habit.description,
                     descriptionCursorPosition = 0,
-                    creationDate = habit.creationDate,
                     color = habit.color,
                     priority = getPositionPriority(habit.priority),
                     type = getPositionType(habit.type),
@@ -135,16 +135,8 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
-    private fun getChosenType(typePosition: Int): HabitType {
-        return HabitType.values()[typePosition]
-    }
-
     private fun getPositionType(type: HabitType): Int {
         return HabitType.values().indexOf(type)
-    }
-
-    private fun getChosenPriority(priorityPosition: Int): HabitPriority {
-        return HabitPriority.values()[priorityPosition]
     }
 
     private fun getPositionPriority(priority: HabitPriority): Int {
@@ -177,25 +169,17 @@ class RedactorFragmentViewModel : ViewModel() {
         val uiState = _uiState.value
         if (validation()) {
             viewModelScope.launch {
-                val habitRequest = HabitRequest(
-                    color = HabitColor.values().indexOf(uiState.color),
-                    count = 0,
-                    creationDate = convertDateToInt(uiState.creationDate ?: getCurrentDate()),
+                val saveHabit = SaveHabit(
+                    color = uiState.color,
+                    creationDate = creationDate ?: Calendar.getInstance().timeInMillis,
                     description = uiState.description,
                     frequency = uiState.frequency.toInt(),
-                    priority = uiState.priority,
+                    priority = HabitPriority.values().getOrNull(uiState.priority) ?: HabitPriority.CHOOSE,
                     title = uiState.title,
-                    type = uiState.type
+                    type = HabitType.values().getOrNull(uiState.type) ?: HabitType.GOOD
                 )
                 try {
-                    val habitId = putHabitWithRetry(TOKEN, habitRequest)
-                    val habitPost = HabitDone(
-                        id = habitId.id,
-                        creationDate = habitRequest.creationDate
-                    )
-                    HApp.habitApi.postHabit(TOKEN, habitPost)
-                    val habit = makeWholeHabit(habitId.id, habitRequest)
-                    HabitRepository().saveHabit(habit)
+                    HabitRepository().saveHabit(saveHabit)
                     _goBack.emit()
                 } catch (e: Exception) {
                     _showSendingError.emit()
@@ -206,35 +190,6 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
-    private suspend fun putHabitWithRetry(token: String, habitRequest: HabitRequest): HabitIdGetter {
-        var currentRetryCount = 0
-
-        while (currentRetryCount < 3) {
-            try {
-                return HApp.habitApi.putHabit(token, habitRequest)
-            } catch (e: HttpException) {
-                if (e.code() == 404 || e.code() == 400 || e.code() == 400) {
-                    currentRetryCount++
-                }
-            }
-        }
-        throw Exception("Max retry attempts reached")
-    }
-
-    private fun makeWholeHabit(habitId: String, habitBody: HabitRequest): Habit {
-        return Habit(
-            id = habitId,
-            title = habitBody.title,
-            description = habitBody.description,
-            creationDate = convertIntToDate(habitBody.creationDate),
-            color = HabitColor.values().getOrNull(habitBody.color) ?: HabitColor.ORANGE,
-            priority = HabitPriority.values().getOrNull(habitBody.priority)
-                ?: HabitPriority.CHOOSE,
-            type = HabitType.values().getOrNull(habitBody.type) ?: HabitType.GOOD,
-            frequency = habitBody.frequency
-        )
-    }
-
     private fun validation(): Boolean {
         return _uiState.value.let { currentState ->
             currentState.run {
@@ -243,40 +198,6 @@ class RedactorFragmentViewModel : ViewModel() {
                         && priority != HabitPriority.CHOOSE.ordinal
                         && frequency != ""
             }
-        }
-    }
-
-    private fun getCurrentDate(): String {
-        val currentDate = Calendar.getInstance().time
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        return dateFormat.format(currentDate)
-    }
-
-    private fun convertDateToInt(dateString: String): Int {
-        val parts = dateString.split("/")
-        if (parts.size == 3) {
-            val day = parts[0]
-            val month = parts[1]
-            val year = parts[2]
-
-            val dateInt = "$day$month$year".toIntOrNull()
-            if (dateInt != null) {
-                return dateInt
-            }
-        }
-        return 20122020
-    }
-
-    private fun convertIntToDate(dateInt: Int): String {
-        val dateString = dateInt.toString()
-        return if (dateString.length == 8) {
-            val day = dateString.substring(0, 2)
-            val month = dateString.substring(2, 4)
-            val year = dateString.substring(4, 8)
-
-            "$day/$month/$year"
-        } else {
-            ""
         }
     }
 }

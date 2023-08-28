@@ -40,11 +40,12 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
     private val habitType: HabitType? by lazy {
         arguments?.serializable(HABIT_TYPE_KEY, HabitType::class.java)
     }
+    private var adapter: HabitListAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = HabitListAdapter(HabitPriorityMapper(requireContext()), ::openHabitClick)
+        adapter = HabitListAdapter(HabitPriorityMapper(requireContext()), ::openHabitClick)
         binding.recycleViewHabit.adapter = adapter
 
         habitType?.let {
@@ -54,7 +55,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
             when (state) {
                 is HabitState.Success -> {
                     binding.progressBar.isVisible = false
-                    adapter.submitList(state.filteredHabits)
+                    adapter?.submitList(state.filteredHabits)
                 }
 
                 is HabitState.Loading -> {
@@ -63,7 +64,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
             }
         }
         filterObserver()
-        swipeToDelete(adapter)
+        swipeToDelete()
         observeEvents()
     }
 
@@ -80,13 +81,13 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         }
     }
 
-    private fun swipeToDelete(adapter: HabitListAdapter) {
+    private fun swipeToDelete() {
         val itemTouchHelper = ItemTouchHelper(object : SwipeToDelete() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                val habit = adapter.getHabitAtPosition(position) ?: return
+                val habit = adapter?.getHabitAtPosition(position) ?: return
                 habit.apply {
-                    adapter.deleteHabitByPosition(position)
+                    adapter?.deleteHabitByPosition(position)
                     id.let { habitViewModel.deleteHabit(it) }
                 }
             }
@@ -97,6 +98,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
     private fun observeEvents() {
         habitViewModel.apply {
             showDeleteError.observe(viewLifecycleOwner) {
+                adapter?.submitList(it)
                 Toast.makeText(
                     requireContext(),
                     R.string.delete_error,
