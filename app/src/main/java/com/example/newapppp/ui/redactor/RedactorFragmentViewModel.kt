@@ -3,26 +3,17 @@ package com.example.newapppp.ui.redactor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newapppp.HApp
-import com.example.newapppp.data.Constants.TOKEN
-import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.data.SaveHabit
-import com.example.newapppp.data.remote.habit.HabitDone
-import com.example.newapppp.data.remote.habit.HabitIdJson
-import com.example.newapppp.data.remote.habit.HabitJson
 import com.example.newapppp.habit_repository.HabitRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 
 class RedactorFragmentViewModel : ViewModel() {
 
@@ -159,7 +150,7 @@ class RedactorFragmentViewModel : ViewModel() {
     fun deleteHabit() {
         viewModelScope.launch {
             _uiState.value.id?.let { id ->
-                HabitRepository().deleteHabitById(id)
+                HabitRepository().deleteHabit(id)
                 _goBack.emit()
             }
         }
@@ -179,7 +170,7 @@ class RedactorFragmentViewModel : ViewModel() {
                     type = HabitType.values().getOrNull(uiState.type) ?: HabitType.GOOD
                 )
                 try {
-                    HabitRepository().saveHabit(saveHabit)
+                    HabitRepository().saveAndPostHabit(saveHabit)
                     _goBack.emit()
                 } catch (e: Exception) {
                     _showSendingError.emit()

@@ -49,7 +49,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         binding.recycleViewHabit.adapter = adapter
 
         habitType?.let {
-            habitViewModel.fetchHabitList(HApp.habitApi, it)
+            habitViewModel.fetchHabitList(it)
         }
         collectWithLifecycle(habitViewModel.habitState) { state ->
             when (state) {

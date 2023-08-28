@@ -1,13 +1,14 @@
 package com.example.newapppp.habit_repository
 
 import com.example.newapppp.HApp
-import com.example.newapppp.data.Constants
 import com.example.newapppp.data.Constants.TOKEN
 import com.example.newapppp.data.Habit
 import com.example.newapppp.data.HabitColor
 import com.example.newapppp.data.HabitPriority
 import com.example.newapppp.data.HabitType
 import com.example.newapppp.data.SaveHabit
+import com.example.newapppp.data.remote.habit.HabitDeleteRequest
+import com.example.newapppp.data.remote.habit.HabitDone
 import com.example.newapppp.data.remote.habit.HabitIdJson
 import com.example.newapppp.data.remote.habit.HabitJson
 import com.example.newapppp.data.remote.habit.HabitServer
@@ -18,8 +19,9 @@ import retrofit2.HttpException
 
 
 class HabitRepository {
-    suspend fun saveHabit(saveHabit: SaveHabit) {
+    suspend fun saveAndPostHabit(saveHabit: SaveHabit) {
         val habitId = putHabitWithRetry(TOKEN, toHabitJson(saveHabit))
+        postHabitWithRetry(HabitDone(id = habitId.id, creationDate = saveHabit.creationDate))
         val habitEntity = toHabitEntity(habitId.id, saveHabit)
         AppHabitDataBase.habitDao.upsertHabit(habitEntity)
     }
@@ -34,8 +36,10 @@ class HabitRepository {
         return habitList
     }
 
-    suspend fun deleteHabitById(habitId: String) {
-        AppHabitDataBase.habitDao.deleteHabitById(habitId)
+    suspend fun deleteHabit(id: String) {
+        val deleteRequest = HabitDeleteRequest(id)
+        deleteHabitWithRetry(deleteRequest)
+        AppHabitDataBase.habitDao.deleteHabitById(id)
     }
 
     suspend fun getHabitById(habitId: String): Habit {
@@ -58,6 +62,18 @@ class HabitRepository {
     private suspend fun getHabitWithRetry(token: String): List<HabitServer> {
          return callWithRetry {
             HApp.habitApi.getHabitList(token)
+        }
+    }
+
+    private suspend fun deleteHabitWithRetry(deleteRequest: HabitDeleteRequest) {
+        callWithRetry {
+            HApp.habitApi.deleteHabit(TOKEN, deleteRequest)
+        }
+    }
+
+    private suspend fun postHabitWithRetry(habitDone: HabitDone) {
+        callWithRetry {
+            HApp.habitApi.postHabit(TOKEN, habitDone)
         }
     }
 

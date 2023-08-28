@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class HabitDone(
     @SerialName(value = "date")
-    val creationDate: Int,
+    val creationDate: Long,
     @SerialName(value = "habit_uid")
     val id: String
 )

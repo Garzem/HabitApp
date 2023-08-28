@@ -71,10 +71,8 @@ class HabitListViewModel : ViewModel() {
 
     fun deleteHabit(id: String) {
         viewModelScope.launch {
-            val deleteRequest = HabitDeleteRequest(id)
             try {
-                HApp.habitApi.deleteHabit(TOKEN, deleteRequest)
-                HabitRepository().deleteHabitById(id)
+                HabitRepository().deleteHabit(id)
             } catch (e: Exception) {
                 (_habitState.value as? HabitState.Success)?.let {
                     _showDeleteError.emit(it.filteredHabits)
