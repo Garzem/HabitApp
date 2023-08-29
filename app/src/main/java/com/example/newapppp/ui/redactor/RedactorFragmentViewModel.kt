@@ -49,7 +49,7 @@ class RedactorFragmentViewModel : ViewModel() {
         if (habitId != null) {
             viewModelScope.launch {
                 val habit = HabitRepository().getHabitById(habitId)
-                creationDate = toLong(habit.creationDate)
+                creationDate = habit.creationDate
                 _uiState.value = UiState(
                     id = habit.id,
                     title = habit.title,

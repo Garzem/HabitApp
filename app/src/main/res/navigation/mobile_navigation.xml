@@ -22,7 +22,7 @@
             app:nullable="true"/>
         <argument
             android:name="habitType"
-            app:argType="com.example.newapppp.data.HabitType"
+            app:argType="com.example.newapppp.data.habit_local.HabitType"
             app:nullable="true"/>
         <action
             android:id="@+id/action_redactor_fragment_to_home_fragment"

@@ -7,30 +7,33 @@ import com.example.newapppp.data.habit_local.HabitColor
 import com.example.newapppp.data.habit_local.HabitPriority
 import com.example.newapppp.data.habit_local.HabitType
 import com.example.newapppp.data.remote.habit.HabitSave
-import com.example.newapppp.data.TimeConverter.toDate
-import com.example.newapppp.data.TimeConverter.toLong
 import com.example.newapppp.data.remote.callWithRetry
-import com.example.newapppp.data.remote.habit.HabitDeleteRequest
-import com.example.newapppp.data.remote.habit.HabitDone
+import com.example.newapppp.data.remote.habit.DeleteHabitJson
 import com.example.newapppp.data.remote.habit.HabitIdJson
-import com.example.newapppp.data.remote.habit.HabitJson
-import com.example.newapppp.data.remote.habit.HabitServer
+import com.example.newapppp.data.remote.habit.PutHabitJson
+import com.example.newapppp.data.remote.habit.GetHabitJson
 import com.example.newapppp.database.AppHabitDataBase
 import com.example.newapppp.database.HabitEntity
-import kotlinx.coroutines.delay
-import retrofit2.HttpException
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import java.util.UUID
 
 
 class HabitRepository {
-    suspend fun saveAndPostHabit(habitSave: HabitSave) {
-        val habitId = putHabitWithRetry(TOKEN, toHabitJson(habitSave))
-        postHabitWithRetry(
-            HabitDone(
-                id = habitId.id, creationDate = habitSave.creationDate.toInt()
-            )
-        )
-        val habitEntity = toHabitEntity(habitId.id, habitSave)
-        AppHabitDataBase.habitDao.upsertHabit(habitEntity)
+    suspend fun saveAndPostHabit(habitSave: HabitSave) = coroutineScope {
+        val habitIdAsync = async {
+            putHabitWithRetry(TOKEN, toHabitJson(habitSave))
+        }
+        val habitEntityAsync = async {
+            AppHabitDataBase.habitDao.upsertHabit(toHabitEntity(habitSave))
+        }
+        val habitId = habitIdAsync.await()
+        val habitEntity = habitEntityAsync.await()
+//        postHabitWithRetry(
+//            HabitDone(
+//                uid = habitId.uid, creationDate = habitSave.creationDate.toInt()
+//            )
+//        )
     }
 
     suspend fun getHabitList(): List<Habit> {
@@ -44,7 +47,7 @@ class HabitRepository {
     }
 
     suspend fun deleteHabit(id: String) {
-        val deleteRequest = HabitDeleteRequest(id)
+        val deleteRequest = DeleteHabitJson(id)
         deleteHabitWithRetry(deleteRequest)
         AppHabitDataBase.habitDao.deleteHabitById(id)
     }
@@ -52,7 +55,7 @@ class HabitRepository {
     suspend fun deleteAllHabits() {
         val stringList = AppHabitDataBase.habitDao.getAllHabitsId()
         stringList.map { id ->
-            deleteHabitWithRetry(HabitDeleteRequest(id))
+            deleteHabitWithRetry(DeleteHabitJson(id))
         }
         AppHabitDataBase.habitDao.deleteAllHabits()
     }
@@ -68,36 +71,36 @@ class HabitRepository {
         }
     }
 
-    private suspend fun putHabitWithRetry(token: String, habitJson: HabitJson): HabitIdJson {
+    private suspend fun putHabitWithRetry(token: String, putHabitJson: PutHabitJson): HabitIdJson {
         return callWithRetry {
-            HApp.habitApi.putHabit(token, habitJson)
+            HApp.habitApi.putHabit(token, putHabitJson)
         }
     }
 
-    private suspend fun getHabitWithRetry(token: String): List<HabitServer> {
+    private suspend fun getHabitWithRetry(token: String): List<GetHabitJson> {
         return callWithRetry {
             HApp.habitApi.getHabitList(token)
         }
     }
 
-    private suspend fun deleteHabitWithRetry(deleteRequest: HabitDeleteRequest) {
+    private suspend fun deleteHabitWithRetry(deleteRequest: DeleteHabitJson) {
         callWithRetry {
             HApp.habitApi.deleteHabit(TOKEN, deleteRequest)
         }
     }
 
-    private suspend fun postHabitWithRetry(habitDone: HabitDone) {
-        callWithRetry {
-            HApp.habitApi.postHabit(TOKEN, habitDone)
-        }
-    }
+//    private suspend fun postHabitWithRetry(postHabitJson: PostHabitJson) {
+//        callWithRetry {
+//            HApp.habitApi.postHabit(TOKEN, postHabitJson)
+//        }
+//    }
 
-    private fun toHabitJson(saveHabit: HabitSave): HabitJson {
+    private fun toHabitJson(saveHabit: HabitSave): PutHabitJson {
         return with(saveHabit) {
-            HabitJson(
+            PutHabitJson(
                 title = title,
                 description = description,
-                creationDate = creationDate.toInt(),
+                creationDate = creationDate,
                 color = HabitColor.values().indexOf(color),
                 priority = HabitPriority.values().indexOf(priority),
                 type = HabitType.values().indexOf(type),
@@ -107,12 +110,13 @@ class HabitRepository {
         }
     }
 
-    private fun toHabitEntity(habitId: String, habit: HabitSave): HabitEntity {
+    private fun toHabitEntity(habit: HabitSave): HabitEntity {
         return HabitEntity(
-            id = habitId,
+            id = UUID.randomUUID().toString(),
+            uid = null,
             title = habit.title,
             description = habit.description,
-            creationDate = toDate(habit.creationDate),
+            creationDate = habit.creationDate,
             color = habit.color,
             priority = habit.priority,
             type = habit.type,
@@ -120,13 +124,14 @@ class HabitRepository {
         )
     }
 
-    private fun toHabitList(habitServerList: List<HabitServer>): List<Habit> {
-        return habitServerList.map {
+    private fun toHabitList(getHabitJsonList: List<GetHabitJson>): List<Habit> {
+        return getHabitJsonList.map {
             Habit(
-                id = it.id,
+                id = "", //TODO
+                uid = it.uid,
                 title = it.title,
                 description = it.description,
-                creationDate = toDate(it.creationDate.toLong()),
+                creationDate = it.creationDate,
                 color = HabitColor.values().getOrNull(it.color) ?: HabitColor.ORANGE,
                 priority = HabitPriority.values().getOrNull(it.priority)
                     ?: HabitPriority.CHOOSE,
@@ -139,6 +144,7 @@ class HabitRepository {
     private fun convertHabitToHabitEntity(habit: Habit): HabitEntity {
         return HabitEntity(
             id = habit.id,
+            uid = habit.uid,
             title = habit.title,
             description = habit.description,
             creationDate = habit.creationDate,
@@ -152,6 +158,7 @@ class HabitRepository {
     private fun convertHabitEntityToHabit(habitEntity: HabitEntity): Habit {
         return Habit(
             id = habitEntity.id,
+            uid = habitEntity.uid,
             title = habitEntity.title,
             description = habitEntity.description,
             creationDate = habitEntity.creationDate,

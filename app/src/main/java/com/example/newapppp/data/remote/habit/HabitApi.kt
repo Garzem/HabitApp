@@ -12,23 +12,23 @@ interface HabitApi {
     @GET("/api/habit")
     suspend fun getHabitList(
         @Header("Authorization") token: String
-    ): List<HabitServer>
+    ): List<GetHabitJson>
 
     @PUT("/api/habit")
     suspend fun putHabit(
         @Header("Authorization") token: String,
-        @Body habitJson: HabitJson
+        @Body putHabitJson: PutHabitJson
     ) : HabitIdJson
 
     @HTTP(method = "DELETE", path = "/api/habit", hasBody = true)
     suspend fun deleteHabit(
         @Header("Authorization") token: String,
-        @Body id: HabitDeleteRequest
+        @Body id: DeleteHabitJson
     )
 
     @POST("/api/habit_done")
     suspend fun postHabit(
         @Header("Authorization") token: String,
-        @Body habitDone: HabitDone
+        @Body postHabitJson: PostHabitJson
     )
 }
