@@ -2,9 +2,9 @@ package com.example.newapppp.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.newapppp.data.HabitColor
-import com.example.newapppp.data.HabitPriority
-import com.example.newapppp.data.HabitType
+import com.example.newapppp.data.habit_local.HabitColor
+import com.example.newapppp.data.habit_local.HabitPriority
+import com.example.newapppp.data.habit_local.HabitType
 
 
 @Entity(tableName = "habit")

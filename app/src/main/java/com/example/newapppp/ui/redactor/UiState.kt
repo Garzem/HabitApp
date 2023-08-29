@@ -1,6 +1,6 @@
 package com.example.newapppp.ui.redactor
 
-import com.example.newapppp.data.HabitColor
+import com.example.newapppp.data.habit_local.HabitColor
 import java.io.Serializable
 
 data class UiState(
@@ -9,7 +9,6 @@ data class UiState(
     val titleCursorPosition: Int,
     val description: String,
     val descriptionCursorPosition: Int,
-    val creationDate: String?,
     val color: HabitColor,
     val priority: Int,
     val type: Int,

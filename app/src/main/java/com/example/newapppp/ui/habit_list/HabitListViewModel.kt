@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newapppp.data.Habit
-import com.example.newapppp.data.HabitType
+import com.example.newapppp.data.habit_local.Habit
+import com.example.newapppp.data.habit_local.HabitType
 import com.example.newapppp.habit_repository.FilterRepository
 import com.example.newapppp.habit_repository.HabitRepository
 import com.example.newapppp.ui.redactor.SingleLiveEvent

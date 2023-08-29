@@ -1,7 +1,7 @@
 package com.example.newapppp.ui.habit_list.habit_adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.newapppp.data.Habit
+import com.example.newapppp.data.habit_local.Habit
 
 class HabitDiffUtilCallback: DiffUtil.ItemCallback<Habit>() {
     override fun areItemsTheSame(oldItem: Habit, newItem: Habit): Boolean {

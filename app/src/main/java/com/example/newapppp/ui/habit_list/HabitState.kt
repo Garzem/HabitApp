@@ -1,8 +1,8 @@
 package com.example.newapppp.ui.habit_list
 
 import com.example.newapppp.data.Filter
-import com.example.newapppp.data.Habit
-import com.example.newapppp.data.HabitPriority
+import com.example.newapppp.data.habit_local.Habit
+import com.example.newapppp.data.habit_local.HabitPriority
 
 sealed interface HabitState {
     data class Success(

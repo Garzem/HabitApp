@@ -8,9 +8,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
-import com.example.newapppp.data.HabitType
+import com.example.newapppp.data.habit_local.HabitType
 import com.example.newapppp.databinding.HomeFragmentBinding
-import com.example.newapppp.habit_repository.HabitRepository
 import com.example.newapppp.ui.filter.BottomFilterFragment
 import com.example.newapppp.ui.habit_list.HabitListFragment
 import com.google.android.material.tabs.TabLayoutMediator

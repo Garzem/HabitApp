@@ -2,7 +2,7 @@ package com.example.newapppp.ui.habit_list
 
 import android.content.Context
 import com.example.newapppp.R
-import com.example.newapppp.data.HabitPriority
+import com.example.newapppp.data.habit_local.HabitPriority
 
 class HabitPriorityMapper(private val context: Context) {
 

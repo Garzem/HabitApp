@@ -10,10 +10,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.newapppp.HApp
 import com.example.newapppp.R
 import com.example.newapppp.data.Constants.HABIT_TYPE_KEY
-import com.example.newapppp.data.HabitType
+import com.example.newapppp.data.habit_local.HabitType
 import com.example.newapppp.databinding.HabitListFragmentBinding
 
 import com.example.newapppp.extension.collectWithLifecycle

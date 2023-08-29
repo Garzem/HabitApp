@@ -3,7 +3,7 @@ package com.example.newapppp.ui.habit_list.habit_adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.example.newapppp.data.Habit
+import com.example.newapppp.data.habit_local.Habit
 import com.example.newapppp.databinding.ItemLayoutBinding
 import com.example.newapppp.ui.habit_list.HabitPriorityMapper
 

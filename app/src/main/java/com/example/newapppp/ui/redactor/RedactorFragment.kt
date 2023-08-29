@@ -14,8 +14,8 @@ import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.data.Constants.COLOR_KEY
-import com.example.newapppp.data.HabitColor
-import com.example.newapppp.data.HabitType
+import com.example.newapppp.data.habit_local.HabitColor
+import com.example.newapppp.data.habit_local.HabitType
 import com.example.newapppp.databinding.RedactorFragmentBinding
 import com.example.newapppp.extension.collectWithLifecycle
 

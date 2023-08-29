@@ -3,7 +3,7 @@ package com.example.newapppp.database
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.example.newapppp.data.HabitType
+import com.example.newapppp.data.habit_local.HabitType
 
 @Dao
 interface HabitDao {

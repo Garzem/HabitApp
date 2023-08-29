@@ -1,4 +1,4 @@
-package com.example.newapppp.data
+package com.example.newapppp.data.habit_local
 
 enum class HabitPriority {
     LOW,

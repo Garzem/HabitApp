@@ -3,7 +3,7 @@ package com.example.newapppp.ui.filter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.newapppp.data.Filter
-import com.example.newapppp.data.HabitPriority
+import com.example.newapppp.data.habit_local.HabitPriority
 import com.example.newapppp.habit_repository.FilterRepository
 import com.example.newapppp.ui.redactor.SingleLiveEvent
 import com.example.newapppp.ui.redactor.emit
