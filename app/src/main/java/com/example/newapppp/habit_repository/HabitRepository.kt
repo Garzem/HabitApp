@@ -20,7 +20,7 @@ import java.util.UUID
 
 
 class HabitRepository {
-    suspend fun saveAndPostHabit(habitSave: HabitSave) = coroutineScope {
+    suspend fun saveHabit(habitSave: HabitSave) = coroutineScope {
         val habitIdAsync = async {
             putHabitWithRetry(TOKEN, toHabitJson(habitSave))
         }
@@ -37,8 +37,9 @@ class HabitRepository {
     }
 
     suspend fun getHabitList(): List<Habit> {
-        val habitServerList = getHabitWithRetry(TOKEN)
-        val habitList = toHabitList(habitServerList)
+        val habitJsonList = getHabitWithRetry(TOKEN)
+        val habitLocalList = AppHabitDataBase.habitDao.getAllHabits()
+        val habitList = toHabitList(habitJsonList, habitLocalList)
         val convertedHabitList = habitList.map { habit ->
             convertHabitToHabitEntity(habit)
         }
@@ -124,10 +125,17 @@ class HabitRepository {
         )
     }
 
-    private fun toHabitList(getHabitJsonList: List<GetHabitJson>): List<Habit> {
+    private fun toHabitList(
+        getHabitJsonList: List<GetHabitJson>, habitLocalList: List<HabitEntity>
+    ): List<Habit> {
+        val habitLocalListWithUid = habitLocalList.filter { it.uid != null }
+
         return getHabitJsonList.map {
+            val localHabit = habitLocalListWithUid.find { habit ->
+                habit.uid == it.uid
+            }
             Habit(
-                id = "", //TODO
+                id = localHabit?.id ?: UUID.randomUUID().toString(),
                 uid = it.uid,
                 title = it.title,
                 description = it.description,

@@ -7,7 +7,6 @@ import com.example.newapppp.data.habit_local.HabitColor
 import com.example.newapppp.data.habit_local.HabitPriority
 import com.example.newapppp.data.habit_local.HabitType
 import com.example.newapppp.data.remote.habit.HabitSave
-import com.example.newapppp.data.TimeConverter.toLong
 import com.example.newapppp.habit_repository.HabitRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -170,7 +169,7 @@ class RedactorFragmentViewModel : ViewModel() {
                     type = HabitType.values().getOrNull(uiState.type) ?: HabitType.GOOD
                 )
                 try {
-                    HabitRepository().saveAndPostHabit(saveHabit)
+                    HabitRepository().saveHabit(saveHabit)
                     _goBack.emit()
                 } catch (e: Exception) {
                     _showSendingError.emit()

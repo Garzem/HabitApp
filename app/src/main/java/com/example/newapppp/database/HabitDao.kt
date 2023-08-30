@@ -23,6 +23,9 @@ interface HabitDao {
     @Query("SELECT * FROM habit WHERE type = :type")
     suspend fun getHabitListByType(type: HabitType) : List<HabitEntity>
 
+    @Query("SELECT * FROM habit")
+    suspend fun getAllHabits(): List<HabitEntity>
+
     @Query("SELECT id FROM habit ")
     suspend fun getAllHabitsId() : List<String>
 
