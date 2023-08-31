@@ -21,19 +21,22 @@ import java.util.UUID
 
 class HabitRepository {
     suspend fun saveHabit(habitSave: HabitSave) = coroutineScope {
-        val habitIdAsync = async {
+        val habitUidAsync = async {
             putHabitWithRetry(TOKEN, toHabitJson(habitSave))
         }
         val habitEntityAsync = async {
-            AppHabitDataBase.habitDao.upsertHabit(toHabitEntity(habitSave))
+            val habitEntity = toHabitEntity(habitSave)
+            AppHabitDataBase.habitDao.upsertHabit(habitEntity)
+            habitEntity
         }
-        val habitId = habitIdAsync.await()
+        val habitUid = habitUidAsync.await()
         val habitEntity = habitEntityAsync.await()
-//        postHabitWithRetry(
-//            HabitDone(
-//                uid = habitId.uid, creationDate = habitSave.creationDate.toInt()
-//            )
-//        )
+
+        val habitEntityWithUid = habitEntity.copy(
+            uid = habitUid.uid
+        )
+
+        AppHabitDataBase.habitDao.upsertHabit(habitEntityWithUid)
     }
 
     suspend fun getHabitList(): List<Habit> {
