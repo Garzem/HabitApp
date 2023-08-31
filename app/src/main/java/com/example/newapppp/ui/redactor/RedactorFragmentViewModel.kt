@@ -19,6 +19,7 @@ class RedactorFragmentViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(
         UiState(
             id = null,
+            uid = null,
             title = "",
             titleCursorPosition = 0,
             description = "",
@@ -51,6 +52,7 @@ class RedactorFragmentViewModel : ViewModel() {
                 creationDate = habit.creationDate
                 _uiState.value = UiState(
                     id = habit.id,
+                    uid = habit.uid,
                     title = habit.title,
                     titleCursorPosition = 0,
                     description = habit.description,
@@ -159,6 +161,7 @@ class RedactorFragmentViewModel : ViewModel() {
         val uiState = _uiState.value
         if (validation()) {
             viewModelScope.launch {
+                val habitId = uiState.id
                 val saveHabit = HabitSave(
                     color = uiState.color,
                     creationDate = creationDate ?: System.currentTimeMillis(),
@@ -169,7 +172,7 @@ class RedactorFragmentViewModel : ViewModel() {
                     type = HabitType.values().getOrNull(uiState.type) ?: HabitType.GOOD
                 )
                 try {
-                    HabitRepository().saveHabit(saveHabit)
+                    HabitRepository().saveOrUpdateHabit(saveHabit, habitId)
                     _goBack.emit()
                 } catch (e: Exception) {
                     _showSendingError.emit()

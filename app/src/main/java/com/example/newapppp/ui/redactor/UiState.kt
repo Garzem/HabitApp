@@ -5,6 +5,7 @@ import java.io.Serializable
 
 data class UiState(
     val id: String?,
+    val uid: String?,
     val title: String,
     val titleCursorPosition: Int,
     val description: String,

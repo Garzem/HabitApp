@@ -20,23 +20,23 @@ import java.util.UUID
 
 
 class HabitRepository {
-    suspend fun saveHabit(habitSave: HabitSave) = coroutineScope {
-        val habitUidAsync = async {
-            putHabitWithRetry(TOKEN, toHabitJson(habitSave))
-        }
-        val habitEntityAsync = async {
-            val habitEntity = toHabitEntity(habitSave)
-            AppHabitDataBase.habitDao.upsertHabit(habitEntity)
-            habitEntity
-        }
-        val habitUid = habitUidAsync.await()
-        val habitEntity = habitEntityAsync.await()
+    suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?) = coroutineScope {
+            val habitUidAsync = async {
+                putHabitWithRetry(TOKEN, toHabitJson(habitSave))
+            }
+            val habitEntityAsync = async {
+                val habitEntity = toHabitEntity(habitSave, habitId)
+                AppHabitDataBase.habitDao.upsertHabit(habitEntity)
+                habitEntity
+            }
+            val habitUid = habitUidAsync.await()
+            val habitEntity = habitEntityAsync.await()
 
-        val habitEntityWithUid = habitEntity.copy(
-            uid = habitUid.uid
-        )
+            val habitEntityWithUid = habitEntity.copy(
+                uid = habitUid.uid
+            )
 
-        AppHabitDataBase.habitDao.upsertHabit(habitEntityWithUid)
+            AppHabitDataBase.habitDao.upsertHabit(habitEntityWithUid)
     }
 
     suspend fun getHabitList(): List<Habit> {
@@ -114,9 +114,9 @@ class HabitRepository {
         }
     }
 
-    private fun toHabitEntity(habit: HabitSave): HabitEntity {
+    private fun toHabitEntity(habit: HabitSave, habitId: String?): HabitEntity {
         return HabitEntity(
-            id = UUID.randomUUID().toString(),
+            id = habitId ?:UUID.randomUUID().toString(),
             uid = null,
             title = habit.title,
             description = habit.description,

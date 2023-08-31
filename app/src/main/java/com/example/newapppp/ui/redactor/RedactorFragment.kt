@@ -163,6 +163,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
                     R.string.error_with_sending_habit_to_server,
                     Toast.LENGTH_SHORT
                 ).show()
+                findNavController().popBackStack()
             }
 
             goBack.observe(viewLifecycleOwner) {
