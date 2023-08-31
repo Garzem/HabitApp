@@ -87,7 +87,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
                 val habit = adapter?.getHabitAtPosition(position) ?: return
                 habit.apply {
                     adapter?.deleteHabitByPosition(position)
-                    id.let { habitViewModel.deleteHabit(it) }
+                    habitViewModel.deleteHabit(id, uid, habitType ?: return)
                 }
             }
         })

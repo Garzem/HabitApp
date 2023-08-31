@@ -63,11 +63,16 @@ class HabitListViewModel : ViewModel() {
         }
     }
 
-    fun deleteHabit(id: String) {
+    fun deleteHabit(id: String, uid: String?, habitType: HabitType) {
         viewModelScope.launch {
             try {
-                HabitRepository().deleteHabit(id)
+                HabitRepository().deleteHabit(id, uid)
             } catch (e: Exception) {
+                val actualHabitList = HabitRepository().getHabitListByType(habitType)
+                _habitState.update { state ->
+                    if (state is HabitState.Success) state.copy( habitList = actualHabitList)
+                    else state
+                }
                 (_habitState.value as? HabitState.Success)?.let {
                     _showDeleteError.emit(it.filteredHabits)
                 }

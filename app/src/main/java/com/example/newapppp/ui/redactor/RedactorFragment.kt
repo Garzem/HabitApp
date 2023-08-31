@@ -166,6 +166,14 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
                 findNavController().popBackStack()
             }
 
+            showDeleteError.observe(viewLifecycleOwner) {
+                Toast.makeText(
+                    requireContext(),
+                    R.string.delete_problem,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
             goBack.observe(viewLifecycleOwner) {
                 findNavController().popBackStack()
             }

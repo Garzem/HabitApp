@@ -3,6 +3,7 @@ package com.example.newapppp.ui.redactor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.newapppp.data.habit_local.Habit
 import com.example.newapppp.data.habit_local.HabitColor
 import com.example.newapppp.data.habit_local.HabitPriority
 import com.example.newapppp.data.habit_local.HabitType
@@ -39,6 +40,10 @@ class RedactorFragmentViewModel : ViewModel() {
     private val _showSendingError = SingleLiveEvent<Unit>()
 
     val showSendingError: LiveData<Unit> get() = _showSendingError
+
+    private val _showDeleteError = SingleLiveEvent<Unit>()
+
+    val showDeleteError: LiveData<Unit> get() = _showDeleteError
 
     private val _goBack = SingleLiveEvent<Unit>()
     val goBack: LiveData<Unit> get() = _goBack
@@ -150,9 +155,13 @@ class RedactorFragmentViewModel : ViewModel() {
 
     fun deleteHabit() {
         viewModelScope.launch {
-            _uiState.value.id?.let { id ->
-                HabitRepository().deleteHabit(id)
-                _goBack.emit()
+            try {
+                _uiState.value.let {
+                    HabitRepository().deleteHabit(it.id ?: return@launch, it.uid)
+                    _goBack.emit()
+                }
+            } catch (e: Exception) {
+                _showDeleteError.emit()
             }
         }
     }
