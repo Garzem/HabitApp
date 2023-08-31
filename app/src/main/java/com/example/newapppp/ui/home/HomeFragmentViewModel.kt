@@ -7,13 +7,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 
 class HomeFragmentViewModel : ViewModel() {
 
     fun deleteAllHabits() {
         viewModelScope.launch {
-            HabitRepository().deleteAllHabits()
+            try {
+                HabitRepository().deleteAllHabits()
+            } catch (e: Exception) {
+                //TODO
+            }
         }
     }
 }

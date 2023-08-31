@@ -31,10 +31,11 @@ class HApp: Application() {
             .addInterceptor(httpLoggingInterceptor)
             .build()
 
+        val json = Json { ignoreUnknownKeys = true }
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
 
         habitApi = retrofit.create(HabitApi::class.java)
