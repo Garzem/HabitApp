@@ -59,7 +59,6 @@ class HabitListViewModel : ViewModel() {
                         filter = FilterRepository.filterFlow.value
                     )
                 }
-                Log.d("exception", "$e")
             }
         }
     }
@@ -72,7 +71,6 @@ class HabitListViewModel : ViewModel() {
                 (_habitState.value as? HabitState.Success)?.let {
                     _showDeleteError.emit(it.filteredHabits)
                 }
-                Log.e("wrongSendingHVM", "An error occurred: ${e.message}")
             }
         }
     }
