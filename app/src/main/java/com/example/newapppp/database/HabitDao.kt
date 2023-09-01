@@ -26,8 +26,8 @@ interface HabitDao {
     @Query("SELECT * FROM habit")
     suspend fun getAllHabits(): List<HabitEntity>
 
-    @Query("SELECT id FROM habit ")
-    suspend fun getAllHabitsId() : List<String>
+    @Query("SELECT uid FROM habit ")
+    suspend fun getAllHabitsId() : List<String?>
 
     @Query("DELETE FROM habit")
     suspend fun deleteAllHabits()

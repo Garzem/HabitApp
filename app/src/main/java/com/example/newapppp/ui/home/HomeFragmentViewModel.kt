@@ -1,5 +1,6 @@
 package com.example.newapppp.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newapppp.habit_repository.HabitRepository
@@ -17,7 +18,7 @@ class HomeFragmentViewModel : ViewModel() {
             try {
                 HabitRepository().deleteAllHabits()
             } catch (e: Exception) {
-                //TODO
+                Log.d("wrong", "$e")
             }
         }
     }

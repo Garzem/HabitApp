@@ -56,9 +56,9 @@ class HabitRepository {
     }
 
     suspend fun deleteAllHabits() {
-        val stringList = AppHabitDataBase.habitDao.getAllHabitsId()
-        stringList.map { id ->
-            deleteHabitWithRetry(DeleteHabitJson(id))
+        val filteredStringList = AppHabitDataBase.habitDao.getAllHabitsId().filterNotNull()
+        filteredStringList.map { uid ->
+            deleteHabitWithRetry(DeleteHabitJson(uid))
         }
         AppHabitDataBase.habitDao.deleteAllHabits()
     }
