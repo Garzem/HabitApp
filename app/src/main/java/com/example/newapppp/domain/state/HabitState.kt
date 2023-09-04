@@ -1,4 +1,4 @@
-package com.example.newapppp.presentation.habit_list
+package com.example.newapppp.domain.state
 
 import com.example.newapppp.domain.Filter
 import com.example.newapppp.domain.habit_local.Habit

@@ -17,6 +17,7 @@ import com.example.newapppp.databinding.HabitListFragmentBinding
 
 import com.example.newapppp.domain.extension.collectWithLifecycle
 import com.example.newapppp.domain.extension.serializable
+import com.example.newapppp.domain.state.HabitState
 import com.example.newapppp.presentation.habit_list.habit_adapter.HabitListAdapter
 import com.example.newapppp.presentation.home.HomeFragment
 import com.example.newapppp.presentation.home.HomeFragmentDirections

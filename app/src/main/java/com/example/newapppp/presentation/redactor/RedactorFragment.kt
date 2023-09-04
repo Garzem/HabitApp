@@ -18,6 +18,7 @@ import com.example.newapppp.domain.habit_local.HabitColor
 import com.example.newapppp.domain.habit_local.HabitType
 import com.example.newapppp.databinding.RedactorFragmentBinding
 import com.example.newapppp.domain.extension.collectWithLifecycle
+import com.example.newapppp.domain.state.UiState
 
 class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
