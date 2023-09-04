@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PutHabitJson(
+    val uid: String?,
     val color: Int,
     val count: Int,
     @SerialName(value = "date")

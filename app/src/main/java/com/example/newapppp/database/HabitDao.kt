@@ -23,10 +23,13 @@ interface HabitDao {
     @Query("SELECT * FROM habit WHERE type = :type")
     suspend fun getHabitListByType(type: HabitType) : List<HabitEntity>
 
-    @Query("SELECT * FROM habit")
+    @Query("SELECT * FROM habit WHERE deleted = 0")
     suspend fun getAllHabits(): List<HabitEntity>
 
-    @Query("SELECT uid FROM habit ")
+    @Query("SELECT * FROM habit WHERE deleted = 1")
+    suspend fun getAllDeletedHabits(): List<HabitEntity>
+
+    @Query("SELECT uid FROM habit")
     suspend fun getAllHabitsId() : List<String?>
 
     @Query("DELETE FROM habit")

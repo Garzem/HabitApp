@@ -18,5 +18,6 @@ data class HabitEntity(
     val color: HabitColor,
     val priority: HabitPriority,
     val type: HabitType,
-    val frequency: Int
+    val frequency: Int,
+    val deleted: Boolean
 )

@@ -39,20 +39,38 @@ class HabitRepository {
         AppHabitDataBase.habitDao.upsertHabit(habitEntityWithUid)
     }
 
-    suspend fun getHabitList(): List<Habit> {
-        val habitJsonList = getHabitWithRetry(TOKEN)
-        val habitLocalList = AppHabitDataBase.habitDao.getAllHabits()
-        val habitList = toHabitList(habitJsonList, habitLocalList)
-        val convertedHabitList = habitList.map { habit ->
-            convertHabitToHabitEntity(habit)
+    suspend fun getHabitList(): List<Habit> = coroutineScope {
+        val habitJsonListAsync = async {
+            getHabitWithRetry(TOKEN)
         }
-        AppHabitDataBase.habitDao.upsertHabitList(convertedHabitList)
-        return habitList
+        val habitLocalListAsync = async {
+            AppHabitDataBase.habitDao.getAllHabits()
+        }
+        val habitJsonList = habitJsonListAsync.await()
+        val habitEntityList = habitLocalListAsync.await()
+
+        val notSavedHabitJsonList = habitJsonList.filter { getHabitJson ->
+            habitEntityList.none { habitEntity ->
+                habitEntity.uid == getHabitJson.uid
+            }
+        }
+
+        val notSavedHabitEntityList = notSavedHabitJsonList.map(this@HabitRepository::toHabitEntity)
+        AppHabitDataBase.habitDao.upsertHabitList(notSavedHabitEntityList)
+
+        (notSavedHabitEntityList + habitEntityList).map(::toHabit).sortedBy { habit ->
+            habit.creationDate
+        }
     }
 
-    suspend fun deleteHabit(id: String, uid: String?) {
-        uid?.let { deleteHabitWithRetry(DeleteHabitJson(uid)) }
-        AppHabitDataBase.habitDao.deleteHabitById(id)
+    suspend fun deleteHabit(habit: Habit) {
+        val response = habit.uid?.let { deleteHabitWithRetry(DeleteHabitJson(habit.uid)) }
+        if (response == null || response.isSuccess) {
+            AppHabitDataBase.habitDao.deleteHabitById(habit.id)
+        } else {
+            val habitEntity = toHabitEntity(habit).copy(deleted = true)
+            AppHabitDataBase.habitDao.upsertHabit(habitEntity)
+        }
     }
 
     suspend fun deleteAllHabits() {
@@ -64,30 +82,30 @@ class HabitRepository {
     }
 
     suspend fun getHabitById(habitId: String): Habit {
-        return convertHabitEntityToHabit(AppHabitDataBase.habitDao.getHabitById(habitId))
+        return toHabit(AppHabitDataBase.habitDao.getHabitById(habitId))
     }
 
     suspend fun getHabitListByType(type: HabitType): List<Habit> {
         val habitListByType = AppHabitDataBase.habitDao.getHabitListByType(type)
         return habitListByType.map {
-            convertHabitEntityToHabit(it)
+            toHabit(it)
         }
     }
 
     private suspend fun putHabitWithRetry(token: String, putHabitJson: PutHabitJson): HabitIdJson {
         return callWithRetry {
             HApp.habitApi.putHabit(token, putHabitJson)
-        }
+        }.getOrThrow()
     }
 
     private suspend fun getHabitWithRetry(token: String): List<GetHabitJson> {
         return callWithRetry {
             HApp.habitApi.getHabitList(token)
-        }
+        }.getOrThrow()
     }
 
-    private suspend fun deleteHabitWithRetry(deleteRequest: DeleteHabitJson) {
-        callWithRetry {
+    private suspend fun deleteHabitWithRetry(deleteRequest: DeleteHabitJson): Result<Unit> {
+        return callWithRetry {
             HApp.habitApi.deleteHabit(TOKEN, deleteRequest)
         }
     }
@@ -101,6 +119,7 @@ class HabitRepository {
     private fun toHabitJson(saveHabit: HabitSave): PutHabitJson {
         return with(saveHabit) {
             PutHabitJson(
+                uid = null,
                 title = title,
                 description = description,
                 creationDate = creationDate,
@@ -123,35 +142,29 @@ class HabitRepository {
             color = habit.color,
             priority = habit.priority,
             type = habit.type,
-            frequency = habit.frequency
+            frequency = habit.frequency,
+            deleted = false
         )
     }
 
-    private fun toHabitList(
-        getHabitJsonList: List<GetHabitJson>, habitLocalList: List<HabitEntity>
-    ): List<Habit> {
-        val habitLocalListWithUid = habitLocalList.filter { it.uid != null }
-
-        return getHabitJsonList.map {
-            val localHabit = habitLocalListWithUid.find { habit ->
-                habit.uid == it.uid
-            }
-            Habit(
-                id = localHabit?.id ?: UUID.randomUUID().toString(),
-                uid = it.uid,
-                title = it.title,
-                description = it.description,
-                creationDate = it.creationDate,
-                color = HabitColor.values().getOrNull(it.color) ?: HabitColor.ORANGE,
-                priority = HabitPriority.values().getOrNull(it.priority)
-                    ?: HabitPriority.CHOOSE,
-                type = HabitType.values().getOrNull(it.type) ?: HabitType.GOOD,
-                frequency = it.frequency
+    private fun toHabitEntity(habit: GetHabitJson): HabitEntity {
+        return with(habit) {
+            HabitEntity(
+                id = UUID.randomUUID().toString(),
+                uid = uid,
+                title = title,
+                description = description,
+                creationDate = creationDate,
+                color = HabitColor.values().getOrNull(color) ?: HabitColor.ORANGE,
+                priority = HabitPriority.values().getOrNull(priority) ?: HabitPriority.CHOOSE,
+                type = HabitType.values().getOrNull(type) ?: HabitType.GOOD,
+                frequency = frequency,
+                deleted = false
             )
         }
     }
 
-    private fun convertHabitToHabitEntity(habit: Habit): HabitEntity {
+    private fun toHabitEntity(habit: Habit): HabitEntity {
         return HabitEntity(
             id = habit.id,
             uid = habit.uid,
@@ -162,10 +175,11 @@ class HabitRepository {
             priority = habit.priority,
             type = habit.type,
             frequency = habit.frequency,
+            deleted = false
         )
     }
 
-    private fun convertHabitEntityToHabit(habitEntity: HabitEntity): Habit {
+    private fun toHabit(habitEntity: HabitEntity): Habit {
         return Habit(
             id = habitEntity.id,
             uid = habitEntity.uid,
