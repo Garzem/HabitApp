@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.app_info.AppInfoFragment">
+    tools:context=".presentation.app_info.AppInfoFragment">
 
     <ImageView
         android:id="@+id/habit_image"
