@@ -3,19 +3,36 @@ package com.example.newapppp.presentation.redactor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newapppp.domain.habit_local.HabitColor
-import com.example.newapppp.domain.habit_local.HabitPriority
-import com.example.newapppp.domain.habit_local.HabitType
-import com.example.newapppp.domain.remote.habit.HabitSave
-import com.example.newapppp.data.habit_repository.HabitRepository
+import com.example.newapppp.data.database.habit_local.HabitColor
+import com.example.newapppp.data.database.habit_local.HabitPriority
+import com.example.newapppp.data.database.habit_local.HabitType
+import com.example.newapppp.data.remote.habit.HabitSave
+import com.example.newapppp.domain.SingleLiveEvent
+import com.example.newapppp.domain.emit
+import com.example.newapppp.data.database.habit_local.Habit
 import com.example.newapppp.domain.state.UiState
+import com.example.newapppp.domain.usecase.DeleteHabitRemoteUseCase
+import com.example.newapppp.domain.usecase.GetListUseCase
+import com.example.newapppp.domain.usecase.redactor.GetHabitByIdUseCase
+import com.example.newapppp.domain.usecase.redactor.GetPriorityIntUseCase
+import com.example.newapppp.domain.usecase.redactor.GetTypeIntUseCase
+import com.example.newapppp.domain.usecase.redactor.SaveOrUpdateHabitUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class RedactorFragmentViewModel : ViewModel() {
+@HiltViewModel
+class RedactorFragmentViewModel(
+    private val getListUseCase: GetListUseCase,
+    private val saveOrUpdateHabitUseCase: SaveOrUpdateHabitUseCase,
+    private val getTypeIntUseCase: GetTypeIntUseCase,
+    private val getPriorityIntUseCase: GetPriorityIntUseCase,
+    private val getHabitByIdUseCase: GetHabitByIdUseCase,
+    private val deleteHabitRemoteUseCase: DeleteHabitRemoteUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
         UiState(
@@ -53,7 +70,7 @@ class RedactorFragmentViewModel : ViewModel() {
     fun setHabit(habitId: String?) {
         if (habitId != null) {
             viewModelScope.launch {
-                val habit = HabitRepository().getHabitById(habitId)
+                val habit = getHabitByIdUseCase.execute(habitId)
                 creationDate = habit.creationDate
                 _uiState.value = UiState(
                     id = habit.id,
@@ -63,8 +80,8 @@ class RedactorFragmentViewModel : ViewModel() {
                     description = habit.description,
                     descriptionCursorPosition = 0,
                     color = habit.color,
-                    priority = getPositionPriority(habit.priority),
-                    type = getPositionType(habit.type),
+                    priority = getPriorityIntUseCase.execute(habit.priority),
+                    type = getTypeIntUseCase.execute(habit.type),
                     frequency = habit.frequency.toString(),
                     frequencyCursorPosition = 0
                 )
@@ -73,7 +90,7 @@ class RedactorFragmentViewModel : ViewModel() {
     }
 
     fun setType(habitType: HabitType) {
-        val type = HabitType.values().indexOf(habitType)
+        val type = getTypeIntUseCase.execute(habitType)
         _uiState.update { state ->
             state.copy(
                 type = type
@@ -119,7 +136,7 @@ class RedactorFragmentViewModel : ViewModel() {
     fun setupType(type: HabitType) {
         _uiState.update { state ->
             state.copy(
-                type = getPositionType(type)
+                type = getTypeIntUseCase.execute(type)
             )
         }
     }
@@ -132,32 +149,28 @@ class RedactorFragmentViewModel : ViewModel() {
         }
     }
 
-    private fun getPositionType(type: HabitType): Int {
-        return HabitType.values().indexOf(type)
-    }
-
-    private fun getPositionPriority(priority: HabitPriority): Int {
-        return HabitPriority.values().indexOf(priority)
-
-    }
 
     fun getList(): List<String> {
-        return HabitPriority.values().map {
-//            HabitPriorityMapper().getPriorityName(it)
-            when (it) {
-                HabitPriority.CHOOSE -> "Приоритет"
-                HabitPriority.LOW -> "Низкий"
-                HabitPriority.MEDIUM -> "Средний"
-                HabitPriority.HIGH -> "Высокий"
-            }
-        }
+        return getListUseCase.execute()
     }
 
     fun deleteHabit() {
         viewModelScope.launch {
             try {
                 _uiState.value.let {
-                    HabitRepository().deleteHabit(it.id ?: return@launch, it.uid)
+                    val habit = Habit(
+                        id = it.id ?: return@launch,
+                        uid = it.uid,
+                        color = it.color,
+                        creationDate = creationDate ?: System.currentTimeMillis(),
+                        description = it.description,
+                        frequency = it.frequency.toInt(),
+                        priority = HabitPriority.values().getOrNull(it.priority)
+                            ?: HabitPriority.CHOOSE,
+                        title = it.title,
+                        type = HabitType.values().getOrNull(it.type) ?: HabitType.GOOD
+                    )
+                    deleteHabitRemoteUseCase.execute(habit)
                     _goBack.emit()
                 }
             } catch (e: Exception) {
@@ -181,7 +194,7 @@ class RedactorFragmentViewModel : ViewModel() {
                     type = HabitType.values().getOrNull(uiState.type) ?: HabitType.GOOD
                 )
                 try {
-                    HabitRepository().saveOrUpdateHabit(saveHabit, habitId)
+                    saveOrUpdateHabitUseCase.execute(saveHabit, habitId)
                     _goBack.emit()
                 } catch (e: Exception) {
                     _showSendingError.emit()

@@ -1,8 +1,8 @@
 package com.example.newapppp.domain.state
 
 import com.example.newapppp.domain.Filter
-import com.example.newapppp.domain.habit_local.Habit
-import com.example.newapppp.domain.habit_local.HabitPriority
+import com.example.newapppp.data.database.habit_local.Habit
+import com.example.newapppp.data.database.habit_local.HabitPriority
 
 sealed interface HabitState {
     data class Success(

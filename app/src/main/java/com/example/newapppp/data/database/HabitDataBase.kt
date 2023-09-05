@@ -2,7 +2,7 @@ package com.example.newapppp.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.newapppp.domain.habit_local.HabitEntity
+import com.example.newapppp.data.database.habit_local.HabitEntity
 
 
 @Database(

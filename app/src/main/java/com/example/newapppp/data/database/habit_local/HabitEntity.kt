@@ -1,10 +1,10 @@
-package com.example.newapppp.domain.habit_local
+package com.example.newapppp.data.database.habit_local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.newapppp.domain.habit_local.HabitColor
-import com.example.newapppp.domain.habit_local.HabitPriority
-import com.example.newapppp.domain.habit_local.HabitType
+import com.example.newapppp.data.database.habit_local.HabitColor
+import com.example.newapppp.data.database.habit_local.HabitPriority
+import com.example.newapppp.data.database.habit_local.HabitType
 
 
 @Entity(tableName = "habit")

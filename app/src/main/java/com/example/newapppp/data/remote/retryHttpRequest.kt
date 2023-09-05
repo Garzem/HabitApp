@@ -1,4 +1,4 @@
-package com.example.newapppp.domain.remote
+package com.example.newapppp.data.remote
 
 import kotlinx.coroutines.delay
 import retrofit2.HttpException

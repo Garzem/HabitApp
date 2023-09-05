@@ -1,4 +1,4 @@
-package com.example.newapppp.domain.remote.habit
+package com.example.newapppp.data.remote.habit
 
 import retrofit2.http.Body
 import retrofit2.http.GET

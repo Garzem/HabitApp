@@ -1,4 +1,4 @@
-package com.example.newapppp.domain.remote.habit
+package com.example.newapppp.data.remote.habit
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

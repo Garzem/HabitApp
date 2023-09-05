@@ -1,26 +1,30 @@
-package com.example.newapppp.data.habit_repository
+package com.example.newapppp.data.repository
 
 import com.example.newapppp.presentation.HApp
 import com.example.newapppp.domain.Constants.TOKEN
-import com.example.newapppp.domain.habit_local.Habit
-import com.example.newapppp.domain.habit_local.HabitColor
-import com.example.newapppp.domain.habit_local.HabitPriority
-import com.example.newapppp.domain.habit_local.HabitType
-import com.example.newapppp.domain.remote.habit.HabitSave
-import com.example.newapppp.domain.remote.callWithRetry
-import com.example.newapppp.domain.remote.habit.DeleteHabitJson
-import com.example.newapppp.domain.remote.habit.HabitIdJson
-import com.example.newapppp.domain.remote.habit.PutHabitJson
-import com.example.newapppp.domain.remote.habit.GetHabitJson
+import com.example.newapppp.data.database.habit_local.Habit
+import com.example.newapppp.data.database.habit_local.HabitColor
+import com.example.newapppp.data.database.habit_local.HabitPriority
+import com.example.newapppp.data.database.habit_local.HabitType
+import com.example.newapppp.data.remote.habit.HabitSave
+import com.example.newapppp.data.remote.callWithRetry
+import com.example.newapppp.data.remote.habit.DeleteHabitJson
+import com.example.newapppp.data.remote.habit.HabitIdJson
+import com.example.newapppp.data.remote.habit.PutHabitJson
+import com.example.newapppp.data.remote.habit.GetHabitJson
 import com.example.newapppp.data.database.AppHabitDataBase
-import com.example.newapppp.domain.habit_local.HabitEntity
+import com.example.newapppp.data.database.habit_local.HabitEntity
+import com.example.newapppp.data.remote.habit.HabitApi
+import com.example.newapppp.domain.repository.HabitRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import java.util.UUID
 
 
-class HabitRepository {
-    suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?) = coroutineScope {
+class HabitRepositoryImpl(
+    private val api: HabitApi
+): HabitRepository {
+    override suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?) = coroutineScope {
         val habitUidAsync = async {
             putHabitWithRetry(TOKEN, toHabitJson(habitSave))
         }
@@ -39,7 +43,7 @@ class HabitRepository {
         AppHabitDataBase.habitDao.upsertHabit(habitEntityWithUid)
     }
 
-    suspend fun getHabitList(): List<Habit> = coroutineScope {
+    override suspend fun getHabitList(): List<Habit> = coroutineScope {
         val habitJsonListAsync = async {
             getHabitWithRetry(TOKEN)
         }
@@ -55,7 +59,7 @@ class HabitRepository {
             }
         }
 
-        val notSavedHabitEntityList = notSavedHabitJsonList.map(this@HabitRepository::toHabitEntity)
+        val notSavedHabitEntityList = notSavedHabitJsonList.map(this@HabitRepositoryImpl::toHabitEntity)
         AppHabitDataBase.habitDao.upsertHabitList(notSavedHabitEntityList)
 
         (notSavedHabitEntityList + habitEntityList).map(::toHabit).sortedBy { habit ->
@@ -63,7 +67,7 @@ class HabitRepository {
         }
     }
 
-    suspend fun deleteHabit(habit: Habit) {
+    override suspend fun deleteHabit(habit: Habit) {
         val response = habit.uid?.let { deleteHabitWithRetry(DeleteHabitJson(habit.uid)) }
         if (response == null || response.isSuccess) {
             AppHabitDataBase.habitDao.deleteHabitById(habit.id)
@@ -73,7 +77,7 @@ class HabitRepository {
         }
     }
 
-    suspend fun deleteAllHabits() {
+    override suspend fun deleteAllHabits() {
         val filteredStringList = AppHabitDataBase.habitDao.getAllHabitsId().filterNotNull()
         filteredStringList.map { uid ->
             deleteHabitWithRetry(DeleteHabitJson(uid))
@@ -81,30 +85,30 @@ class HabitRepository {
         AppHabitDataBase.habitDao.deleteAllHabits()
     }
 
-    suspend fun getHabitById(habitId: String): Habit {
+    override suspend fun getHabitById(habitId: String): Habit {
         return toHabit(AppHabitDataBase.habitDao.getHabitById(habitId))
     }
 
-    suspend fun getHabitListByType(type: HabitType): List<Habit> {
+    override suspend fun getHabitListByType(type: HabitType): List<Habit> {
         val habitListByType = AppHabitDataBase.habitDao.getHabitListByType(type)
         return habitListByType.map {
             toHabit(it)
         }
     }
 
-    private suspend fun putHabitWithRetry(token: String, putHabitJson: PutHabitJson): HabitIdJson {
+    override suspend fun putHabitWithRetry(token: String, putHabitJson: PutHabitJson): HabitIdJson {
         return callWithRetry {
             HApp.habitApi.putHabit(token, putHabitJson)
         }.getOrThrow()
     }
 
-    private suspend fun getHabitWithRetry(token: String): List<GetHabitJson> {
+    override suspend fun getHabitWithRetry(token: String): List<GetHabitJson> {
         return callWithRetry {
             HApp.habitApi.getHabitList(token)
         }.getOrThrow()
     }
 
-    private suspend fun deleteHabitWithRetry(deleteRequest: DeleteHabitJson): Result<Unit> {
+    override suspend fun deleteHabitWithRetry(deleteRequest: DeleteHabitJson): Result<Unit> {
         return callWithRetry {
             HApp.habitApi.deleteHabit(TOKEN, deleteRequest)
         }
@@ -116,7 +120,7 @@ class HabitRepository {
 //        }
 //    }
 
-    private fun toHabitJson(saveHabit: HabitSave): PutHabitJson {
+    override fun toHabitJson(saveHabit: HabitSave): PutHabitJson {
         return with(saveHabit) {
             PutHabitJson(
                 uid = null,
@@ -132,7 +136,7 @@ class HabitRepository {
         }
     }
 
-    private fun toHabitEntity(habit: HabitSave, habitId: String?): HabitEntity {
+    override fun toHabitEntity(habit: HabitSave, habitId: String?): HabitEntity {
         return HabitEntity(
             id = habitId ?: UUID.randomUUID().toString(),
             uid = null,
@@ -147,7 +151,7 @@ class HabitRepository {
         )
     }
 
-    private fun toHabitEntity(habit: GetHabitJson): HabitEntity {
+    override fun toHabitEntity(habit: GetHabitJson): HabitEntity {
         return with(habit) {
             HabitEntity(
                 id = UUID.randomUUID().toString(),
@@ -164,7 +168,7 @@ class HabitRepository {
         }
     }
 
-    private fun toHabitEntity(habit: Habit): HabitEntity {
+    override fun toHabitEntity(habit: Habit): HabitEntity {
         return HabitEntity(
             id = habit.id,
             uid = habit.uid,
@@ -179,7 +183,7 @@ class HabitRepository {
         )
     }
 
-    private fun toHabit(habitEntity: HabitEntity): Habit {
+    override fun toHabit(habitEntity: HabitEntity): Habit {
         return Habit(
             id = habitEntity.id,
             uid = habitEntity.uid,

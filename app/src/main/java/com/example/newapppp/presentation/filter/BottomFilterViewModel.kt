@@ -3,16 +3,24 @@ package com.example.newapppp.presentation.filter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.newapppp.domain.Filter
-import com.example.newapppp.domain.habit_local.HabitPriority
-import com.example.newapppp.data.habit_repository.FilterRepository
-import com.example.newapppp.presentation.redactor.SingleLiveEvent
-import com.example.newapppp.presentation.redactor.emit
+import com.example.newapppp.data.database.habit_local.HabitPriority
+import com.example.newapppp.data.repository.FilterRepositoryImpl
+import com.example.newapppp.domain.SingleLiveEvent
+import com.example.newapppp.domain.emit
+import com.example.newapppp.domain.usecase.GetListUseCase
+import com.example.newapppp.domain.usecase.filter.GetPriorityUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import javax.inject.Inject
 
-class BottomFilterViewModel: ViewModel() {
+@HiltViewModel
+class BottomFilterViewModel @Inject constructor(
+    private val getPriorityUseCase: GetPriorityUseCase,
+    private val getListUseCase: GetListUseCase
+): ViewModel() {
 
-    val filterState = FilterRepository.filterFlow.asStateFlow()
+    val filterState = FilterRepositoryImpl.filterFlow.asStateFlow()
 
     private var selectedPriority = HabitPriority.CHOOSE
 
@@ -23,14 +31,14 @@ class BottomFilterViewModel: ViewModel() {
     val goBack: LiveData<Unit> get() = _goBack
 
     fun onPriorityChanged(priorityInt: Int) {
-        selectedPriority = HabitPriority.values()[priorityInt]
+        selectedPriority = getPriorityUseCase.execute(priorityInt)
     }
 
     fun onFilterClicked(title: String) {
         if (title.isBlank() && selectedPriority == HabitPriority.CHOOSE) {
             _showErrorToast.emit()
         } else {
-            FilterRepository.filterFlow.update { filter ->
+            FilterRepositoryImpl.filterFlow.update { filter ->
                 filter.copy(
                     filterByTitle = title,
                     filterByPriority = selectedPriority
@@ -41,7 +49,7 @@ class BottomFilterViewModel: ViewModel() {
     }
 
     fun cancelFilter() {
-        FilterRepository.filterFlow.update {
+        FilterRepositoryImpl.filterFlow.update {
             Filter(
                 filterByTitle = "",
                 filterByPriority = HabitPriority.CHOOSE
@@ -50,14 +58,6 @@ class BottomFilterViewModel: ViewModel() {
     }
 
     fun getList(): List<String> {
-        return HabitPriority.values().map {
-//            HabitPriorityMapper().getPriorityName(it)
-            when (it) {
-                HabitPriority.CHOOSE -> "Приоритет"
-                HabitPriority.LOW -> "Низкий"
-                HabitPriority.MEDIUM -> "Средний"
-                HabitPriority.HIGH -> "Высокий"
-            }
-        }
+        return getListUseCase.execute()
     }
 }

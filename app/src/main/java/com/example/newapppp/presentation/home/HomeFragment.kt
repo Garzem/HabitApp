@@ -8,12 +8,14 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
-import com.example.newapppp.domain.habit_local.HabitType
+import com.example.newapppp.data.database.habit_local.HabitType
 import com.example.newapppp.databinding.HomeFragmentBinding
 import com.example.newapppp.presentation.filter.BottomFilterFragment
 import com.example.newapppp.presentation.habit_list.HabitListFragment
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.home_fragment) {
     private val homeViewModel: HomeFragmentViewModel by viewModels()
     private val binding by viewBinding(HomeFragmentBinding::bind)

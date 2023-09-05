@@ -14,12 +14,14 @@ import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.domain.Constants.COLOR_KEY
-import com.example.newapppp.domain.habit_local.HabitColor
-import com.example.newapppp.domain.habit_local.HabitType
+import com.example.newapppp.data.database.habit_local.HabitColor
+import com.example.newapppp.data.database.habit_local.HabitType
 import com.example.newapppp.databinding.RedactorFragmentBinding
 import com.example.newapppp.domain.extension.collectWithLifecycle
 import com.example.newapppp.domain.state.UiState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
     private val binding by viewBinding(RedactorFragmentBinding::bind)
