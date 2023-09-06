@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.example.newapppp.data.database.habit_local.HabitEntity
-import com.example.newapppp.data.database.habit_local.HabitType
+import com.example.newapppp.domain.model.HabitType
 
 @Dao
 interface HabitDao {

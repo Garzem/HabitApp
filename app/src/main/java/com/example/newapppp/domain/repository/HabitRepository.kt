@@ -1,8 +1,8 @@
 package com.example.newapppp.domain.repository
 
-import com.example.newapppp.data.database.habit_local.Habit
+import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.data.database.habit_local.HabitEntity
-import com.example.newapppp.data.database.habit_local.HabitType
+import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.data.remote.habit.DeleteHabitJson
 import com.example.newapppp.data.remote.habit.GetHabitJson
 import com.example.newapppp.data.remote.habit.HabitIdJson
@@ -11,6 +11,8 @@ import com.example.newapppp.data.remote.habit.PutHabitJson
 
 
 interface HabitRepository {
+
+    suspend fun fetchHabitList(): List<Habit>
 
     suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?)
 

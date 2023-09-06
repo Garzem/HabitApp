@@ -8,7 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
-import com.example.newapppp.data.database.habit_local.HabitType
+import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.databinding.HomeFragmentBinding
 import com.example.newapppp.presentation.filter.BottomFilterFragment
 import com.example.newapppp.presentation.habit_list.HabitListFragment

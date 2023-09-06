@@ -1,4 +1,4 @@
-package com.example.newapppp.data.database.habit_local
+package com.example.newapppp.domain.model
 
 enum class HabitPriority {
     LOW,
@@ -6,6 +6,7 @@ enum class HabitPriority {
     HIGH,
     CHOOSE;
 
+    val index: Int = values().indexOf(this)
     override fun toString(): String {
         return when (this) {
             LOW -> "Низкий"

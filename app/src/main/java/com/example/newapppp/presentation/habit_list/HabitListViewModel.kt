@@ -3,17 +3,14 @@ package com.example.newapppp.presentation.habit_list
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newapppp.data.database.habit_local.Habit
-import com.example.newapppp.data.database.habit_local.HabitType
+import com.example.newapppp.domain.model.Habit
+import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.data.repository.FilterRepositoryImpl
-import com.example.newapppp.data.repository.HabitRepositoryImpl
-import com.example.newapppp.domain.SingleLiveEvent
-import com.example.newapppp.domain.emit
-import com.example.newapppp.domain.state.HabitState
-import com.example.newapppp.domain.usecase.DeleteHabitRemoteUseCase
-import com.example.newapppp.domain.usecase.habit_list.GetLocalHabitListTypeUseCase
-import com.example.newapppp.domain.usecase.habit_list.GetLocalHabitListUseCase
-import com.example.newapppp.domain.usecase.habit_list.GetRemoteHabitListByTypeUseCase
+import com.example.newapppp.presentation.habit_list.state.HabitState
+import com.example.newapppp.domain.usecase.DeleteHabitUseCase
+import com.example.newapppp.domain.usecase.habit_list.FetchHabitListUseCase
+import com.example.newapppp.presentation.util.SingleLiveEvent
+import com.example.newapppp.presentation.util.emit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,10 +22,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class HabitListViewModel(
-    private val getRemoteHabitListByTypeUseCase: GetRemoteHabitListByTypeUseCase,
-    private val deleteHabitRemoteUseCase: DeleteHabitRemoteUseCase,
-    private val getLocalHabitListUseCase: GetLocalHabitListUseCase,
-    private val getLocalHabitListTypeUseCase: GetLocalHabitListTypeUseCase
+    private val deleteHabitUseCase: DeleteHabitUseCase,
+    private val fetchHabitListUseCase: FetchHabitListUseCase
 ) : ViewModel() {
 
     private val _habitState = MutableStateFlow<HabitState>(HabitState.Loading)
@@ -52,37 +47,23 @@ class HabitListViewModel(
     fun fetchHabitList(habitType: HabitType) {
         viewModelScope.launch {
             _habitState.update { HabitState.Loading }
-            try {
-                val filteredByType = getRemoteHabitListByTypeUseCase.execute(habitType)
-                _habitState.update {
-                    HabitState.Success(
-                        habitList = filteredByType,
-                        filter = FilterRepositoryImpl.filterFlow.value
-                    )
-                }
-            } catch (e: Exception) {
-                _habitState.update {
-                    HabitState.Success(
-                        habitList = getLocalHabitListTypeUseCase.execute(habitType),
-                        filter = FilterRepositoryImpl.filterFlow.value
-                    )
-                }
+            _habitState.update {
+                HabitState.Success(
+                    habitList = fetchHabitListUseCase(habitType),
+                    filter = FilterRepositoryImpl.filterFlow.value
+                )
             }
         }
     }
 
     fun deleteHabit(habit: Habit) {
         viewModelScope.launch {
-            try {
-                deleteHabitRemoteUseCase.execute(habit)
-            } catch (e: Exception) {
-                val actualHabitList = getLocalHabitListUseCase.execute(habit)
-                _habitState.update { state ->
-                    if (state is HabitState.Success) state.copy( habitList = actualHabitList )
-                    else state
-                }
-                (_habitState.value as? HabitState.Success)?.let {
-                    _showDeleteError.emit(it.filteredHabits)
+            deleteHabitUseCase(habit)
+            _habitState.update { state ->
+                if (state is HabitState.Success) {
+                    state.copy( habitList = state.habitList - habit)
+                } else {
+                    state
                 }
             }
         }

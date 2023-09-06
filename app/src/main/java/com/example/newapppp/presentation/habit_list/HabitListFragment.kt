@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.domain.Constants.HABIT_TYPE_KEY
-import com.example.newapppp.data.database.habit_local.HabitType
+import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.databinding.HabitListFragmentBinding
 
 import com.example.newapppp.domain.extension.collectWithLifecycle
 import com.example.newapppp.domain.extension.serializable
-import com.example.newapppp.domain.state.HabitState
+import com.example.newapppp.presentation.habit_list.state.HabitState
 import com.example.newapppp.presentation.habit_list.habit_adapter.HabitListAdapter
 import com.example.newapppp.presentation.home.HomeFragment
 import com.example.newapppp.presentation.home.HomeFragmentDirections

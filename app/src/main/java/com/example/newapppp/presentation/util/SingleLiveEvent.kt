@@ -1,4 +1,4 @@
-package com.example.newapppp.domain
+package com.example.newapppp.presentation.util
 
 import android.annotation.SuppressLint
 import android.util.Log

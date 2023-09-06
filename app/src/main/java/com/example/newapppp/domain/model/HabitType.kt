@@ -1,4 +1,4 @@
-package com.example.newapppp.data.database.habit_local
+package com.example.newapppp.domain.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -6,5 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 enum class HabitType : Parcelable {
     GOOD,
-    BAD
+    BAD;
+
+    val index: Int = values().indexOf(this)
 }

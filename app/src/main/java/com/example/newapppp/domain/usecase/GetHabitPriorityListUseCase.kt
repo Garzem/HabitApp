@@ -1,10 +1,10 @@
 package com.example.newapppp.domain.usecase
 
-import com.example.newapppp.data.database.habit_local.HabitPriority
+import com.example.newapppp.domain.model.HabitPriority
 
-class GetListUseCase {
+class GetHabitPriorityListUseCase {
 
-    fun execute():List<String> {
+    operator fun invoke():List<String> {
         return HabitPriority.values().map {
 //            HabitPriorityMapper().getPriorityName(it)
             when (it) {

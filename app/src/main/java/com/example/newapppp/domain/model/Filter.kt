@@ -1,6 +1,4 @@
-package com.example.newapppp.domain
-
-import com.example.newapppp.data.database.habit_local.HabitPriority
+package com.example.newapppp.domain.model
 
 data class Filter(
     var filterByTitle: String,

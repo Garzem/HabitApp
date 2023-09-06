@@ -1,7 +1,7 @@
 package com.example.newapppp.presentation.habit_list.habit_adapter
 
 import androidx.recyclerview.widget.RecyclerView
-import com.example.newapppp.data.database.habit_local.Habit
+import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.databinding.ItemLayoutBinding
 import com.example.newapppp.presentation.habit_list.HabitPriorityMapper
 

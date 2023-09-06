@@ -1,4 +1,4 @@
-package com.example.newapppp.data.database.habit_local
+package com.example.newapppp.domain.model
 
 import com.example.newapppp.R
 

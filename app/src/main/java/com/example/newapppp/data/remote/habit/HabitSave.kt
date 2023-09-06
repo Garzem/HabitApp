@@ -1,8 +1,8 @@
 package com.example.newapppp.data.remote.habit
 
-import com.example.newapppp.data.database.habit_local.HabitColor
-import com.example.newapppp.data.database.habit_local.HabitPriority
-import com.example.newapppp.data.database.habit_local.HabitType
+import com.example.newapppp.domain.model.HabitColor
+import com.example.newapppp.domain.model.HabitPriority
+import com.example.newapppp.domain.model.HabitType
 
 data class HabitSave(
     val title : String,

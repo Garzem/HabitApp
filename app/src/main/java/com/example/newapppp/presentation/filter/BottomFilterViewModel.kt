@@ -2,13 +2,12 @@ package com.example.newapppp.presentation.filter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.newapppp.domain.Filter
-import com.example.newapppp.data.database.habit_local.HabitPriority
+import com.example.newapppp.domain.model.Filter
+import com.example.newapppp.domain.model.HabitPriority
 import com.example.newapppp.data.repository.FilterRepositoryImpl
-import com.example.newapppp.domain.SingleLiveEvent
-import com.example.newapppp.domain.emit
-import com.example.newapppp.domain.usecase.GetListUseCase
-import com.example.newapppp.domain.usecase.filter.GetPriorityUseCase
+import com.example.newapppp.domain.usecase.GetHabitPriorityListUseCase
+import com.example.newapppp.presentation.util.SingleLiveEvent
+import com.example.newapppp.presentation.util.emit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -16,8 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BottomFilterViewModel @Inject constructor(
-    private val getPriorityUseCase: GetPriorityUseCase,
-    private val getListUseCase: GetListUseCase
+    private val getHabitPriorityListUseCase: GetHabitPriorityListUseCase
 ): ViewModel() {
 
     val filterState = FilterRepositoryImpl.filterFlow.asStateFlow()
@@ -31,7 +29,7 @@ class BottomFilterViewModel @Inject constructor(
     val goBack: LiveData<Unit> get() = _goBack
 
     fun onPriorityChanged(priorityInt: Int) {
-        selectedPriority = getPriorityUseCase.execute(priorityInt)
+        selectedPriority = HabitPriority.values()[priorityInt]
     }
 
     fun onFilterClicked(title: String) {
@@ -58,6 +56,6 @@ class BottomFilterViewModel @Inject constructor(
     }
 
     fun getList(): List<String> {
-        return getListUseCase.execute()
+        return getHabitPriorityListUseCase()
     }
 }

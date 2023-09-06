@@ -7,7 +7,7 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.domain.Constants
-import com.example.newapppp.data.database.habit_local.HabitColor
+import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.databinding.HorizontalColorChooseBinding
 import dagger.hilt.android.AndroidEntryPoint
 

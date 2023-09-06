@@ -1,7 +1,6 @@
 package com.example.newapppp.data.di
 
-import com.example.newapppp.domain.usecase.GetListUseCase
-import com.example.newapppp.domain.usecase.filter.GetPriorityUseCase
+import com.example.newapppp.domain.usecase.GetHabitPriorityListUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,13 +12,7 @@ import javax.inject.Singleton
 class FilterModule {
 
     @Provides
-    @Singleton
-    fun provideGetPriorityUseCase(): GetPriorityUseCase {
-        return GetPriorityUseCase()
-    }
-
-    @Provides
-    fun provideGetListUseCase(): GetListUseCase {
-        return GetListUseCase()
+    fun provideGetListUseCase(): GetHabitPriorityListUseCase {
+        return GetHabitPriorityListUseCase()
     }
 }

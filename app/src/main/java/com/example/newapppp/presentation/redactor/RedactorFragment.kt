@@ -14,11 +14,11 @@ import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.domain.Constants.COLOR_KEY
-import com.example.newapppp.data.database.habit_local.HabitColor
-import com.example.newapppp.data.database.habit_local.HabitType
+import com.example.newapppp.domain.model.HabitColor
+import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.databinding.RedactorFragmentBinding
 import com.example.newapppp.domain.extension.collectWithLifecycle
-import com.example.newapppp.domain.state.UiState
+import com.example.newapppp.presentation.redactor.state.UiState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

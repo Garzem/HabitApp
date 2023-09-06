@@ -1,6 +1,6 @@
-package com.example.newapppp.domain.state
+package com.example.newapppp.presentation.redactor.state
 
-import com.example.newapppp.data.database.habit_local.HabitColor
+import com.example.newapppp.domain.model.HabitColor
 import java.io.Serializable
 
 data class UiState(

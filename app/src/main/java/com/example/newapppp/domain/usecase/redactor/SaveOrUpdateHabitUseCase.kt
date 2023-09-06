@@ -6,7 +6,7 @@ import com.example.newapppp.domain.repository.HabitRepository
 
 class SaveOrUpdateHabitUseCase(private val habitRepository: HabitRepository) {
 
-    suspend fun execute(saveHabit: HabitSave, habitId: String?) {
+    suspend operator fun invoke(saveHabit: HabitSave, habitId: String?) {
         habitRepository.saveOrUpdateHabit(saveHabit, habitId)
     }
 }

@@ -2,10 +2,10 @@ package com.example.newapppp.data.repository
 
 import com.example.newapppp.presentation.HApp
 import com.example.newapppp.domain.Constants.TOKEN
-import com.example.newapppp.data.database.habit_local.Habit
-import com.example.newapppp.data.database.habit_local.HabitColor
-import com.example.newapppp.data.database.habit_local.HabitPriority
-import com.example.newapppp.data.database.habit_local.HabitType
+import com.example.newapppp.domain.model.Habit
+import com.example.newapppp.domain.model.HabitColor
+import com.example.newapppp.domain.model.HabitPriority
+import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.data.remote.habit.HabitSave
 import com.example.newapppp.data.remote.callWithRetry
 import com.example.newapppp.data.remote.habit.DeleteHabitJson
@@ -24,6 +24,34 @@ import java.util.UUID
 class HabitRepositoryImpl(
     private val api: HabitApi
 ): HabitRepository {
+
+    override suspend fun fetchHabitList(): List<Habit> = coroutineScope {
+        val habitJsonListResponseAsync = async {
+            callWithRetry {
+                api.getHabitList(TOKEN)
+            }
+        }
+        val habitLocalListAsync = async {
+            AppHabitDataBase.habitDao.getAllHabits()
+        }
+        val habitJsonList = habitJsonListResponseAsync.await().getOrNull()
+        val habitEntityList = habitLocalListAsync.await()
+
+        val fullHabitEntityList = if (habitJsonList.isNullOrEmpty()) {
+            habitEntityList
+        } else {
+            val notSavedHabitJsonList = habitJsonList.filter { getHabitJson ->
+                habitEntityList.none { habitEntity ->
+                    habitEntity.uid == getHabitJson.uid
+                }
+            }
+            val notSavedHabitEntityList = notSavedHabitJsonList.map(this@HabitRepositoryImpl::toHabitEntity)
+            AppHabitDataBase.habitDao.upsertHabitList(notSavedHabitEntityList)
+            notSavedHabitEntityList + habitEntityList
+        }
+
+        fullHabitEntityList.map(::toHabit)
+    }
     override suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?) = coroutineScope {
         val habitUidAsync = async {
             putHabitWithRetry(TOKEN, toHabitJson(habitSave))
@@ -98,19 +126,19 @@ class HabitRepositoryImpl(
 
     override suspend fun putHabitWithRetry(token: String, putHabitJson: PutHabitJson): HabitIdJson {
         return callWithRetry {
-            HApp.habitApi.putHabit(token, putHabitJson)
+            api.putHabit(token, putHabitJson)
         }.getOrThrow()
     }
 
     override suspend fun getHabitWithRetry(token: String): List<GetHabitJson> {
         return callWithRetry {
-            HApp.habitApi.getHabitList(token)
+            api.getHabitList(token)
         }.getOrThrow()
     }
 
     override suspend fun deleteHabitWithRetry(deleteRequest: DeleteHabitJson): Result<Unit> {
         return callWithRetry {
-            HApp.habitApi.deleteHabit(TOKEN, deleteRequest)
+            api.deleteHabit(TOKEN, deleteRequest)
         }
     }
 
