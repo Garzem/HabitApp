@@ -1,19 +1,12 @@
 package com.example.newapppp.data.di
 
-import android.content.Context
-import androidx.room.Room
-import com.example.newapppp.data.database.HabitDao
-import com.example.newapppp.data.database.HabitDataBase
+import com.example.newapppp.data.remote.RetryInterceptor
 import com.example.newapppp.data.remote.habit.HabitApi
-import com.example.newapppp.data.repository.HabitRepositoryImpl
 import com.example.newapppp.domain.Constants
-import com.example.newapppp.domain.repository.HabitRepository
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -32,8 +25,11 @@ object AppModule {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
+        val retryInterceptor = RetryInterceptor(3, 2000)
+
         return OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
+            .addInterceptor(retryInterceptor)
             .build()
     }
 
