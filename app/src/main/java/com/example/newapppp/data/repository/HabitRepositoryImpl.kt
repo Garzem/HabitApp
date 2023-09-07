@@ -108,7 +108,7 @@ class HabitRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllHabits() {
         val habitList = habitDao.getAllHabits()
-        habitList.map { habit ->
+        habitList.forEach { habit ->
             val response = habit.uid?.let { deleteHabitWithRetry(DeleteHabitJson(habit.uid)) }
             if (response == null || response.isSuccess) {
                 habitDao.deleteHabitById(habit.id)
