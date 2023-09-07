@@ -29,10 +29,4 @@ interface HabitDao {
 
     @Query("SELECT * FROM habit WHERE deleted = 1")
     suspend fun getAllDeletedHabits(): List<HabitEntity>
-
-    @Query("SELECT uid FROM habit")
-    suspend fun getAllHabitsId() : List<String?>
-
-    @Query("DELETE FROM habit")
-    suspend fun deleteAllHabits()
 }

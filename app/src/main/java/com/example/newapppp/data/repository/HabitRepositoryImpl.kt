@@ -107,11 +107,16 @@ class HabitRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteAllHabits() {
-        val filteredStringList = habitDao.getAllHabitsId().filterNotNull()
-        filteredStringList.map { uid ->
-            deleteHabitWithRetry(DeleteHabitJson(uid))
+        val habitList = habitDao.getAllHabits()
+        habitList.map { habit ->
+            val response = habit.uid?.let { deleteHabitWithRetry(DeleteHabitJson(habit.uid)) }
+            if (response == null || response.isSuccess) {
+                habitDao.deleteHabitById(habit.id)
+            } else {
+                val habitDeleted = habit.copy(deleted = true)
+                habitDao.upsertHabit(habitDeleted)
+            }
         }
-        habitDao.deleteAllHabits()
     }
 
     override suspend fun getHabitById(habitId: String): Habit {
