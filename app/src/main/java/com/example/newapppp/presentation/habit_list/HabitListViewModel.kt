@@ -19,9 +19,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class HabitListViewModel(
+class HabitListViewModel @Inject constructor(
     private val deleteHabitUseCase: DeleteHabitUseCase,
     private val fetchHabitListUseCase: FetchHabitListUseCase
 ) : ViewModel() {

@@ -18,11 +18,16 @@ import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.databinding.RedactorFragmentBinding
 import com.example.newapppp.domain.extension.collectWithLifecycle
+import com.example.newapppp.presentation.habit_list.HabitColorMapper
 import com.example.newapppp.presentation.redactor.state.UiState
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class RedactorFragment : Fragment(R.layout.redactor_fragment) {
+
+    @Inject
+    lateinit var habitColorMapper: HabitColorMapper
 
     private val binding by viewBinding(RedactorFragmentBinding::bind)
     private val args: RedactorFragmentArgs by navArgs()
@@ -189,7 +194,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         binding.editDescription.setText(uiState.description)
         binding.editDescription.setSelection(uiState.descriptionCursorPosition)
 
-        binding.chooseColorButton.setBackgroundResource(uiState.color.getBackGroundResId())
+        binding.chooseColorButton.setBackgroundResource(habitColorMapper.getBackGroundResId(uiState.color))
         binding.spinnerPriority.setSelection(uiState.priority)
 
         if (uiState.type == 0) {
@@ -197,7 +202,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         } else {
             binding.radioBad.isChecked = true
         }
-        binding.editFrequency.setText(uiState.frequency.toString())
+        binding.editFrequency.setText(uiState.frequency)
         binding.editFrequency.setSelection(uiState.frequencyCursorPosition)
     }
 }

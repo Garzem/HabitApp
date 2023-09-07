@@ -46,7 +46,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = HabitListAdapter(HabitPriorityMapper(requireContext()), ::openHabitClick)
+        adapter = HabitListAdapter(::openHabitClick)
         binding.recycleViewHabit.adapter = adapter
 
         habitType?.let {

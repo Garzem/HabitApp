@@ -10,13 +10,19 @@ import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.databinding.FilterBottomSheetBinding
+import com.example.newapppp.presentation.habit_list.HabitPriorityMapper
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sheet) {
+
     private val binding by viewBinding(FilterBottomSheetBinding::bind)
     private val bottomViewModel: BottomFilterViewModel by viewModels()
+
+    @Inject
+    lateinit var habitPriorityMapper: HabitPriorityMapper
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -28,7 +34,10 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
             with(bottomViewModel) {
                 findHabitByTitle.editText?.setText(filterState.value.filterByTitle)
                 val autoCompleteTextView = findHabitByPriority.editText as? AutoCompleteTextView
-                autoCompleteTextView?.setText(filterState.value.filterByPriority.toString(), false)
+                autoCompleteTextView?.setText(
+                    habitPriorityMapper.getPriorityName(
+                        filterState.value.filterByPriority
+                    ), false)
             }
         }
         observeEvents()

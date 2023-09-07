@@ -3,8 +3,10 @@ package com.example.newapppp.presentation.habit_list
 import android.content.Context
 import com.example.newapppp.R
 import com.example.newapppp.domain.model.HabitPriority
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class HabitPriorityMapper(private val context: Context) {
+class HabitPriorityMapper @Inject constructor(@ApplicationContext private val context: Context) {
 
     fun getPriorityName(priority: HabitPriority): String {
         return when (priority) {

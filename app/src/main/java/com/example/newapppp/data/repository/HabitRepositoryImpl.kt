@@ -1,6 +1,6 @@
 package com.example.newapppp.data.repository
 
-import com.example.newapppp.presentation.HApp
+import com.example.newapppp.data.database.HabitDao
 import com.example.newapppp.domain.Constants.TOKEN
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitColor
@@ -12,17 +12,18 @@ import com.example.newapppp.data.remote.habit.DeleteHabitJson
 import com.example.newapppp.data.remote.habit.HabitIdJson
 import com.example.newapppp.data.remote.habit.PutHabitJson
 import com.example.newapppp.data.remote.habit.GetHabitJson
-import com.example.newapppp.data.database.AppHabitDataBase
 import com.example.newapppp.data.database.habit_local.HabitEntity
 import com.example.newapppp.data.remote.habit.HabitApi
 import com.example.newapppp.domain.repository.HabitRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import java.util.UUID
+import javax.inject.Inject
 
 
-class HabitRepositoryImpl(
-    private val api: HabitApi
+class HabitRepositoryImpl @Inject constructor(
+    private val api: HabitApi,
+    private val habitDao: HabitDao
 ): HabitRepository {
 
     override suspend fun fetchHabitList(): List<Habit> = coroutineScope {
@@ -32,7 +33,7 @@ class HabitRepositoryImpl(
             }
         }
         val habitLocalListAsync = async {
-            AppHabitDataBase.habitDao.getAllHabits()
+            habitDao.getAllHabits()
         }
         val habitJsonList = habitJsonListResponseAsync.await().getOrNull()
         val habitEntityList = habitLocalListAsync.await()
@@ -46,7 +47,7 @@ class HabitRepositoryImpl(
                 }
             }
             val notSavedHabitEntityList = notSavedHabitJsonList.map(this@HabitRepositoryImpl::toHabitEntity)
-            AppHabitDataBase.habitDao.upsertHabitList(notSavedHabitEntityList)
+            habitDao.upsertHabitList(notSavedHabitEntityList)
             notSavedHabitEntityList + habitEntityList
         }
 
@@ -58,7 +59,7 @@ class HabitRepositoryImpl(
         }
         val habitEntityAsync = async {
             val habitEntity = toHabitEntity(habitSave, habitId)
-            AppHabitDataBase.habitDao.upsertHabit(habitEntity)
+            habitDao.upsertHabit(habitEntity)
             habitEntity
         }
         val habitUid = habitUidAsync.await()
@@ -68,7 +69,7 @@ class HabitRepositoryImpl(
             uid = habitUid.uid
         )
 
-        AppHabitDataBase.habitDao.upsertHabit(habitEntityWithUid)
+        habitDao.upsertHabit(habitEntityWithUid)
     }
 
     override suspend fun getHabitList(): List<Habit> = coroutineScope {
@@ -76,7 +77,7 @@ class HabitRepositoryImpl(
             getHabitWithRetry(TOKEN)
         }
         val habitLocalListAsync = async {
-            AppHabitDataBase.habitDao.getAllHabits()
+            habitDao.getAllHabits()
         }
         val habitJsonList = habitJsonListAsync.await()
         val habitEntityList = habitLocalListAsync.await()
@@ -88,7 +89,7 @@ class HabitRepositoryImpl(
         }
 
         val notSavedHabitEntityList = notSavedHabitJsonList.map(this@HabitRepositoryImpl::toHabitEntity)
-        AppHabitDataBase.habitDao.upsertHabitList(notSavedHabitEntityList)
+        habitDao.upsertHabitList(notSavedHabitEntityList)
 
         (notSavedHabitEntityList + habitEntityList).map(::toHabit).sortedBy { habit ->
             habit.creationDate
@@ -98,27 +99,27 @@ class HabitRepositoryImpl(
     override suspend fun deleteHabit(habit: Habit) {
         val response = habit.uid?.let { deleteHabitWithRetry(DeleteHabitJson(habit.uid)) }
         if (response == null || response.isSuccess) {
-            AppHabitDataBase.habitDao.deleteHabitById(habit.id)
+            habitDao.deleteHabitById(habit.id)
         } else {
             val habitEntity = toHabitEntity(habit).copy(deleted = true)
-            AppHabitDataBase.habitDao.upsertHabit(habitEntity)
+            habitDao.upsertHabit(habitEntity)
         }
     }
 
     override suspend fun deleteAllHabits() {
-        val filteredStringList = AppHabitDataBase.habitDao.getAllHabitsId().filterNotNull()
+        val filteredStringList = habitDao.getAllHabitsId().filterNotNull()
         filteredStringList.map { uid ->
             deleteHabitWithRetry(DeleteHabitJson(uid))
         }
-        AppHabitDataBase.habitDao.deleteAllHabits()
+        habitDao.deleteAllHabits()
     }
 
     override suspend fun getHabitById(habitId: String): Habit {
-        return toHabit(AppHabitDataBase.habitDao.getHabitById(habitId))
+        return toHabit(habitDao.getHabitById(habitId))
     }
 
     override suspend fun getHabitListByType(type: HabitType): List<Habit> {
-        val habitListByType = AppHabitDataBase.habitDao.getHabitListByType(type)
+        val habitListByType = habitDao.getHabitListByType(type)
         return habitListByType.map {
             toHabit(it)
         }

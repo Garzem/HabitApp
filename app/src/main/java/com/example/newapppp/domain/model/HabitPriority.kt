@@ -7,12 +7,12 @@ enum class HabitPriority {
     CHOOSE;
 
     val index: Int = values().indexOf(this)
-    override fun toString(): String {
-        return when (this) {
-            LOW -> "Низкий"
-            MEDIUM -> "Средний"
-            HIGH -> "Высокий"
-            CHOOSE -> "Приоритет"
-        }
-    }
+//    override fun toString(): String {
+//        return when (this) {
+//            LOW -> "Низкий"
+//            MEDIUM -> "Средний"
+//            HIGH -> "Высокий"
+//            CHOOSE -> "Приоритет"
+//        }
+//    }
 }
