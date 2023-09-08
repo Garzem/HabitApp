@@ -26,12 +26,6 @@ interface HabitRepository {
 
     suspend fun getHabitListByType(type: HabitType): List<Habit>
 
-    suspend fun putHabitWithRetry(token: String, putHabitJson: PutHabitJson): HabitIdJson
-
-    suspend fun getHabitWithRetry(token: String): List<GetHabitJson>
-
-    suspend fun deleteHabitWithRetry(deleteRequest: DeleteHabitJson): Result<Unit>
-
     //   fun postHabitWithRetry(postHabitJson: PostHabitJson)
 
     fun toHabitJson(saveHabit: HabitSave): PutHabitJson
