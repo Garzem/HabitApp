@@ -3,14 +3,13 @@ package com.example.newapppp.presentation.habit_list.habit_adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.databinding.ItemLayoutBinding
+import com.example.newapppp.domain.model.HabitUI
 import com.example.newapppp.presentation.habit_list.HabitColorMapper
 import com.example.newapppp.presentation.habit_list.HabitPriorityMapper
-import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-class HabitListAdapter @Inject constructor() : ListAdapter<Habit, HabitViewHolder>(HabitDiffUtilCallback()) {
+class HabitUIListAdapter @Inject constructor() : ListAdapter<HabitUI, HabitUIViewHolder>(HabitDiffUtilCallback()) {
 
     @Inject
     lateinit var habitPriorityMapper: HabitPriorityMapper
@@ -20,10 +19,10 @@ class HabitListAdapter @Inject constructor() : ListAdapter<Habit, HabitViewHolde
 
     var openHabitClick: (String) -> Unit = {}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitUIViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemLayoutBinding.inflate(inflater, parent, false)
-        return HabitViewHolder(
+        return HabitUIViewHolder(
             binding = binding,
             openHabitClick = openHabitClick,
             habitPriorityMapper = habitPriorityMapper,
@@ -31,7 +30,7 @@ class HabitListAdapter @Inject constructor() : ListAdapter<Habit, HabitViewHolde
         )
     }
 
-    override fun onBindViewHolder(holder: HabitViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: HabitUIViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
@@ -41,7 +40,7 @@ class HabitListAdapter @Inject constructor() : ListAdapter<Habit, HabitViewHolde
         submitList(currentList)
     }
 
-    fun getHabitAtPosition(position: Int): Habit? {
+    fun getHabitAtPosition(position: Int): HabitUI? {
         return if (position in currentList.indices) {
             currentList[position]
         } else {
