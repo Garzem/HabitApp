@@ -7,6 +7,7 @@ import com.example.newapppp.data.remote.modul.GetHabitJson
 import com.example.newapppp.data.remote.HabitApi
 import com.example.newapppp.domain.model.HabitSave
 import com.example.newapppp.data.remote.modul.PutHabitJson
+import com.example.newapppp.data.remote.retry.NetworkUtils
 import com.example.newapppp.domain.Constants.TOKEN
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitColor
@@ -21,16 +22,13 @@ import javax.inject.Inject
 
 class HabitRepositoryImpl @Inject constructor(
     private val api: HabitApi,
-    private val habitDao: HabitDao
+    private val habitDao: HabitDao,
+    private val networkUtils: NetworkUtils
 ) : HabitRepository {
 
     override suspend fun fetchHabitList(): List<Habit> = coroutineScope {
-        val habitJsonListResponseAsync = async {
-            try {
-                api.getHabitList(TOKEN)
-            } catch (e: Exception) {
-                null
-            }
+        val habitJsonListResponseAsync = networkUtils.commonRetrying(null) {
+            async { api.getHabitList(TOKEN) }
         }
         val habitLocalListAsync = async {
             habitDao.getAllHabits()
@@ -38,7 +36,7 @@ class HabitRepositoryImpl @Inject constructor(
         val habitJsonList = habitJsonListResponseAsync.await()
         val habitEntityList = habitLocalListAsync.await()
 
-        val fullHabitEntityList = if (habitJsonList.isNullOrEmpty()) {
+        val fullHabitEntityList = if (habitJsonList.isEmpty()) {
             habitEntityList
         } else {
             val notSavedHabitJsonList = habitJsonList.filter { getHabitJson ->
@@ -57,12 +55,8 @@ class HabitRepositoryImpl @Inject constructor(
 
     override suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?) =
         coroutineScope {
-            val habitUidAsync = async {
-                try {
-                    api.putHabit(TOKEN, toHabitJson(habitSave))
-                } catch (e: Exception) {
-                    null
-                }
+            val habitUidAsync = networkUtils.commonRetrying(null) {
+                async { api.putHabit(TOKEN, toHabitJson(habitSave)) }
             }
             val habitEntityAsync = async {
                 val habitEntity = toHabitEntity(habitSave, habitId)
@@ -73,19 +67,15 @@ class HabitRepositoryImpl @Inject constructor(
             val habitEntity = habitEntityAsync.await()
 
             val habitEntityWithUid = habitEntity.copy(
-                uid = habitUid?.uid
+                uid = habitUid.uid
             )
 
             habitDao.upsertHabit(habitEntityWithUid)
         }
 
     override suspend fun getHabitList(): List<Habit> = coroutineScope {
-        val habitJsonListAsync = async {
-            try {
-                api.getHabitList(TOKEN)
-            } catch (e: Exception) {
-                null
-            }
+        val habitJsonListAsync = networkUtils.commonRetrying(null) {
+            async { api.getHabitList(TOKEN) }
         }
         val habitLocalListAsync = async {
             habitDao.getAllHabits()
@@ -93,7 +83,7 @@ class HabitRepositoryImpl @Inject constructor(
         val habitJsonList = habitJsonListAsync.await()
         val habitEntityList = habitLocalListAsync.await()
 
-        if (habitJsonList.isNullOrEmpty()) {
+        if (habitJsonList.isEmpty()) {
             habitEntityList.map(::toHabit).sortedBy { habit ->
                 habit.creationDate
             }
@@ -116,10 +106,8 @@ class HabitRepositoryImpl @Inject constructor(
 
     override suspend fun deleteHabit(habit: Habit) {
         val response = habit.uid?.let {
-            try {
+            networkUtils.commonRetrying(null) {
                 api.deleteHabit(TOKEN, DeleteHabitJson(habit.uid))
-            } catch (e: Exception) {
-                null
             }
         }
         if (response == null) {
@@ -134,10 +122,8 @@ class HabitRepositoryImpl @Inject constructor(
         val habitList = habitDao.getAllHabits()
         habitList.forEach { habit ->
             val response = habit.uid?.let {
-                try {
+                networkUtils.commonRetrying(null) {
                     api.deleteHabit(TOKEN, DeleteHabitJson(habit.uid))
-                } catch (e: Exception) {
-                    null
                 }
             }
             if (response == null) {

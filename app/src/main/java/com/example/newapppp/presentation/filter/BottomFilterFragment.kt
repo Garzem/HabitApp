@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.databinding.FilterBottomSheetBinding
+import com.example.newapppp.domain.model.HabitPriority
 import com.example.newapppp.presentation.habit_list.HabitPriorityMapper
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,11 +33,11 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
         setupCancelFilterButton()
         binding.apply {
             with(bottomViewModel) {
-                findHabitByTitle.editText?.setText(filterState.value.filterByTitle)
+                findHabitByTitle.editText?.setText(filterState.value?.filterByTitle)
                 val autoCompleteTextView = findHabitByPriority.editText as? AutoCompleteTextView
                 autoCompleteTextView?.setText(
                     habitPriorityMapper.getPriorityName(
-                        filterState.value.filterByPriority
+                        filterState.value?.filterByPriority ?: HabitPriority.CHOOSE
                     ), false)
             }
         }
@@ -73,7 +74,7 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
 
     private fun setupCancelFilterButton() {
         val cancelButton = binding.cancelFilterButton
-        cancelButton.isVisible = bottomViewModel.filterState.value.isFilterApplied
+        cancelButton.isVisible = bottomViewModel.filterState.value?.isFilterApplied ?: false
         cancelButton.setOnClickListener {
             bottomViewModel.apply {
                 cancelFilter()

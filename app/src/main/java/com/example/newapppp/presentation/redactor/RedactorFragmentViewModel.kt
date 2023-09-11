@@ -77,8 +77,8 @@ class RedactorFragmentViewModel @Inject constructor(
                     description = habit.description,
                     descriptionCursorPosition = 0,
                     color = habit.color,
-                    priority = habit.priority.index,
-                    type = habit.type.index,
+                    priority = HabitPriority.values().indexOf(habit.priority),
+                    type = HabitType.values().indexOf(habit.type),
                     frequency = habit.frequency.toString(),
                     frequencyCursorPosition = 0
                 )
@@ -88,7 +88,7 @@ class RedactorFragmentViewModel @Inject constructor(
 
     fun setType(habitType: HabitType) {
         _uiState.update { state ->
-            state.copy(type = habitType.index)
+            state.copy(type = HabitType.values().indexOf(habitType))
         }
     }
 
@@ -127,7 +127,7 @@ class RedactorFragmentViewModel @Inject constructor(
 
     fun setupType(type: HabitType) {
         _uiState.update { state ->
-            state.copy(type = type.index)
+            state.copy(type = HabitType.values().indexOf(type))
         }
     }
 

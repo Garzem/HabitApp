@@ -1,6 +1,5 @@
 package com.example.newapppp.di
 
-import com.example.newapppp.data.remote.RetryInterceptor
 import com.example.newapppp.data.remote.HabitApi
 import com.example.newapppp.domain.Constants
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -25,11 +24,8 @@ object RemoteApiModule {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
-        val retryInterceptor = RetryInterceptor(3, 2000)
-
         return OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
-            .addInterceptor(retryInterceptor)
             .build()
     }
 

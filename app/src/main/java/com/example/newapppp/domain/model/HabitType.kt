@@ -7,8 +7,5 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 enum class HabitType : Parcelable {
     GOOD,
-    BAD;
-
-    @IgnoredOnParcel
-    val index: Int = values().indexOf(this)
+    BAD
 }
