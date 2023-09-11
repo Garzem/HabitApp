@@ -1,8 +1,8 @@
-package com.example.newapppp.data.remote.habit
+package com.example.newapppp.data.remote.modul
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class HabitIdJson(
+data class DeleteHabitJson(
     val uid: String
 )

@@ -1,5 +1,10 @@
-package com.example.newapppp.data.remote.habit
+package com.example.newapppp.data.remote
 
+import com.example.newapppp.data.remote.modul.DeleteHabitJson
+import com.example.newapppp.data.remote.modul.GetHabitJson
+import com.example.newapppp.data.remote.modul.HabitIdJson
+import com.example.newapppp.data.remote.modul.PostHabitJson
+import com.example.newapppp.data.remote.modul.PutHabitJson
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.HTTP

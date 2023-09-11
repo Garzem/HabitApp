@@ -1,10 +1,11 @@
-package com.example.newapppp.data.remote.habit
+package com.example.newapppp.data.remote.modul
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GetHabitJson(
+data class PutHabitJson(
+    val uid: String?,
     val color: Int,
     val count: Int,
     @SerialName(value = "date")
@@ -13,6 +14,5 @@ data class GetHabitJson(
     val frequency: Int,
     val priority: Int,
     val title: String,
-    val type: Int,
-    val uid: String
+    val type: Int
 )

@@ -1,4 +1,4 @@
-package com.example.newapppp.data.remote.habit
+package com.example.newapppp.domain.model
 
 import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.domain.model.HabitPriority

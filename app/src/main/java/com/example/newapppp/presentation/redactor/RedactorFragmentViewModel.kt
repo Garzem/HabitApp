@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.domain.model.HabitPriority
 import com.example.newapppp.domain.model.HabitType
-import com.example.newapppp.data.remote.habit.HabitSave
+import com.example.newapppp.domain.model.HabitSave
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.presentation.redactor.state.UiState
 import com.example.newapppp.domain.usecase.DeleteHabitUseCase

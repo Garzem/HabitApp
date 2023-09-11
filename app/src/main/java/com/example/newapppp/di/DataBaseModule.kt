@@ -1,4 +1,4 @@
-package com.example.newapppp.data.di
+package com.example.newapppp.di
 
 import android.content.Context
 import androidx.room.Room
@@ -17,6 +17,7 @@ import javax.inject.Singleton
 object DataBaseModule {
 
     @Provides
+    @Singleton
     fun provideHabitDao(database: HabitDataBase): HabitDao {
         return database.habitDao()
     }

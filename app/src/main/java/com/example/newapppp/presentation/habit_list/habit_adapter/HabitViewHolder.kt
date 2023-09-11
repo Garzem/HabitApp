@@ -11,13 +11,9 @@ import javax.inject.Inject
 class HabitViewHolder(
     private val binding: ItemLayoutBinding,
     private val openHabitClick: (String) -> Unit,
+    private val habitPriorityMapper: HabitPriorityMapper,
+    private val habitColorMapper: HabitColorMapper
 ) : RecyclerView.ViewHolder(binding.root) {
-
-    @Inject
-    lateinit var habitPriorityMapper: HabitPriorityMapper
-
-    @Inject
-    lateinit var habitColorMapper: HabitColorMapper
 
     fun bind(habit: Habit) {
         binding.apply {

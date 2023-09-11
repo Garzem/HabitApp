@@ -1,7 +1,7 @@
-package com.example.newapppp.data.di
+package com.example.newapppp.di
 
 import com.example.newapppp.data.remote.RetryInterceptor
-import com.example.newapppp.data.remote.habit.HabitApi
+import com.example.newapppp.data.remote.HabitApi
 import com.example.newapppp.domain.Constants
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -17,7 +17,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object RemoteApiModule {
 
     @Provides
     @Singleton

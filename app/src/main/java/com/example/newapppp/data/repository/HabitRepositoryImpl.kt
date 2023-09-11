@@ -2,11 +2,11 @@ package com.example.newapppp.data.repository
 
 import com.example.newapppp.data.database.HabitDao
 import com.example.newapppp.data.database.habit_local.HabitEntity
-import com.example.newapppp.data.remote.habit.DeleteHabitJson
-import com.example.newapppp.data.remote.habit.GetHabitJson
-import com.example.newapppp.data.remote.habit.HabitApi
-import com.example.newapppp.data.remote.habit.HabitSave
-import com.example.newapppp.data.remote.habit.PutHabitJson
+import com.example.newapppp.data.remote.modul.DeleteHabitJson
+import com.example.newapppp.data.remote.modul.GetHabitJson
+import com.example.newapppp.data.remote.HabitApi
+import com.example.newapppp.domain.model.HabitSave
+import com.example.newapppp.data.remote.modul.PutHabitJson
 import com.example.newapppp.domain.Constants.TOKEN
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitColor
