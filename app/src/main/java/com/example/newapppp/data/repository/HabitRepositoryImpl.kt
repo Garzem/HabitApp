@@ -27,16 +27,17 @@ class HabitRepositoryImpl @Inject constructor(
 ) : HabitRepository {
 
     override suspend fun fetchHabitList(): List<Habit> = coroutineScope {
-        val habitJsonListResponseAsync = networkUtils.commonRetrying(null) {
-            async { api.getHabitList(TOKEN) }
-        }
+        val habitJsonListResponseAsync =
+            networkUtils.commonRetrying(null) {
+                async { api.getHabitList(TOKEN) }
+            }
         val habitLocalListAsync = async {
             habitDao.getAllHabits()
         }
-        val habitJsonList = habitJsonListResponseAsync.await()
+        val habitJsonList = habitJsonListResponseAsync?.await()
         val habitEntityList = habitLocalListAsync.await()
 
-        val fullHabitEntityList = if (habitJsonList.isEmpty()) {
+        val fullHabitEntityList = if (habitJsonList.isNullOrEmpty()) {
             habitEntityList
         } else {
             val notSavedHabitJsonList = habitJsonList.filter { getHabitJson ->
@@ -63,11 +64,11 @@ class HabitRepositoryImpl @Inject constructor(
                 habitDao.upsertHabit(habitEntity)
                 habitEntity
             }
-            val habitUid = habitUidAsync.await()
+            val habitUid = habitUidAsync?.await()
             val habitEntity = habitEntityAsync.await()
 
             val habitEntityWithUid = habitEntity.copy(
-                uid = habitUid.uid
+                uid = habitUid?.uid
             )
 
             habitDao.upsertHabit(habitEntityWithUid)
@@ -80,10 +81,10 @@ class HabitRepositoryImpl @Inject constructor(
         val habitLocalListAsync = async {
             habitDao.getAllHabits()
         }
-        val habitJsonList = habitJsonListAsync.await()
+        val habitJsonList = habitJsonListAsync?.await()
         val habitEntityList = habitLocalListAsync.await()
 
-        if (habitJsonList.isEmpty()) {
+        if (habitJsonList.isNullOrEmpty()) {
             habitEntityList.map(::toHabit).sortedBy { habit ->
                 habit.creationDate
             }

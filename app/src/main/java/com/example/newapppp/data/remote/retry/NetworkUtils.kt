@@ -13,7 +13,7 @@ class NetworkUtils @Inject constructor() {
         intervalMillis: (attempt: Int) -> Long,
         retryCheck: (Throwable) -> Boolean,
         block: suspend () -> T,
-    ): T {
+    ): T? {
         try {
             val retryCnt = tryCnt - 1
             repeat(retryCnt) { attempt ->
@@ -32,14 +32,14 @@ class NetworkUtils @Inject constructor() {
             if (e is CancellationException) {
                 throw e
             }
-            return fallbackValue ?: throw e
+            return fallbackValue
         }
     }
 
     suspend fun <T> commonRetrying(
         fallbackValue: T?,
         block: suspend () -> T,
-    ): T {
+    ): T? {
         return retrying(fallbackValue, 3, { 2000L * it }, networkRetryCheck, block)
     }
 
