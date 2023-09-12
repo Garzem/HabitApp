@@ -1,6 +1,7 @@
 package com.example.newapppp.presentation
 
 import android.os.Bundle
+import android.widget.ImageView
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -11,6 +12,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.bumptech.glide.Glide
 import com.example.newapppp.R
 import com.example.newapppp.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,6 +32,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
+        val imageView = navView.getHeaderView(0)
+            .findViewById<ImageView>(R.id.nav_header_avatar)
         val navController = findNavController(R.id.nav_host_fragment_content_main)
 
         appBarConfiguration = AppBarConfiguration(
@@ -40,6 +44,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         navView.setupWithNavController(navController)
+
+        Glide.with(this)
+            .load("https://free-png.ru/wp-content/uploads/2022/07/free-png.ru-95.png")
+            .placeholder(R.drawable.wifi_tethering)
+            .error(R.mipmap.ic_launcher)
+            .into(imageView)
     }
 
     override fun onSupportNavigateUp(): Boolean {

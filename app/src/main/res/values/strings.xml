@@ -8,6 +8,9 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
 
+    <string name="user_name">Иван Петров</string>
+    <string name="about_me">Стремящийся быть лучше</string>
+
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
