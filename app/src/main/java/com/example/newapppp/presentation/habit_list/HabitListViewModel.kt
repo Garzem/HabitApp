@@ -62,10 +62,20 @@ class HabitListViewModel @Inject constructor(
             deleteHabitUseCase(habit)
             _habitState.update { state ->
                 if (state is HabitState.Success) {
-                    state.copy( habitList = state.habitList - habit)
+                    state.copy(habitList = state.habitList - habit)
                 } else {
                     state
                 }
+            }
+        }
+    }
+
+    fun deleteAllHabits() {
+        _habitState.update { state ->
+            if (state is HabitState.Success) {
+                state.copy(habitList = emptyList())
+            } else {
+                state
             }
         }
     }

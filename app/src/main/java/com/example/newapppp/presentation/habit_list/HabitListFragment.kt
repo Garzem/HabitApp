@@ -120,4 +120,8 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
             }
         }
     }
+
+    fun deleteAllHabit() {
+        habitViewModel.deleteAllHabits()
+    }
 }

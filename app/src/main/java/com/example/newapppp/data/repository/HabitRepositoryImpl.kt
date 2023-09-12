@@ -28,13 +28,13 @@ class HabitRepositoryImpl @Inject constructor(
 
     override suspend fun fetchHabitList(): List<Habit> = coroutineScope {
         val habitJsonListResponseAsync =
-            networkUtils.commonRetrying(null) {
-                async { api.getHabitList(TOKEN) }
+            async {
+                networkUtils.commonRetrying(null) { api.getHabitList(TOKEN) }
             }
         val habitLocalListAsync = async {
             habitDao.getAllHabits()
         }
-        val habitJsonList = habitJsonListResponseAsync?.await()
+        val habitJsonList = habitJsonListResponseAsync.await()
         val habitEntityList = habitLocalListAsync.await()
 
         val fullHabitEntityList = if (habitJsonList.isNullOrEmpty()) {
@@ -56,32 +56,33 @@ class HabitRepositoryImpl @Inject constructor(
 
     override suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?) =
         coroutineScope {
-            val habitUidAsync = networkUtils.commonRetrying(null) {
-                async { api.putHabit(TOKEN, toHabitJson(habitSave)) }
+            val habitUidAsync = async {
+                networkUtils.commonRetrying(null) { api.putHabit(TOKEN, toHabitJson(habitSave)) }
             }
             val habitEntityAsync = async {
                 val habitEntity = toHabitEntity(habitSave, habitId)
                 habitDao.upsertHabit(habitEntity)
                 habitEntity
             }
-            val habitUid = habitUidAsync?.await()
+            val habitUid = habitUidAsync.await()
             val habitEntity = habitEntityAsync.await()
 
-            val habitEntityWithUid = habitEntity.copy(
-                uid = habitUid?.uid
-            )
-
-            habitDao.upsertHabit(habitEntityWithUid)
+            if (habitUid != null) {
+                val habitEntityWithUid = habitEntity.copy(
+                    uid = habitUid.uid
+                )
+                habitDao.upsertHabit(habitEntityWithUid)
+            }
         }
 
     override suspend fun getHabitList(): List<Habit> = coroutineScope {
-        val habitJsonListAsync = networkUtils.commonRetrying(null) {
-            async { api.getHabitList(TOKEN) }
+        val habitJsonListAsync = async {
+            networkUtils.commonRetrying(null) { api.getHabitList(TOKEN) }
         }
         val habitLocalListAsync = async {
             habitDao.getAllHabits()
         }
-        val habitJsonList = habitJsonListAsync?.await()
+        val habitJsonList = habitJsonListAsync.await()
         val habitEntityList = habitLocalListAsync.await()
 
         if (habitJsonList.isNullOrEmpty()) {
