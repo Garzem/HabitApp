@@ -1,4 +1,4 @@
-package com.example.newapppp.data.remote.retry
+package com.example.newapppp.data.remote
 
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
@@ -6,7 +6,7 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 
-class NetworkUtils @Inject constructor() {
+class NetworkRetry @Inject constructor() {
     private suspend fun <T> retrying(
         fallbackValue: T?,
         tryCnt: Int,

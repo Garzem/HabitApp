@@ -7,7 +7,7 @@ import com.example.newapppp.data.remote.modul.GetHabitJson
 import com.example.newapppp.data.remote.HabitApi
 import com.example.newapppp.domain.model.HabitSave
 import com.example.newapppp.data.remote.modul.PutHabitJson
-import com.example.newapppp.data.remote.retry.NetworkUtils
+import com.example.newapppp.data.remote.NetworkRetry
 import com.example.newapppp.domain.Constants.TOKEN
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitColor
@@ -23,13 +23,13 @@ import javax.inject.Inject
 class HabitRepositoryImpl @Inject constructor(
     private val api: HabitApi,
     private val habitDao: HabitDao,
-    private val networkUtils: NetworkUtils
+    private val networkRetry: NetworkRetry
 ) : HabitRepository {
 
     override suspend fun fetchHabitList(): List<Habit> = coroutineScope {
         val habitJsonListResponseAsync =
             async {
-                networkUtils.commonRetrying(null) { api.getHabitList(TOKEN) }
+                networkRetry.commonRetrying(null) { api.getHabitList(TOKEN) }
             }
         val habitLocalListAsync = async {
             habitDao.getAllHabits()
@@ -57,7 +57,7 @@ class HabitRepositoryImpl @Inject constructor(
     override suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?) =
         coroutineScope {
             val habitUidAsync = async {
-                networkUtils.commonRetrying(null) { api.putHabit(TOKEN, toHabitJson(habitSave)) }
+                networkRetry.commonRetrying(null) { api.putHabit(TOKEN, toHabitJson(habitSave)) }
             }
             val habitEntityAsync = async {
                 val habitEntity = toHabitEntity(habitSave, habitId)
@@ -77,7 +77,7 @@ class HabitRepositoryImpl @Inject constructor(
 
     override suspend fun getHabitList(): List<Habit> = coroutineScope {
         val habitJsonListAsync = async {
-            networkUtils.commonRetrying(null) { api.getHabitList(TOKEN) }
+            networkRetry.commonRetrying(null) { api.getHabitList(TOKEN) }
         }
         val habitLocalListAsync = async {
             habitDao.getAllHabits()
@@ -108,7 +108,7 @@ class HabitRepositoryImpl @Inject constructor(
 
     override suspend fun deleteHabit(habit: Habit) {
         val response = habit.uid?.let {
-            networkUtils.commonRetrying(null) {
+            networkRetry.commonRetrying(null) {
                 api.deleteHabit(TOKEN, DeleteHabitJson(habit.uid))
             }
         }
@@ -124,7 +124,7 @@ class HabitRepositoryImpl @Inject constructor(
         val habitList = habitDao.getAllHabits()
         habitList.forEach { habit ->
             val response = habit.uid?.let {
-                networkUtils.commonRetrying(null) {
+                networkRetry.commonRetrying(null) {
                     api.deleteHabit(TOKEN, DeleteHabitJson(habit.uid))
                 }
             }
