@@ -76,7 +76,6 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         }
         filterObserver()
         swipeToDelete()
-        observeEvents()
     }
 
     private fun openHabitClick(habitId: String) {
@@ -104,21 +103,6 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
             }
         })
         itemTouchHelper.attachToRecyclerView(binding.recycleViewHabit)
-    }
-
-    private fun observeEvents() {
-        habitViewModel.apply {
-            showDeleteError.observe(viewLifecycleOwner) { habitList ->
-                adapter.submitList(habitList.map { habit ->
-                    habitUIConverter.toHabitUI(habit)
-                })
-                Toast.makeText(
-                    requireContext(),
-                    R.string.delete_error,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
     }
 
     fun deleteAllHabit() {

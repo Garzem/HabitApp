@@ -5,20 +5,22 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import com.example.newapppp.domain.INetworkUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
+import javax.inject.Inject
 
-class NetworkUtil(
+class NetworkUtil @Inject constructor(
     @ApplicationContext val context: Context
-) {
+): INetworkUtil {
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    fun observeIsOnline(): Flow<Boolean> = callbackFlow {
+    override fun observeIsOnline(): Flow<Boolean> = callbackFlow {
 
         val networkCallback = object : ConnectivityManager.NetworkCallback() {
 

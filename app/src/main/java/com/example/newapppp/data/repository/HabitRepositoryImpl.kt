@@ -107,35 +107,79 @@ class HabitRepositoryImpl @Inject constructor(
 
 
     override suspend fun deleteHabit(habit: Habit) {
-        val response = habit.uid?.let {
-            networkRetry.commonRetrying(null) {
-                api.deleteHabit(TOKEN, DeleteHabitJson(habit.uid))
-            }
-        }
-        if (response == null) {
+        if (habit.uid == null) {
             habitDao.deleteHabitById(habit.id)
         } else {
-            val habitEntity = toHabitEntity(habit).copy(deleted = true)
-            habitDao.upsertHabit(habitEntity)
+            val response = networkRetry.commonRetrying(null) {
+                api.deleteHabit(TOKEN, DeleteHabitJson(habit.uid))
+            }
+            if (response == null) {
+                val habitDeleted = toHabitEntity(habit).copy(deleted = true)
+                habitDao.upsertHabit(habitDeleted)
+            } else {
+                habitDao.deleteHabitById(habit.id)
+            }
         }
     }
 
     override suspend fun deleteAllHabits() {
         val habitList = habitDao.getAllHabits()
-        habitList.forEach { habit ->
-            val response = habit.uid?.let {
-                networkRetry.commonRetrying(null) {
-                    api.deleteHabit(TOKEN, DeleteHabitJson(habit.uid))
-                }
-            }
-            if (response == null) {
-                habitDao.deleteHabitById(habit.id)
+        habitList.forEach { habitEntity ->
+            if (habitEntity.uid == null) {
+                habitDao.deleteHabitById(habitEntity.id)
             } else {
-                val habitDeleted = habit.copy(deleted = true)
-                habitDao.upsertHabit(habitDeleted)
+                val response = networkRetry.commonRetrying(null) {
+                    api.deleteHabit(TOKEN, DeleteHabitJson(habitEntity.uid))
+                }
+                if (response == null) {
+                    val habitDeleted = habitEntity.copy(deleted = true)
+                    habitDao.upsertHabit(habitDeleted)
+                } else {
+                    habitDao.deleteHabitById(habitEntity.id)
+                }
             }
         }
     }
+
+    override suspend fun deleteOfflineDeletedHabits() {
+        val deletedOfflineHabitList = habitDao.getAllDeletedHabits()
+        deletedOfflineHabitList.forEach { deletedHabitEntity ->
+            val response = deletedHabitEntity.uid?.let {
+                networkRetry.commonRetrying(null) {
+                    api.deleteHabit(TOKEN, DeleteHabitJson(deletedHabitEntity.uid))
+                }
+            }
+            if (response != null) {
+                habitDao.deleteHabitById(deletedHabitEntity.id)
+            }
+        }
+    }
+
+    override suspend fun putOfflineHabitList() {
+        val habitJsonList = networkRetry.commonRetrying(null) {
+            api.getHabitList(TOKEN)
+        }
+        if (habitJsonList != null) {
+            val localHabitEntityList = habitDao.getAllHabits()
+            val notSavedOfflineHabitList = localHabitEntityList.filter { habitEntity ->
+                habitJsonList.none { getHabitJson ->
+                    getHabitJson.uid == habitEntity.uid
+                }
+            }
+            notSavedOfflineHabitList.forEach { habitEntity ->
+                val habitUid = networkRetry.commonRetrying(null) {
+                    api.putHabit(TOKEN, toHabitJson(habitEntity))
+                }
+                if (habitUid != null) {
+                    val habitEntityWithUid = habitEntity.copy(
+                        uid = habitUid.uid
+                    )
+                    habitDao.upsertHabit(habitEntityWithUid)
+                }
+            }
+        }
+    }
+
 
     override suspend fun getHabitById(habitId: String): Habit {
         return toHabit(habitDao.getHabitById(habitId))
@@ -156,6 +200,22 @@ class HabitRepositoryImpl @Inject constructor(
 
     override fun toHabitJson(saveHabit: HabitSave): PutHabitJson {
         return with(saveHabit) {
+            PutHabitJson(
+                uid = null,
+                title = title,
+                description = description,
+                creationDate = creationDate,
+                color = HabitColor.values().indexOf(color),
+                priority = HabitPriority.values().indexOf(priority),
+                type = HabitType.values().indexOf(type),
+                frequency = frequency,
+                count = 0
+            )
+        }
+    }
+
+    override fun toHabitJson(habit: HabitEntity): PutHabitJson {
+        return with(habit) {
             PutHabitJson(
                 uid = null,
                 title = title,

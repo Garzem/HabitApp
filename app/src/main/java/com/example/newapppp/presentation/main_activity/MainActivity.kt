@@ -1,7 +1,8 @@
-package com.example.newapppp.presentation
+package com.example.newapppp.presentation.main_activity
 
 import android.os.Bundle
 import android.widget.ImageView
+import androidx.activity.viewModels
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -11,20 +12,32 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.example.newapppp.R
 import com.example.newapppp.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val binding: ActivityMainBinding by viewBinding(ActivityMainBinding::bind)
+    private val viewModel: MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(binding.root)
+
+        viewModel.connectionState.onEach { isConnected ->
+            if (isConnected) {
+                viewModel.observeConnectionState()
+            }
+        }.launchIn(lifecycleScope)
+
 
         val toolbar: Toolbar = binding.appBarMain.toolbar
 

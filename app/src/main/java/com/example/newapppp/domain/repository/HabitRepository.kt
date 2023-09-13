@@ -20,6 +20,10 @@ interface HabitRepository {
 
     suspend fun deleteAllHabits()
 
+    suspend fun deleteOfflineDeletedHabits()
+
+    suspend fun putOfflineHabitList()
+
     suspend fun getHabitById(habitId: String): Habit
 
     suspend fun getHabitListByType(type: HabitType): List<Habit>
@@ -27,6 +31,8 @@ interface HabitRepository {
     //   fun postHabitWithRetry(postHabitJson: PostHabitJson)
 
     fun toHabitJson(saveHabit: HabitSave): PutHabitJson
+
+    fun toHabitJson(habit: HabitEntity): PutHabitJson
 
     fun toHabitEntity(habit: HabitSave, habitId: String?): HabitEntity
 

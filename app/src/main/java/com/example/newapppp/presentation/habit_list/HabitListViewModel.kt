@@ -31,10 +31,6 @@ class HabitListViewModel @Inject constructor(
 
     val habitState: StateFlow<HabitState> = _habitState.asStateFlow()
 
-    private val _showDeleteError = SingleLiveEvent<List<Habit>>()
-
-    val showDeleteError: LiveData<List<Habit>> get() = _showDeleteError
-
 
     init {
         filterRepository.filterFlow.onEach { filter ->

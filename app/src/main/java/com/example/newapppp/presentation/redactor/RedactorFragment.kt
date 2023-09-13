@@ -165,22 +165,6 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-            showSendingError.observe(viewLifecycleOwner) {
-                Toast.makeText(
-                    requireContext(),
-                    R.string.error_with_sending_habit_to_server,
-                    Toast.LENGTH_SHORT
-                ).show()
-                findNavController().popBackStack()
-            }
-
-            showDeleteError.observe(viewLifecycleOwner) {
-                Toast.makeText(
-                    requireContext(),
-                    R.string.delete_problem,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
 
             goBack.observe(viewLifecycleOwner) {
                 findNavController().popBackStack()

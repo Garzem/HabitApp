@@ -51,14 +51,6 @@ class RedactorFragmentViewModel @Inject constructor(
     private val _showValidationError = SingleLiveEvent<Unit>()
     val showValidationError: LiveData<Unit> get() = _showValidationError
 
-    private val _showSendingError = SingleLiveEvent<Unit>()
-
-    val showSendingError: LiveData<Unit> get() = _showSendingError
-
-    private val _showDeleteError = SingleLiveEvent<Unit>()
-
-    val showDeleteError: LiveData<Unit> get() = _showDeleteError
-
     private val _goBack = SingleLiveEvent<Unit>()
     val goBack: LiveData<Unit> get() = _goBack
 
@@ -144,25 +136,21 @@ class RedactorFragmentViewModel @Inject constructor(
 
     fun deleteHabit() {
         viewModelScope.launch {
-            try {
-                _uiState.value.let {
-                    val habit = Habit(
-                        id = it.id ?: return@launch,
-                        uid = it.uid,
-                        color = it.color,
-                        creationDate = creationDate ?: System.currentTimeMillis(),
-                        description = it.description,
-                        frequency = it.frequency.toInt(),
-                        priority = HabitPriority.values().getOrNull(it.priority)
-                            ?: HabitPriority.CHOOSE,
-                        title = it.title,
-                        type = HabitType.values().getOrNull(it.type) ?: HabitType.GOOD
-                    )
-                    deleteHabitUseCase(habit)
-                    _goBack.emit()
-                }
-            } catch (e: Exception) {
-                _showDeleteError.emit()
+            _uiState.value.let {
+                val habit = Habit(
+                    id = it.id ?: return@launch,
+                    uid = it.uid,
+                    color = it.color,
+                    creationDate = creationDate ?: System.currentTimeMillis(),
+                    description = it.description,
+                    frequency = it.frequency.toInt(),
+                    priority = HabitPriority.values().getOrNull(it.priority)
+                        ?: HabitPriority.CHOOSE,
+                    title = it.title,
+                    type = HabitType.values().getOrNull(it.type) ?: HabitType.GOOD
+                )
+                deleteHabitUseCase(habit)
+                _goBack.emit()
             }
         }
     }
@@ -177,16 +165,13 @@ class RedactorFragmentViewModel @Inject constructor(
                     creationDate = creationDate ?: System.currentTimeMillis(),
                     description = uiState.description,
                     frequency = uiState.frequency.toInt(),
-                    priority = HabitPriority.values().getOrNull(uiState.priority) ?: HabitPriority.CHOOSE,
+                    priority = HabitPriority.values().getOrNull(uiState.priority)
+                        ?: HabitPriority.CHOOSE,
                     title = uiState.title,
                     type = HabitType.values().getOrNull(uiState.type) ?: HabitType.GOOD
                 )
-                try {
                     saveOrUpdateHabitUseCase(saveHabit, habitId)
                     _goBack.emit()
-                } catch (e: Exception) {
-                    _showSendingError.emit()
-                }
             }
         } else {
             _showValidationError.emit()
