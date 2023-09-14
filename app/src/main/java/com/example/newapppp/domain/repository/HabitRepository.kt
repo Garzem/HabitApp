@@ -14,7 +14,7 @@ interface HabitRepository {
 
     suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?)
 
-    suspend fun getHabitList(): List<Habit>
+//    suspend fun getHabitList(): List<Habit>
 
     suspend fun deleteHabit(habit: Habit)
 

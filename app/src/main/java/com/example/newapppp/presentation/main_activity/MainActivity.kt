@@ -20,7 +20,6 @@ import com.example.newapppp.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
@@ -34,7 +33,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         viewModel.connectionState.onEach { isConnected ->
             if (isConnected) {
-                viewModel.observeConnectionState()
+                viewModel.makeRequestForDataVerification()
             }
         }.launchIn(lifecycleScope)
 

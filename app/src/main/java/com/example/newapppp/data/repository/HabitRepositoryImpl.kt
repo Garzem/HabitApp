@@ -40,9 +40,10 @@ class HabitRepositoryImpl @Inject constructor(
         val fullHabitEntityList = if (habitJsonList.isNullOrEmpty()) {
             habitEntityList
         } else {
+
             val notSavedHabitJsonList = habitJsonList.filter { getHabitJson ->
                 habitEntityList.none { habitEntity ->
-                    habitEntity.uid == getHabitJson.uid
+                    habitEntity.uid == getHabitJson.uid || !habitEntity.deleted
                 }
             }
             val notSavedHabitEntityList =
@@ -51,7 +52,9 @@ class HabitRepositoryImpl @Inject constructor(
             notSavedHabitEntityList + habitEntityList
         }
 
-        fullHabitEntityList.map(::toHabit)
+        fullHabitEntityList.map(::toHabit).sortedBy { habit ->
+            habit.creationDate
+        }
     }
 
     override suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?) =
@@ -61,7 +64,6 @@ class HabitRepositoryImpl @Inject constructor(
             }
             val habitEntityAsync = async {
                 val habitEntity = toHabitEntity(habitSave, habitId)
-                habitDao.upsertHabit(habitEntity)
                 habitEntity
             }
             val habitUid = habitUidAsync.await()
@@ -72,38 +74,40 @@ class HabitRepositoryImpl @Inject constructor(
                     uid = habitUid.uid
                 )
                 habitDao.upsertHabit(habitEntityWithUid)
+            } else {
+                habitDao.upsertHabit(habitEntity)
             }
         }
 
-    override suspend fun getHabitList(): List<Habit> = coroutineScope {
-        val habitJsonListAsync = async {
-            networkRetry.commonRetrying(null) { api.getHabitList(TOKEN) }
-        }
-        val habitLocalListAsync = async {
-            habitDao.getAllHabits()
-        }
-        val habitJsonList = habitJsonListAsync.await()
-        val habitEntityList = habitLocalListAsync.await()
-
-        if (habitJsonList.isNullOrEmpty()) {
-            habitEntityList.map(::toHabit).sortedBy { habit ->
-                habit.creationDate
-            }
-        } else {
-            val notSavedHabitJsonList = habitJsonList.filter { getHabitJson ->
-                habitEntityList.none { habitEntity ->
-                    habitEntity.uid == getHabitJson.uid
-                }
-            }
-            val notSavedHabitEntityList =
-                notSavedHabitJsonList.map(this@HabitRepositoryImpl::toHabitEntity)
-            habitDao.upsertHabitList(notSavedHabitEntityList)
-
-            (notSavedHabitEntityList + habitEntityList).map(::toHabit).sortedBy { habit ->
-                habit.creationDate
-            }
-        }
-    }
+//    override suspend fun getHabitList(): List<Habit> = coroutineScope {
+//        val habitJsonListAsync = async {
+//            networkRetry.commonRetrying(null) { api.getHabitList(TOKEN) }
+//        }
+//        val habitLocalListAsync = async {
+//            habitDao.getAllHabits()
+//        }
+//        val habitJsonList = habitJsonListAsync.await()
+//        val habitEntityList = habitLocalListAsync.await()
+//
+//        if (habitJsonList.isNullOrEmpty()) {
+//            habitEntityList.map(::toHabit).sortedBy { habit ->
+//                habit.creationDate
+//            }
+//        } else {
+//            val notSavedHabitJsonList = habitJsonList.filter { getHabitJson ->
+//                habitEntityList.none { habitEntity ->
+//                    habitEntity.uid == getHabitJson.uid
+//                }
+//            }
+//            val notSavedHabitEntityList =
+//                notSavedHabitJsonList.map(this@HabitRepositoryImpl::toHabitEntity)
+//            habitDao.upsertHabitList(notSavedHabitEntityList)
+//
+//            (notSavedHabitEntityList + habitEntityList).map(::toHabit).sortedBy { habit ->
+//                habit.creationDate
+//            }
+//        }
+//    }
 
 
     override suspend fun deleteHabit(habit: Habit) {

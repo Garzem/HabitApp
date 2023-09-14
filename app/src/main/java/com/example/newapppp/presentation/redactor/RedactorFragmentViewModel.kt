@@ -170,8 +170,8 @@ class RedactorFragmentViewModel @Inject constructor(
                     title = uiState.title,
                     type = HabitType.values().getOrNull(uiState.type) ?: HabitType.GOOD
                 )
-                    saveOrUpdateHabitUseCase(saveHabit, habitId)
-                    _goBack.emit()
+                saveOrUpdateHabitUseCase(saveHabit, habitId)
+                _goBack.emit()
             }
         } else {
             _showValidationError.emit()

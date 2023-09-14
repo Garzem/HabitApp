@@ -2,11 +2,9 @@ package com.example.newapppp.presentation.main_activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newapppp.data.repository.HabitRepositoryImpl
 import com.example.newapppp.domain.INetworkUtil
 import com.example.newapppp.domain.usecase.main_activity.DeleteOfflineDeletedHabitsUseCase
 import com.example.newapppp.domain.usecase.main_activity.PutOfflineHabitListUseCase
-import com.example.newapppp.presentation.habit_list.state.HabitState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +19,7 @@ class MainViewModel @Inject constructor(
     private val networkUtil: INetworkUtil,
     private val deleteOfflineDeletedHabitsUseCase: DeleteOfflineDeletedHabitsUseCase,
     private val putOfflineHabitListUseCase: PutOfflineHabitListUseCase
-): ViewModel() {
+) : ViewModel() {
 
     private val _connectionState = MutableStateFlow(false)
 
@@ -37,12 +35,8 @@ class MainViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun observeConnectionState() {
-        _connectionState.onEach { isConnected ->
-            if (isConnected) {
-                deleteOfflineDeletedHabitsUseCase()
-                putOfflineHabitListUseCase()
-            }
-        }.launchIn(viewModelScope)
+    suspend fun makeRequestForDataVerification() {
+        deleteOfflineDeletedHabitsUseCase()
+        putOfflineHabitListUseCase()
     }
 }
