@@ -52,9 +52,7 @@ class HabitRepositoryImpl @Inject constructor(
             notSavedHabitEntityList + habitEntityList
         }
 
-        fullHabitEntityList.map(::toHabit).sortedBy { habit ->
-            habit.creationDate
-        }
+        fullHabitEntityList.map(::toHabit)
     }
 
     override suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?) =
