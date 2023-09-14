@@ -19,12 +19,15 @@ class HabitUIListAdapter @Inject constructor() : ListAdapter<HabitUI, HabitUIVie
 
     var openHabitClick: (String) -> Unit = {}
 
+    var openDoneDatesDialog: () -> Unit = {}
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitUIViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemLayoutBinding.inflate(inflater, parent, false)
         return HabitUIViewHolder(
             binding = binding,
             openHabitClick = openHabitClick,
+            openDoneDatesDialog = openDoneDatesDialog,
             habitPriorityMapper = habitPriorityMapper,
             habitColorMapper = habitColorMapper
         )

@@ -36,7 +36,7 @@
         android:id="@+id/nav_color_choose_dialog"
         android:name="com.example.newapppp.presentation.ColorChooseDialog"
         android:label="@string/color_choose_title"
-        tools:layout="@layout/horizontal_color_choose" />
+        tools:layout="@layout/horizontal_color_choose_dialog" />
 
     <dialog
         android:id="@+id/nav_filter_dialog"

@@ -6,16 +6,17 @@ import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
+import com.example.newapppp.databinding.HorizontalColorChooseDialogBinding
 import com.example.newapppp.domain.Constants
 import com.example.newapppp.domain.model.HabitColor
-import com.example.newapppp.databinding.HorizontalColorChooseBinding
+
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ColorChooseDialog : DialogFragment(R.layout.horizontal_color_choose) {
+class ColorChooseDialog : DialogFragment(R.layout.horizontal_color_choose_dialog) {
 
     private var buttons: ArrayList<View>? = null
-    private val binding by viewBinding(HorizontalColorChooseBinding::bind)
+    private val binding by viewBinding(HorizontalColorChooseDialogBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

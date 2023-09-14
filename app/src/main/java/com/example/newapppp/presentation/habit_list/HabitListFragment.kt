@@ -55,6 +55,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         adapter.openHabitClick = ::openHabitClick
+        adapter
         binding.recycleViewHabit.adapter = adapter
 
         habitType?.let {
@@ -81,6 +82,10 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
     private fun openHabitClick(habitId: String) {
         val action = HomeFragmentDirections.homeFragmentToRedactorFragment(habitId, null)
         findNavController().navigate(action)
+    }
+
+    private fun openDoneDatesDialog() {
+
     }
 
     private fun filterObserver() {
