@@ -6,27 +6,26 @@ import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.data.remote.modul.GetHabitJson
 import com.example.newapppp.domain.model.HabitSave
 import com.example.newapppp.data.remote.modul.PutHabitJson
+import kotlinx.coroutines.flow.Flow
 
 
 interface HabitRepository {
 
-    suspend fun fetchHabitList(): List<Habit>
+    fun getHabitListFlow(): Flow<List<Habit>>
 
     suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?)
-
-//    suspend fun getHabitList(): List<Habit>
 
     suspend fun deleteHabit(habit: Habit)
 
     suspend fun deleteAllHabits()
+
+    suspend fun fetchHabitList()
 
     suspend fun deleteOfflineDeletedHabits()
 
     suspend fun putOfflineHabitList()
 
     suspend fun getHabitById(habitId: String): Habit
-
-    suspend fun getHabitListByType(type: HabitType): List<Habit>
 
     //   fun postHabitWithRetry(postHabitJson: PostHabitJson)
 

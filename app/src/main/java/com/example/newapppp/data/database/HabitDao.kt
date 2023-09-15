@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.example.newapppp.data.database.habit_local.HabitEntity
-import com.example.newapppp.domain.model.HabitType
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HabitDao {
@@ -21,8 +21,8 @@ interface HabitDao {
     @Query("SELECT * FROM habit WHERE id = :habitId")
     suspend fun getHabitById(habitId: String) : HabitEntity
 
-    @Query("SELECT * FROM habit WHERE type = :type")
-    suspend fun getHabitListByType(type: HabitType) : List<HabitEntity>
+    @Query("SELECT * FROM habit WHERE deleted = 0")
+    fun getAllHabitsFlow(): Flow<List<HabitEntity>>
 
     @Query("SELECT * FROM habit WHERE deleted = 0")
     suspend fun getAllHabits(): List<HabitEntity>

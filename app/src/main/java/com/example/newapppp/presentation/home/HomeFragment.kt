@@ -74,9 +74,6 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
     private fun deleteAllHabits() {
         binding.deleteFab.setOnClickListener{
             homeViewModel.deleteAllHabits()
-            habitListFragments.forEach { fragment ->
-                fragment.deleteAllHabit()
-            }
         }
     }
 

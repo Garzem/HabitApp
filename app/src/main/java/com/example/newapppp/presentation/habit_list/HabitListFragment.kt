@@ -2,7 +2,6 @@ package com.example.newapppp.presentation.habit_list
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -22,7 +21,6 @@ import com.example.newapppp.presentation.habit_list.habit_adapter.HabitUIListAda
 import com.example.newapppp.presentation.home.HomeFragment
 import com.example.newapppp.presentation.home.HomeFragmentDirections
 import com.example.newapppp.presentation.util.HabitUIConverter
-import com.example.newapppp.presentation.util.TimeConverter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -55,11 +53,11 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         adapter.openHabitClick = ::openHabitClick
-        adapter
+        adapter.openDoneDatesDialog = ::openDoneDatesDialog
         binding.recycleViewHabit.adapter = adapter
 
         habitType?.let {
-            habitViewModel.fetchHabitList(it)
+            habitViewModel.getAndRefreshHabitList(it)
         }
         collectWithLifecycle(habitViewModel.habitState) { state ->
             when (state) {
@@ -108,9 +106,5 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
             }
         })
         itemTouchHelper.attachToRecyclerView(binding.recycleViewHabit)
-    }
-
-    fun deleteAllHabit() {
-        habitViewModel.deleteAllHabits()
     }
 }
