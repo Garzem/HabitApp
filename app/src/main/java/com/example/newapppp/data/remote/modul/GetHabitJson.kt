@@ -14,5 +14,7 @@ data class GetHabitJson(
     val priority: Int,
     val title: String,
     val type: Int,
+    @SerialName(value = "done_dates")
+    val doneDates: List<Int>,
     val uid: String
 )

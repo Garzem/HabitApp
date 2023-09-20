@@ -19,7 +19,7 @@ class HabitUIListAdapter @Inject constructor() : ListAdapter<HabitUI, HabitUIVie
 
     var openHabitClick: (String) -> Unit = {}
 
-    var openDoneDatesDialog: () -> Unit = {}
+    var openDoneDatesDialog: (String) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitUIViewHolder {
         val inflater = LayoutInflater.from(parent.context)

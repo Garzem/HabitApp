@@ -22,7 +22,8 @@ class HabitUIConverter @Inject constructor(
                 color = color,
                 priority = priority,
                 type = type,
-                frequency = frequency
+                frequency = frequency,
+                doneDates = doneDates
             )
         }
     }
@@ -38,7 +39,8 @@ class HabitUIConverter @Inject constructor(
                 color = color,
                 priority = priority,
                 type = type,
-                frequency = frequency
+                frequency = frequency,
+                doneDates = doneDates
             )
         }
     }

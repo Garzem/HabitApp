@@ -11,5 +11,6 @@ data class HabitSave(
     val color : HabitColor,
     val priority : HabitPriority,
     val type : HabitType,
+    val doneDates: List<Int>,
     val frequency : Int
 )

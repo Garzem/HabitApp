@@ -1,7 +1,9 @@
 package com.example.newapppp.presentation.habit_list
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -21,7 +23,12 @@ import com.example.newapppp.presentation.habit_list.habit_adapter.HabitUIListAda
 import com.example.newapppp.presentation.home.HomeFragment
 import com.example.newapppp.presentation.home.HomeFragmentDirections
 import com.example.newapppp.presentation.util.HabitUIConverter
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.LocalDate
+import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -43,12 +50,14 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         arguments?.serializable(HABIT_TYPE_KEY, HabitType::class.java)
     }
 
+
     @Inject
     lateinit var adapter: HabitUIListAdapter
 
     @Inject
     lateinit var habitUIConverter: HabitUIConverter
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -82,8 +91,11 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         findNavController().navigate(action)
     }
 
-    private fun openDoneDatesDialog() {
-
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun openDoneDatesDialog(habitId: String) {
+        LocalDate.now()
+        val selectedDate = LocalDate.now().dayOfMonth
+        habitViewModel.saveDoneDatesForHabit(habitId, selectedDate)
     }
 
     private fun filterObserver() {

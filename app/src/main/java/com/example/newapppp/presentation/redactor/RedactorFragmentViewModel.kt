@@ -43,7 +43,8 @@ class RedactorFragmentViewModel @Inject constructor(
             priority = 3,
             type = 0,
             frequency = "",
-            frequencyCursorPosition = 0
+            frequencyCursorPosition = 0,
+            doneDates = emptyList()
         )
     )
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -72,7 +73,8 @@ class RedactorFragmentViewModel @Inject constructor(
                     priority = HabitPriority.values().indexOf(habit.priority),
                     type = HabitType.values().indexOf(habit.type),
                     frequency = habit.frequency.toString(),
-                    frequencyCursorPosition = 0
+                    frequencyCursorPosition = 0,
+                    doneDates = habit.doneDates
                 )
             }
         }
@@ -147,7 +149,8 @@ class RedactorFragmentViewModel @Inject constructor(
                     priority = HabitPriority.values().getOrNull(it.priority)
                         ?: HabitPriority.CHOOSE,
                     title = it.title,
-                    type = HabitType.values().getOrNull(it.type) ?: HabitType.GOOD
+                    type = HabitType.values().getOrNull(it.type) ?: HabitType.GOOD,
+                    doneDates = it.doneDates
                 )
                 deleteHabitUseCase(habit)
                 _goBack.emit()
@@ -168,7 +171,8 @@ class RedactorFragmentViewModel @Inject constructor(
                     priority = HabitPriority.values().getOrNull(uiState.priority)
                         ?: HabitPriority.CHOOSE,
                     title = uiState.title,
-                    type = HabitType.values().getOrNull(uiState.type) ?: HabitType.GOOD
+                    type = HabitType.values().getOrNull(uiState.type) ?: HabitType.GOOD,
+                    doneDates = uiState.doneDates
                 )
                 saveOrUpdateHabitUseCase(saveHabit, habitId)
                 _goBack.emit()

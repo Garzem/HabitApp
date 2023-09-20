@@ -14,5 +14,7 @@ data class PutHabitJson(
     val frequency: Int,
     val priority: Int,
     val title: String,
-    val type: Int
+    val type: Int,
+    @SerialName(value = "done_dates")
+    val doneDates: List<Int>
 )

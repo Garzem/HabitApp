@@ -35,8 +35,7 @@
         android:textSize="@dimen/text_size"
         android:textColor="@color/colorGreyLight"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/elevation" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/frequency"
@@ -48,8 +47,7 @@
         android:textColor="@color/colorGreyDark"
         android:textSize="@dimen/text_size"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/elevation" />
+        android:layout_height="wrap_content" />
 
     <View
         android:id="@+id/color_support"
@@ -81,24 +79,48 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <TextView
+        android:id="@+id/done_dates_counter"
+        app:layout_constraintTop_toTopOf="@+id/color_support"
+        app:layout_constraintEnd_toEndOf="@+id/color_support"
+        app:layout_constraintBottom_toBottomOf="@+id/color_support"
+        android:layout_marginEnd="@dimen/large_margin"
+        android:textColor="@color/colorGreyDark"
+        android:textSize="@dimen/text_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <Button
         android:id="@+id/edit_habit_button"
         app:layout_constraintTop_toBottomOf="@id/color_support"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/mark_day_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
         android:text="@string/edit_string"
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/mark_day_button"
+        android:id="@+id/open_mark_day_button"
         app:layout_constraintTop_toBottomOf="@id/color_support"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/edit_habit_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.95"
         android:text="@string/mark_day_string"
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/checkmark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/check_circle_outline"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/color_support"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/edit_habit_button"
+        app:layout_constraintBottom_toBottomOf="@+id/edit_habit_button"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

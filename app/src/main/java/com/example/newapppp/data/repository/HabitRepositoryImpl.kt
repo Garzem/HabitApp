@@ -8,6 +8,7 @@ import com.example.newapppp.data.remote.HabitApi
 import com.example.newapppp.domain.model.HabitSave
 import com.example.newapppp.data.remote.modul.PutHabitJson
 import com.example.newapppp.data.remote.NetworkRetry
+import com.example.newapppp.data.remote.modul.PostHabitJson
 import com.example.newapppp.domain.Constants.TOKEN
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitColor
@@ -17,8 +18,6 @@ import com.example.newapppp.domain.repository.HabitRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 import javax.inject.Inject
@@ -130,11 +129,29 @@ class HabitRepositoryImpl @Inject constructor(
         return toHabit(habitDao.getHabitById(habitId))
     }
 
-//    private suspend fun postHabitWithRetry(postHabitJson: PostHabitJson) {
-//        callWithRetry {
-//            HApp.habitApi.postHabit(TOKEN, postHabitJson)
-//        }
-//    }
+    override suspend fun saveOrUpdateSelectedDates(habit: Habit) {
+        habitDao.upsertHabit(toHabitEntity(habit))
+    }
+
+    override suspend fun postOfflineHabit() {
+        val habitList = habitDao.getAllHabits()
+        val habitListWithDoneDates = habitList.filter { habitEntity ->
+            habitEntity.doneDates.isNotEmpty()
+        }
+        val postHabitJsonList = habitListWithDoneDates.map { habitEntity ->
+            val lastDoneDate = habitEntity.doneDates.last()
+                PostHabitJson(
+                    doneDate = lastDoneDate,
+                    uid = habitEntity.uid ?: return
+                )
+        }
+        postHabitJsonList.forEach { postHabitJson ->
+            networkRetry.commonRetrying(null) {
+                api.postHabit(TOKEN, postHabitJson)
+            }
+        }
+    }
+
 
     override fun toHabitJson(saveHabit: HabitSave): PutHabitJson {
         return with(saveHabit) {
@@ -147,7 +164,8 @@ class HabitRepositoryImpl @Inject constructor(
                 priority = HabitPriority.values().indexOf(priority),
                 type = HabitType.values().indexOf(type),
                 frequency = frequency,
-                count = 0
+                count = 0,
+                doneDates = doneDates
             )
         }
     }
@@ -163,24 +181,28 @@ class HabitRepositoryImpl @Inject constructor(
                 priority = HabitPriority.values().indexOf(priority),
                 type = HabitType.values().indexOf(type),
                 frequency = frequency,
-                count = 0
+                count = 0,
+                doneDates = doneDates
             )
         }
     }
 
     override fun toHabitEntity(habit: HabitSave, habitId: String?): HabitEntity {
-        return HabitEntity(
-            id = habitId ?: UUID.randomUUID().toString(),
-            uid = null,
-            title = habit.title,
-            description = habit.description,
-            creationDate = habit.creationDate,
-            color = habit.color,
-            priority = habit.priority,
-            type = habit.type,
-            frequency = habit.frequency,
-            deleted = false
-        )
+        return with(habit) {
+            HabitEntity(
+                id = habitId ?: UUID.randomUUID().toString(),
+                uid = null,
+                title = title,
+                description = description,
+                creationDate = creationDate,
+                color = color,
+                priority = priority,
+                type = type,
+                frequency = frequency,
+                doneDates = doneDates,
+                deleted = false
+            )
+        }
     }
 
     override fun toHabitEntity(habit: GetHabitJson): HabitEntity {
@@ -195,37 +217,44 @@ class HabitRepositoryImpl @Inject constructor(
                 priority = HabitPriority.values().getOrNull(priority) ?: HabitPriority.CHOOSE,
                 type = HabitType.values().getOrNull(type) ?: HabitType.GOOD,
                 frequency = frequency,
+                doneDates = doneDates,
                 deleted = false
             )
         }
     }
 
     override fun toHabitEntity(habit: Habit): HabitEntity {
-        return HabitEntity(
-            id = habit.id,
-            uid = habit.uid,
-            title = habit.title,
-            description = habit.description,
-            creationDate = habit.creationDate,
-            color = habit.color,
-            priority = habit.priority,
-            type = habit.type,
-            frequency = habit.frequency,
-            deleted = false
-        )
+        return with(habit) {
+            HabitEntity(
+                id = id,
+                uid = uid,
+                title = title,
+                description = description,
+                creationDate = creationDate,
+                color = color,
+                priority = priority,
+                type = type,
+                frequency = frequency,
+                doneDates = doneDates,
+                deleted = false
+            )
+        }
     }
 
     override fun toHabit(habitEntity: HabitEntity): Habit {
-        return Habit(
-            id = habitEntity.id,
-            uid = habitEntity.uid,
-            title = habitEntity.title,
-            description = habitEntity.description,
-            creationDate = habitEntity.creationDate,
-            color = habitEntity.color,
-            priority = habitEntity.priority,
-            type = habitEntity.type,
-            frequency = habitEntity.frequency,
-        )
+        return with(habitEntity) {
+            Habit(
+                id = id,
+                uid = uid,
+                title = title,
+                description = description,
+                creationDate = creationDate,
+                color = color,
+                priority = priority,
+                type = type,
+                frequency = frequency,
+                doneDates = doneDates,
+            )
+        }
     }
 }

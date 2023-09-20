@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PostHabitJson(
     @SerialName(value = "date")
-    val creationDate: Int,
+    val doneDate: Int,
     @SerialName(value = "habit_uid")
     val uid: String
 )
