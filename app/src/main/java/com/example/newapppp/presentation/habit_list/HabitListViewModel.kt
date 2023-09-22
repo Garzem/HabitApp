@@ -65,7 +65,7 @@ class HabitListViewModel @Inject constructor(
         }
     }
 
-    fun saveDoneDatesForHabit(habitId: String, newDoneDate: Int) {
+    fun saveDoneDatesForHabit(habitId: String, newDoneDate: Long) {
         viewModelScope.launch {
             val habit = getHabitByIdUseCase(habitId)
             val updatedDoneDates = if (habit.doneDates.isNotEmpty()) {

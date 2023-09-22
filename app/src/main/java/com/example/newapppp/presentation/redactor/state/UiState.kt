@@ -15,5 +15,5 @@ data class UiState(
     val type: Int,
     val frequency: String,
     val frequencyCursorPosition: Int,
-    val doneDates: List<Int>
+    val doneDates: List<Long>
 ) : Serializable

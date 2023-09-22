@@ -135,19 +135,26 @@ class HabitRepositoryImpl @Inject constructor(
 
     override suspend fun postOfflineHabit() {
         val habitList = habitDao.getAllHabits()
-        val habitListWithDoneDates = habitList.filter { habitEntity ->
-            habitEntity.doneDates.isNotEmpty()
+        val getHabitJsonList = networkRetry.commonRetrying(null) {
+            api.getHabitList(TOKEN)
         }
-        val postHabitJsonList = habitListWithDoneDates.map { habitEntity ->
-            val lastDoneDate = habitEntity.doneDates.last()
+        if (getHabitJsonList != null) {
+            val habitListToPost = habitList.filter { habitEntity ->
+                val habitJson = getHabitJsonList.find { it.uid == habitEntity.uid }
+                return@filter (habitJson != null && habitEntity.doneDates.isNotEmpty()
+                        && habitEntity.doneDates.last() != habitJson.doneDates.lastOrNull())
+            }
+            val postHabitJsonList = habitListToPost.map { habitEntity ->
+                val lastDoneDate = habitEntity.doneDates.last()
                 PostHabitJson(
                     doneDate = lastDoneDate,
                     uid = habitEntity.uid ?: return
                 )
-        }
-        postHabitJsonList.forEach { postHabitJson ->
-            networkRetry.commonRetrying(null) {
-                api.postHabit(TOKEN, postHabitJson)
+            }
+            postHabitJsonList.forEach { postHabitJson ->
+                networkRetry.commonRetrying(null) {
+                    api.postHabit(TOKEN, postHabitJson)
+                }
             }
         }
     }

@@ -4,7 +4,7 @@ import androidx.room.TypeConverter
 
 class DoneDatesConverter {
     @TypeConverter
-    fun fromList(list: List<Int>): String {
+    fun fromList(list: List<Long>): String {
         if (list.isEmpty()) {
             return ""
         }
@@ -12,10 +12,10 @@ class DoneDatesConverter {
     }
 
     @TypeConverter
-    fun toList(data: String): List<Int> {
+    fun toList(data: String): List<Long> {
         if (data.isEmpty()) {
             return emptyList()
         }
-        return data.split(",").map { it.toInt() }
+        return data.split(",").map { it.toLong() }
     }
 }

@@ -12,23 +12,19 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
-import com.example.newapppp.domain.Constants.HABIT_TYPE_KEY
-import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.databinding.HabitListFragmentBinding
-
+import com.example.newapppp.domain.Constants.HABIT_TYPE_KEY
 import com.example.newapppp.domain.extension.collectWithLifecycle
 import com.example.newapppp.domain.extension.serializable
-import com.example.newapppp.presentation.habit_list.state.HabitState
+import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.presentation.habit_list.habit_adapter.HabitUIListAdapter
+import com.example.newapppp.presentation.habit_list.state.HabitState
 import com.example.newapppp.presentation.home.HomeFragment
 import com.example.newapppp.presentation.home.HomeFragmentDirections
 import com.example.newapppp.presentation.util.HabitUIConverter
-import com.google.android.material.datepicker.CalendarConstraints
-import com.google.android.material.datepicker.DateValidatorPointForward
-import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
-import java.util.Locale
+import java.time.ZoneOffset
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -93,8 +89,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun openDoneDatesDialog(habitId: String) {
-        LocalDate.now()
-        val selectedDate = LocalDate.now().dayOfMonth
+        val selectedDate = LocalDate.now().atStartOfDay().toEpochSecond(ZoneOffset.UTC)
         habitViewModel.saveDoneDatesForHabit(habitId, selectedDate)
     }
 

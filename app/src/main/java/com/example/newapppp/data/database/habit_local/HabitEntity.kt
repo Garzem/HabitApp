@@ -22,6 +22,6 @@ data class HabitEntity(
     val priority: HabitPriority,
     val type: HabitType,
     val frequency: Int,
-    val doneDates: List<Int>,
+    val doneDates: List<Long>,
     val deleted: Boolean
 )

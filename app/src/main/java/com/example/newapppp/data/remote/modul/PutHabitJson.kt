@@ -16,5 +16,5 @@ data class PutHabitJson(
     val title: String,
     val type: Int,
     @SerialName(value = "done_dates")
-    val doneDates: List<Int>
+    val doneDates: List<Long>
 )

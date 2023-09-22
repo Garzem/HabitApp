@@ -11,6 +11,7 @@ import com.example.newapppp.domain.model.HabitUI
 import com.example.newapppp.presentation.habit_list.HabitColorMapper
 import com.example.newapppp.presentation.habit_list.HabitPriorityMapper
 import java.time.LocalDate
+import java.time.ZoneOffset
 
 class HabitUIViewHolder(
     private val binding: ItemLayoutBinding,
@@ -46,7 +47,8 @@ class HabitUIViewHolder(
                 if (isButtonsVisible) {
                     editHabitButton.isVisible = true
                     if (habit.doneDates.isNotEmpty()) {
-                        if (habit.doneDates.last() != LocalDate.now().dayOfMonth) {
+                        if (habit.doneDates.last() != LocalDate.now().atStartOfDay().toEpochSecond(
+                                ZoneOffset.UTC)) {
                             openMarkDayButton.isVisible = true
                             openMarkDayButton.startAnimation(fadeInAnimation)
                         } else {
@@ -62,7 +64,8 @@ class HabitUIViewHolder(
                 } else {
                     editHabitButton.isVisible = false
                     if (habit.doneDates.isNotEmpty()) {
-                        if (habit.doneDates.last() != LocalDate.now().dayOfMonth) {
+                        if (habit.doneDates.last() != LocalDate.now().atStartOfDay().toEpochSecond(
+                                ZoneOffset.UTC)) {
                             openMarkDayButton.isVisible = false
                             openMarkDayButton.startAnimation(fadeOutAnimation)
                         } else {
