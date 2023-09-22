@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.example.newapppp.domain.model.HabitColor
+import com.example.newapppp.domain.model.HabitCount
 import com.example.newapppp.domain.model.HabitPriority
 import com.example.newapppp.domain.model.HabitType
 
@@ -23,5 +24,6 @@ data class HabitEntity(
     val type: HabitType,
     val frequency: Int,
     val doneDates: List<Long>,
+    val count: HabitCount,
     val deleted: Boolean
 )

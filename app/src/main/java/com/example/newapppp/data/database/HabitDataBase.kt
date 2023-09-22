@@ -7,7 +7,7 @@ import com.example.newapppp.data.database.habit_local.HabitEntity
 
 @Database(
     entities = [HabitEntity::class],
-    version = 11
+    version = 12
 )
 abstract class HabitDataBase : RoomDatabase() {
     abstract fun habitDao(): HabitDao

@@ -1,6 +1,7 @@
 package com.example.newapppp.presentation.redactor.state
 
 import com.example.newapppp.domain.model.HabitColor
+import com.example.newapppp.domain.model.HabitCount
 import java.io.Serializable
 
 data class UiState(
@@ -15,5 +16,6 @@ data class UiState(
     val type: Int,
     val frequency: String,
     val frequencyCursorPosition: Int,
+    val count: Int,
     val doneDates: List<Long>
 ) : Serializable

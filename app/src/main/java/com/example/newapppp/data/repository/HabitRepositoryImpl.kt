@@ -12,6 +12,7 @@ import com.example.newapppp.data.remote.modul.PostHabitJson
 import com.example.newapppp.domain.Constants.TOKEN
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitColor
+import com.example.newapppp.domain.model.HabitCount
 import com.example.newapppp.domain.model.HabitPriority
 import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.domain.repository.HabitRepository
@@ -207,6 +208,7 @@ class HabitRepositoryImpl @Inject constructor(
                 type = type,
                 frequency = frequency,
                 doneDates = doneDates,
+                count = count,
                 deleted = false
             )
         }
@@ -220,11 +222,12 @@ class HabitRepositoryImpl @Inject constructor(
                 title = title,
                 description = description,
                 creationDate = creationDate,
-                color = HabitColor.values().getOrNull(color) ?: HabitColor.ORANGE,
-                priority = HabitPriority.values().getOrNull(priority) ?: HabitPriority.CHOOSE,
-                type = HabitType.values().getOrNull(type) ?: HabitType.GOOD,
+                color = HabitColor.values()[color],
+                priority = HabitPriority.values()[priority],
+                type = HabitType.values()[type],
                 frequency = frequency,
                 doneDates = doneDates,
+                count = HabitCount.values()[count],
                 deleted = false
             )
         }
@@ -243,6 +246,7 @@ class HabitRepositoryImpl @Inject constructor(
                 type = type,
                 frequency = frequency,
                 doneDates = doneDates,
+                count = count,
                 deleted = false
             )
         }
@@ -260,7 +264,8 @@ class HabitRepositoryImpl @Inject constructor(
                 priority = priority,
                 type = type,
                 frequency = frequency,
-                doneDates = doneDates,
+                count = count,
+                doneDates = doneDates
             )
         }
     }

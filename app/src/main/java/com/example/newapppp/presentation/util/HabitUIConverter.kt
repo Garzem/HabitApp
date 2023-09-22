@@ -23,6 +23,7 @@ class HabitUIConverter @Inject constructor(
                 priority = priority,
                 type = type,
                 frequency = frequency,
+                count = count,
                 doneDates = doneDates
             )
         }
@@ -40,6 +41,7 @@ class HabitUIConverter @Inject constructor(
                 priority = priority,
                 type = type,
                 frequency = frequency,
+                count = count,
                 doneDates = doneDates
             )
         }

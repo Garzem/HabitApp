@@ -14,5 +14,6 @@ data class Habit(
     val priority: HabitPriority,
     val type: HabitType,
     val doneDates: List<Long>,
+    val count: HabitCount,
     val frequency: Int
 ) : Parcelable

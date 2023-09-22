@@ -38,6 +38,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         setupTitleText()
         setupDescriptionText()
         setupFrequencyText()
+        setupCountSpinner()
         setupPrioritySpinner()
         setupRadioButtons()
         setupColorButton()
@@ -83,7 +84,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         binding.spinnerPriority.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            redactorViewModel.getList()
+            redactorViewModel.getHabitPriorityList()
         )
 
         binding.spinnerPriority.onItemSelectedListener =
@@ -95,6 +96,28 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
                     id: Long
                 ) {
                     redactorViewModel.onNewPrioritySelected(position)
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {}
+            }
+    }
+
+    private fun setupCountSpinner() {
+        binding.spinnerCount.adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            redactorViewModel.getHabitCountList()
+        )
+
+        binding.spinnerCount.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    redactorViewModel.onNewCountSelected(position)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -180,6 +203,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
         binding.chooseColorButton.setBackgroundResource(habitColorMapper.getBackGroundResId(uiState.color))
         binding.spinnerPriority.setSelection(uiState.priority)
+        binding.spinnerCount.setSelection(uiState.count)
 
         if (uiState.type == 0) {
             binding.radioGood.isChecked = true

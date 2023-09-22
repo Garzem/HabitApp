@@ -31,7 +31,7 @@
     <string name="bad_habit">Вредная</string>
     <string name="good_habit">Полезная</string>
 
-    <string name="quantity_doing_habit">Частота выполнений</string>
+    <string name="frequency_doing_habit">Частота</string>
     <string name="execution_frequency">Периодичность выполнения</string>
 
     <string name="save">Сохранить</string>
@@ -77,6 +77,10 @@
     <string name="priority_low">Низкий</string>
     <string name="priority_medium">Средний</string>
     <string name="priority_high">Высокий</string>
+
+    <string name="count_week">Неделя</string>
+    <string name="count_month">Месяц</string>
+    <string name="count_year">Год</string>
 
     <string name="find_habit_by_name_string">Поиск по названию</string>
     <string name="find_habit_by_priority_string">Поиск по приоритету</string>

@@ -92,37 +92,39 @@
                 android:layout_marginTop="@dimen/normal_margin"
                 android:layout_marginEnd="@dimen/small_margin"
                 android:background="@drawable/stroke"
-                android:hint="@string/quantity_doing_habit"
+                android:hint="@string/frequency_doing_habit"
                 android:inputType="number"
                 android:padding="@dimen/large_margin"
-                app:layout_constraintEnd_toStartOf="@+id/spinner_priority"
+                app:layout_constraintEnd_toStartOf="@+id/spinner_count"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edit_description" />
+                app:layout_constraintTop_toBottomOf="@+id/edit_description"
+                app:layout_constraintBottom_toTopOf="@+id/spinner_priority"/>
 
-            <!--добавить id через _ -->
             <Spinner
-                android:id="@+id/spinner_priority"
-                android:layout_width="120dp"
-                android:layout_height="0dp"
+                android:id="@+id/spinner_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/normal_margin"
                 android:layout_marginEnd="@dimen/small_margin"
                 android:layout_marginBottom="@dimen/normal_margin"
                 android:background="@drawable/stroke"
-                app:layout_constraintBottom_toTopOf="@+id/edit_period"
+                android:padding="@dimen/large_margin"
+                app:layout_constraintBottom_toTopOf="@+id/spinner_priority"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edit_description" />
+                app:layout_constraintTop_toBottomOf="@+id/edit_description"
+                app:layout_constraintStart_toEndOf="@+id/edit_frequency"/>
 
-            <EditText
-                android:id="@+id/edit_period"
+            <!--добавить id через _ -->
+            <Spinner
+                android:id="@+id/spinner_priority"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/small_margin"
                 android:layout_marginTop="@dimen/normal_margin"
-                android:layout_marginEnd="@dimen/normal_margin"
-                android:background="@drawable/stroke"
-                android:hint="Период выполнения"
-                android:inputType="number"
+                android:layout_marginEnd="@dimen/small_margin"
+                android:layout_marginStart="@dimen/small_margin"
+                android:layout_marginBottom="@dimen/normal_margin"
                 android:padding="@dimen/large_margin"
+                android:background="@drawable/stroke"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edit_frequency" />
@@ -139,7 +141,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/radio_type"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edit_period"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_priority"
                 app:layout_constraintVertical_bias="0" />
 
             <TextView

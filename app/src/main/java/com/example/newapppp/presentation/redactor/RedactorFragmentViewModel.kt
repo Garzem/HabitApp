@@ -8,9 +8,11 @@ import com.example.newapppp.domain.model.HabitPriority
 import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.domain.model.HabitSave
 import com.example.newapppp.domain.model.Habit
+import com.example.newapppp.domain.model.HabitCount
 import com.example.newapppp.presentation.redactor.state.UiState
 import com.example.newapppp.domain.usecase.DeleteHabitUseCase
 import com.example.newapppp.domain.usecase.GetHabitPriorityListUseCase
+import com.example.newapppp.domain.usecase.habit_list.GetHabitCountListUseCase
 import com.example.newapppp.domain.usecase.redactor.GetHabitByIdUseCase
 import com.example.newapppp.domain.usecase.redactor.SaveOrUpdateHabitUseCase
 import com.example.newapppp.presentation.util.SingleLiveEvent
@@ -26,6 +28,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RedactorFragmentViewModel @Inject constructor(
     private val getHabitPriorityListUseCase: GetHabitPriorityListUseCase,
+    private val getHabitCountListUseCase: GetHabitCountListUseCase,
     private val saveOrUpdateHabitUseCase: SaveOrUpdateHabitUseCase,
     private val getHabitByIdUseCase: GetHabitByIdUseCase,
     private val deleteHabitUseCase: DeleteHabitUseCase
@@ -44,6 +47,7 @@ class RedactorFragmentViewModel @Inject constructor(
             type = 0,
             frequency = "",
             frequencyCursorPosition = 0,
+            count = 0,
             doneDates = emptyList()
         )
     )
@@ -74,6 +78,7 @@ class RedactorFragmentViewModel @Inject constructor(
                     type = HabitType.values().indexOf(habit.type),
                     frequency = habit.frequency.toString(),
                     frequencyCursorPosition = 0,
+                    count = HabitCount.values().indexOf(habit.count),
                     doneDates = habit.doneDates
                 )
             }
@@ -125,15 +130,25 @@ class RedactorFragmentViewModel @Inject constructor(
         }
     }
 
+    fun getHabitPriorityList(): List<String> {
+        return getHabitPriorityListUseCase()
+    }
+
+
     fun onNewPrioritySelected(priorityPosition: Int) {
         _uiState.update { state ->
             state.copy(priority = priorityPosition)
         }
     }
 
+    fun getHabitCountList(): List<String> {
+        return getHabitCountListUseCase()
+    }
 
-    fun getList(): List<String> {
-        return getHabitPriorityListUseCase()
+    fun onNewCountSelected(countPosition: Int) {
+        _uiState.update { state ->
+            state.copy(count = countPosition)
+        }
     }
 
     fun deleteHabit() {
@@ -150,6 +165,8 @@ class RedactorFragmentViewModel @Inject constructor(
                         ?: HabitPriority.CHOOSE,
                     title = it.title,
                     type = HabitType.values().getOrNull(it.type) ?: HabitType.GOOD,
+                    count = HabitCount.values().getOrNull(it.count)
+                        ?: HabitCount.WEEK,
                     doneDates = it.doneDates
                 )
                 deleteHabitUseCase(habit)
@@ -172,6 +189,8 @@ class RedactorFragmentViewModel @Inject constructor(
                         ?: HabitPriority.CHOOSE,
                     title = uiState.title,
                     type = HabitType.values().getOrNull(uiState.type) ?: HabitType.GOOD,
+                    count = HabitCount.values().getOrNull(uiState.count)
+                        ?: HabitCount.WEEK,
                     doneDates = uiState.doneDates
                 )
                 saveOrUpdateHabitUseCase(saveHabit, habitId)
