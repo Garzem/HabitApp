@@ -6,6 +6,7 @@ import com.example.newapppp.data.remote.modul.GetHabitJson
 import com.example.newapppp.data.remote.modul.PostHabitJson
 import com.example.newapppp.domain.model.HabitSave
 import com.example.newapppp.data.remote.modul.PutHabitJson
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 
 
@@ -13,7 +14,7 @@ interface HabitRepository {
 
     fun getHabitListFlow(): Flow<List<Habit>>
 
-    suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?)
+    suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?): Job
 
     suspend fun deleteHabit(habit: Habit)
 
@@ -27,7 +28,7 @@ interface HabitRepository {
 
     suspend fun getHabitById(habitId: String): Habit
 
-    suspend fun saveOrUpdateSelectedDates(habit: Habit)
+    suspend fun saveOrUpdateSelectedDates(habit: Habit): Job
 
     suspend fun postOfflineHabit()
 
@@ -35,11 +36,10 @@ interface HabitRepository {
 
     fun toHabitJson(habit: HabitEntity): PutHabitJson
 
-    fun toHabitEntity(habit: HabitSave, habitId: String?): HabitEntity
-
     fun toHabitEntity(habit: GetHabitJson): HabitEntity
 
     fun toHabitEntity(habit: Habit): HabitEntity
 
     fun toHabit(habitEntity: HabitEntity): Habit
+    fun toHabitEntity(habit: HabitSave, habitId: String?): HabitEntity
 }

@@ -16,10 +16,13 @@ import com.example.newapppp.domain.model.HabitCount
 import com.example.newapppp.domain.model.HabitPriority
 import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.domain.repository.HabitRepository
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.UUID
 import javax.inject.Inject
 
@@ -35,33 +38,66 @@ class HabitRepositoryImpl @Inject constructor(
             habitEntityList.map(::toHabit)
         }
     }
-
-    override suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?) {
-        val habitEntity = toHabitEntity(habitSave, habitId)
-        habitDao.upsertHabit(habitEntity)
-    }
+    override suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?) =
+        coroutineScope {
+            val habitEntity = toHabitEntity(habitSave, habitId)
+            launch(IO) {
+                habitDao.upsertHabit(habitEntity)
+            }
+            launch(IO) {
+                val habitUidJson = api.putHabit(TOKEN, toHabitJson(habitSave))
+                val habitEntityWithUid = habitEntity.copy(uid = habitUidJson.uid)
+                habitDao.upsertHabit(habitEntityWithUid)
+            }
+        }
 
     override suspend fun deleteHabit(habit: Habit) {
-        if (habit.uid == null) {
-            habitDao.deleteHabitById(habit.id)
-        } else {
-            val habitDeleted = toHabitEntity(habit).copy(deleted = true)
-            habitDao.upsertHabit(habitDeleted)
+        withContext(IO) {
+            if (habit.uid == null) {
+                habitDao.deleteHabitById(habit.id)
+            } else {
+                val habitDeleted = toHabitEntity(habit).copy(deleted = true)
+                habitDao.upsertHabit(habitDeleted)
+            }
+            val deletedHabitList = habitDao.getAllDeletedHabits()
+            deletedHabitList.forEach { habit ->
+                habit.uid?.let { api.deleteHabit(TOKEN, DeleteHabitJson(habit.uid)) }
+                habitDao.deleteHabitById(habit.id)
+            }
         }
     }
 
 
     override suspend fun deleteAllHabits() {
-        val habitListFlow = habitDao.getAllHabits()
-        habitListFlow.forEach { habitEntity ->
-            if (habitEntity.uid == null) {
-                habitDao.deleteHabitById(habitEntity.id)
-            } else {
-                val habitDeleted = habitEntity.copy(deleted = true)
-                habitDao.upsertHabit(habitDeleted)
+        withContext(IO) {
+            val habitListFlow = habitDao.getAllHabits()
+            habitListFlow.forEach { habitEntity ->
+                if (habitEntity.uid == null) {
+                    habitDao.deleteHabitById(habitEntity.id)
+                } else {
+                    val habitDeleted = habitEntity.copy(deleted = true)
+                    habitDao.upsertHabit(habitDeleted)
+                }
+            }
+            val deletedHabitList = habitDao.getAllDeletedHabits()
+            deletedHabitList.forEach { habit ->
+                habit.uid?.let { api.deleteHabit(TOKEN, DeleteHabitJson(habit.uid)) }
+                habitDao.deleteHabitById(habit.id)
             }
         }
     }
+
+    override suspend fun saveOrUpdateSelectedDates(habit: Habit) =
+        coroutineScope {
+            launch {
+                habitDao.upsertHabit(toHabitEntity(habit))
+            }
+            launch {
+                habit.uid?.let {
+                    api.postHabit(TOKEN, PostHabitJson(habit.doneDates.last(), habit.uid))
+                }
+            }
+        }
 
     override suspend fun fetchHabitList() = coroutineScope {
         val habitJsonListResponseAsync =
@@ -130,9 +166,6 @@ class HabitRepositoryImpl @Inject constructor(
         return toHabit(habitDao.getHabitById(habitId))
     }
 
-    override suspend fun saveOrUpdateSelectedDates(habit: Habit) {
-        habitDao.upsertHabit(toHabitEntity(habit))
-    }
 
     override suspend fun postOfflineHabit() {
         val habitList = habitDao.getAllHabits()
@@ -140,21 +173,23 @@ class HabitRepositoryImpl @Inject constructor(
             api.getHabitList(TOKEN)
         }
         if (getHabitJsonList != null) {
-            val habitListToPost = habitList.filter { habitEntity ->
+            habitList.flatMap { habitEntity ->
                 val habitJson = getHabitJsonList.find { it.uid == habitEntity.uid }
-                return@filter (habitJson != null && habitEntity.doneDates.isNotEmpty()
-                        && habitEntity.doneDates.last() != habitJson.doneDates.lastOrNull())
-            }
-            val postHabitJsonList = habitListToPost.map { habitEntity ->
-                val lastDoneDate = habitEntity.doneDates.last()
-                PostHabitJson(
-                    doneDate = lastDoneDate,
-                    uid = habitEntity.uid ?: return
-                )
-            }
-            postHabitJsonList.forEach { postHabitJson ->
+                if (habitJson != null) {
+                    habitEntity.doneDates.filter { localDoneDate ->
+                        !habitJson.doneDates.contains(localDoneDate)
+                    }.map { doneDate ->
+                        PostHabitJson(
+                            doneDate = doneDate,
+                            uid = habitEntity.uid ?: return
+                        )
+                    }
+                } else {
+                    emptyList()
+                }
+            }.forEach {
                 networkRetry.commonRetrying(null) {
-                    api.postHabit(TOKEN, postHabitJson)
+                    api.postHabit(TOKEN, it)
                 }
             }
         }

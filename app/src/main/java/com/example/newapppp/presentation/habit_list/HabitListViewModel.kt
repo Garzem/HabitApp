@@ -11,8 +11,6 @@ import com.example.newapppp.domain.usecase.habit_list.GetHabitListUseCase
 import com.example.newapppp.domain.usecase.redactor.GetHabitByIdUseCase
 import com.example.newapppp.presentation.habit_list.state.HabitState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +18,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -68,19 +65,19 @@ class HabitListViewModel @Inject constructor(
     fun saveDoneDatesForHabit(habitId: String, newDoneDate: Long) {
         viewModelScope.launch {
             val habit = getHabitByIdUseCase(habitId)
-            val updatedDoneDates = if (habit.doneDates.isNotEmpty()) {
-                if (habit.doneDates.last() != newDoneDate) {
-                    habit.doneDates.toMutableList().apply {
-                        add(newDoneDate)
-                    }
-                } else {
-                    habit.doneDates
-                }
-            } else {
-                listOf(newDoneDate)
-            }
+//            val updatedDoneDates = if (habit.doneDates.isNotEmpty()) {
+//                if (habit.doneDates.last() != newDoneDate) {
+//                    habit.doneDates.toMutableList().apply {
+//                        add(newDoneDate)
+//                    }
+//                } else {
+//                    habit.doneDates
+//                }
+//            } else {
+//                listOf(newDoneDate)
+//            }
             val updatedHabit = habit.copy(
-                doneDates = updatedDoneDates
+                doneDates = habit.doneDates + newDoneDate
             )
             saveOrUpdateSelectedDatesUseCase(updatedHabit)
         }

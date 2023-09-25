@@ -2,7 +2,7 @@ package com.example.newapppp.data.remote
 
 import com.example.newapppp.data.remote.modul.DeleteHabitJson
 import com.example.newapppp.data.remote.modul.GetHabitJson
-import com.example.newapppp.data.remote.modul.HabitIdJson
+import com.example.newapppp.data.remote.modul.HabitUidJson
 import com.example.newapppp.data.remote.modul.PostHabitJson
 import com.example.newapppp.data.remote.modul.PutHabitJson
 import retrofit2.http.Body
@@ -23,12 +23,12 @@ interface HabitApi {
     suspend fun putHabit(
         @Header("Authorization") token: String,
         @Body putHabitJson: PutHabitJson
-    ) : HabitIdJson
+    ) : HabitUidJson
 
     @HTTP(method = "DELETE", path = "/api/habit", hasBody = true)
     suspend fun deleteHabit(
         @Header("Authorization") token: String,
-        @Body id: DeleteHabitJson
+        @Body uid: DeleteHabitJson
     )
 
     @POST("/api/habit_done")

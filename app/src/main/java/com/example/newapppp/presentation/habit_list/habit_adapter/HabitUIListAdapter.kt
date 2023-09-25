@@ -1,7 +1,9 @@
 package com.example.newapppp.presentation.habit_list.habit_adapter
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.ListAdapter
 import com.example.newapppp.databinding.ItemLayoutBinding
 import com.example.newapppp.domain.model.HabitUI
@@ -33,6 +35,7 @@ class HabitUIListAdapter @Inject constructor() : ListAdapter<HabitUI, HabitUIVie
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: HabitUIViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
