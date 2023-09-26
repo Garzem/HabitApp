@@ -42,6 +42,11 @@
     <string name="color_choose_text">Выберите цвет</string>
 
     <string name="fill_the_line">Пожалуйста, заполните все поля и выберете значения</string>
+    <string name="times_left_for_bad_habit">Можете выполнить еще %1$d раз</string>
+    <string name="stop_doing_it">Хватит это делать</string>
+    <string name="times_left_for_good_habit">Стоит выполнить еще %1$d раз</string>
+    <string name="you_are_breathtaking">You are breathtaking!</string>
+    <string name="something_went_wrong">Something went wrong</string>
     <string name="delete_problem">
         Не удалось удалить привычку. Возникли проблемы с подключением к Интернету</string>
     <string name="delete_error">Произошла ошибка при попытке удаления. Пожалуйста попробуйте позже</string>
@@ -78,12 +83,21 @@
     <string name="priority_medium">Средний</string>
     <string name="priority_high">Высокий</string>
 
+    <string name="count_choose">Выберите период</string>
     <string name="count_week">Неделя</string>
     <string name="count_month">Месяц</string>
     <string name="count_year">Год</string>
 
+    <string name="count_choose_ui">выберите период</string>
+    <string name="count_week_ui">неделю</string>
+    <string name="count_month_ui">месяц</string>
+    <string name="count_year_ui">год</string>
+
     <string name="find_habit_by_name_string">Поиск по названию</string>
     <string name="find_habit_by_priority_string">Поиск по приоритету</string>
+
+    <string name="done_dates_adapter">Выполнено дней: %1$d</string>
+    <string name="performance_standard_adapter">%1$d раз(а) в %2$s</string>
 
     <string name="filter_button_string">Фильтровать</string>
     <string name="cancel_filter_button">Отменить</string>
@@ -91,4 +105,5 @@
     <string name="edit_string">Редактировать</string>
     <string name="mark_day_string">Отметить день</string>
     <string name="choose_the_date_string">Выберите дату</string>
+    <string name="checkmark_string">галка</string>
 </resources>

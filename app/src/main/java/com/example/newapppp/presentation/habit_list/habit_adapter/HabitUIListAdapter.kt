@@ -1,5 +1,6 @@
 package com.example.newapppp.presentation.habit_list.habit_adapter
 
+import android.content.Context
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,16 +9,24 @@ import androidx.recyclerview.widget.ListAdapter
 import com.example.newapppp.databinding.ItemLayoutBinding
 import com.example.newapppp.domain.model.HabitUI
 import com.example.newapppp.presentation.habit_list.HabitColorMapper
+import com.example.newapppp.presentation.habit_list.HabitCountMapperAdapter
 import com.example.newapppp.presentation.habit_list.HabitPriorityMapper
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class HabitUIListAdapter @Inject constructor() : ListAdapter<HabitUI, HabitUIViewHolder>(HabitDiffUtilCallback()) {
+class HabitUIListAdapter @Inject constructor(
+    @ApplicationContext private val context: Context)
+    : ListAdapter<HabitUI, HabitUIViewHolder>(HabitDiffUtilCallback()) {
 
     @Inject
     lateinit var habitPriorityMapper: HabitPriorityMapper
 
     @Inject
     lateinit var habitColorMapper: HabitColorMapper
+
+    @Inject
+    lateinit var habitCountMapperAdapter: HabitCountMapperAdapter
+
 
     var openHabitClick: (String) -> Unit = {}
 
@@ -31,7 +40,9 @@ class HabitUIListAdapter @Inject constructor() : ListAdapter<HabitUI, HabitUIVie
             openHabitClick = openHabitClick,
             openDoneDatesDialog = openDoneDatesDialog,
             habitPriorityMapper = habitPriorityMapper,
-            habitColorMapper = habitColorMapper
+            habitCountMapperAdapter = habitCountMapperAdapter,
+            habitColorMapper = habitColorMapper,
+            context = context
         )
     }
 

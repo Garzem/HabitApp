@@ -3,6 +3,7 @@ package com.example.newapppp.presentation.habit_list
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -24,7 +25,6 @@ import com.example.newapppp.presentation.home.HomeFragmentDirections
 import com.example.newapppp.presentation.util.HabitUIConverter
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
-import java.time.ZoneOffset
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -46,7 +46,6 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         arguments?.serializable(HABIT_TYPE_KEY, HabitType::class.java)
     }
 
-
     @Inject
     lateinit var adapter: HabitUIListAdapter
 
@@ -58,7 +57,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         adapter.openHabitClick = ::openHabitClick
-        adapter.openDoneDatesDialog = ::openDoneDatesDialog
+        adapter.openDoneDatesDialog = ::markDoneDay
         binding.recycleViewHabit.adapter = adapter
 
         habitType?.let {
@@ -79,6 +78,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
             }
         }
         filterObserver()
+        observeProcessCheck()
         swipeToDelete()
     }
 
@@ -88,8 +88,8 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun openDoneDatesDialog(habitId: String) {
-        val selectedDate = LocalDate.now().atStartOfDay().toEpochSecond(ZoneOffset.UTC)
+    private fun markDoneDay(habitId: String) {
+        val selectedDate = LocalDate.now().toEpochDay()
         habitViewModel.saveDoneDatesForHabit(habitId, selectedDate)
     }
 
@@ -98,6 +98,48 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
             (requireParentFragment() as HomeFragment).setupFilterBadge(
                 state is HabitState.Success && state.filter.isFilterApplied
             )
+        }
+    }
+
+    private fun observeProcessCheck() {
+        habitViewModel.apply {
+            timesLeftForBadHabit.observe(viewLifecycleOwner) { remainingExecutions ->
+                val message = getString(R.string.times_left_for_bad_habit, remainingExecutions)
+                Toast.makeText(
+                    requireContext(),
+                    message,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            stopDoingBadHabit.observe(viewLifecycleOwner) {
+                Toast.makeText(
+                    requireContext(),
+                    R.string.stop_doing_it,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            timesLeftForGoodHabit.observe(viewLifecycleOwner) { remainingExecutions ->
+                val message = getString(R.string.times_left_for_good_habit, remainingExecutions)
+                Toast.makeText(
+                    requireContext(),
+                    message,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            metOrExceededGoodHabit.observe(viewLifecycleOwner) {
+                Toast.makeText(
+                    requireContext(),
+                    R.string.you_are_breathtaking,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            showError.observe(viewLifecycleOwner) {
+                Toast.makeText(
+                    requireContext(),
+                    R.string.something_went_wrong,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 

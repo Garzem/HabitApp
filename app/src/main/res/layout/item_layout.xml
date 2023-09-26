@@ -38,12 +38,11 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/frequency"
+        android:id="@+id/performance_standard"
         app:layout_constraintTop_toTopOf="@+id/color_main"
         app:layout_constraintEnd_toEndOf="@+id/color_main"
         app:layout_constraintBottom_toBottomOf="@id/color_main"
         android:layout_marginEnd="@dimen/large_margin"
-        android:text="@string/something"
         android:textColor="@color/colorGreyDark"
         android:textSize="@dimen/text_size"
         android:layout_width="wrap_content"
@@ -121,6 +120,7 @@
         app:layout_constraintTop_toBottomOf="@id/color_support"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/edit_habit_button"
-        app:layout_constraintBottom_toBottomOf="@+id/edit_habit_button"/>
+        app:layout_constraintBottom_toBottomOf="@+id/edit_habit_button"
+        android:contentDescription="@string/checkmark_string" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

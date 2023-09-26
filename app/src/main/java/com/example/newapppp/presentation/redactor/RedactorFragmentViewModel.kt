@@ -47,7 +47,7 @@ class RedactorFragmentViewModel @Inject constructor(
             type = 0,
             frequency = "",
             frequencyCursorPosition = 0,
-            count = 0,
+            count = 3,
             doneDates = emptyList()
         )
     )
@@ -207,7 +207,8 @@ class RedactorFragmentViewModel @Inject constructor(
                 title.isNotBlank()
                         && description.isNotBlank()
                         && priority != HabitPriority.CHOOSE.ordinal
-                        && frequency != ""
+                        && frequency.isNotBlank() && frequency != "0"
+                        && count != HabitCount.CHOOSE.ordinal
             }
         }
     }
