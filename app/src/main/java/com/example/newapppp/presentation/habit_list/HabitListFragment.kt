@@ -1,10 +1,8 @@
 package com.example.newapppp.presentation.habit_list
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -24,7 +22,6 @@ import com.example.newapppp.presentation.home.HomeFragment
 import com.example.newapppp.presentation.home.HomeFragmentDirections
 import com.example.newapppp.presentation.util.HabitUIConverter
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDate
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -52,7 +49,6 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
     @Inject
     lateinit var habitUIConverter: HabitUIConverter
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -87,10 +83,11 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         findNavController().navigate(action)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun markDoneDay(habitId: String) {
-        val selectedDate = LocalDate.now().toEpochDay()
-        habitViewModel.saveDoneDatesForHabit(habitId, selectedDate)
+        habitViewModel.apply {
+            val selectedDate = getCurrentDate()
+            saveDoneDatesForHabit(habitId, selectedDate)
+        }
     }
 
     private fun filterObserver() {
@@ -102,46 +99,49 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
     }
 
     private fun observeProcessCheck() {
-        habitViewModel.apply {
-            timesLeftForBadHabit.observe(viewLifecycleOwner) { remainingExecutions ->
-                val message = getString(R.string.times_left_for_bad_habit, remainingExecutions)
-                Toast.makeText(
-                    requireContext(),
-                    message,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            stopDoingBadHabit.observe(viewLifecycleOwner) {
-                Toast.makeText(
-                    requireContext(),
-                    R.string.stop_doing_it,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            timesLeftForGoodHabit.observe(viewLifecycleOwner) { remainingExecutions ->
-                val message = getString(R.string.times_left_for_good_habit, remainingExecutions)
-                Toast.makeText(
-                    requireContext(),
-                    message,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            metOrExceededGoodHabit.observe(viewLifecycleOwner) {
-                Toast.makeText(
-                    requireContext(),
-                    R.string.you_are_breathtaking,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            showError.observe(viewLifecycleOwner) {
-                Toast.makeText(
-                    requireContext(),
-                    R.string.something_went_wrong,
-                    Toast.LENGTH_SHORT
-                ).show()
+        habitViewModel.showMessage.observe(viewLifecycleOwner) { message ->
+            when (message) {
+                is Message.TimesLeftForBadHabit -> {
+                    val text = getString(R.string.times_left_for_bad_habit, message.count)
+                    Toast.makeText(
+                        requireContext(),
+                        text,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is Message.StopDoingBadHabit -> {
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.stop_doing_it,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is Message.TimesLeftForGoodHabit -> {
+                    val text = getString(R.string.times_left_for_good_habit, message.count)
+                    Toast.makeText(
+                        requireContext(),
+                        text,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is Message.MetOrExceededGoodHabit -> {
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.you_are_breathtaking,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is Message.Error -> {
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.something_went_wrong,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
+
 
     private fun swipeToDelete() {
         val itemTouchHelper = ItemTouchHelper(object : SwipeToDelete() {

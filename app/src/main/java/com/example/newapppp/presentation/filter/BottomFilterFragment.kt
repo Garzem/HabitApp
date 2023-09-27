@@ -11,7 +11,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.databinding.FilterBottomSheetBinding
 import com.example.newapppp.domain.model.HabitPriority
-import com.example.newapppp.presentation.habit_list.HabitPriorityMapper
+import com.example.newapppp.presentation.habit_list.mapper.HabitPriorityMapper
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

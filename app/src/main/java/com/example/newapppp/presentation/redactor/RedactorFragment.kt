@@ -18,7 +18,7 @@ import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.databinding.RedactorFragmentBinding
 import com.example.newapppp.domain.extension.collectWithLifecycle
-import com.example.newapppp.presentation.habit_list.HabitColorMapper
+import com.example.newapppp.presentation.habit_list.mapper.HabitColorMapper
 import com.example.newapppp.presentation.redactor.state.UiState
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

@@ -38,6 +38,7 @@ class HabitRepositoryImpl @Inject constructor(
             habitEntityList.map(::toHabit)
         }
     }
+
     override suspend fun saveOrUpdateHabit(habitSave: HabitSave, habitId: String?) =
         coroutineScope {
             val habitEntity = toHabitEntity(habitSave, habitId)
@@ -87,221 +88,228 @@ class HabitRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveOrUpdateSelectedDates(habit: Habit) =
-        coroutineScope {
+    override suspend fun updateHabitDates(habitId: String, date: Long): Habit {
+        return coroutineScope {
+            val habit = habitDao.getHabitById(habitId)
+            val updatedHabit = habit.copy(
+                doneDates = habit.doneDates + date
+            )
+
             launch {
-                habitDao.upsertHabit(toHabitEntity(habit))
+                habitDao.upsertHabit(updatedHabit)
             }
             launch {
-                habit.uid?.let {
-                    api.postHabit(TOKEN, PostHabitJson(habit.doneDates.last(), habit.uid))
+                habit.uid?.let { uid ->
+                    api.postHabit(TOKEN, PostHabitJson(date, uid))
                 }
             }
-        }
-
-    override suspend fun fetchHabitList() = coroutineScope {
-        val habitJsonListResponseAsync =
-            async {
-                networkRetry.commonRetrying(null) { api.getHabitList(TOKEN) }
-            }
-        val habitLocalListAsync = async {
-            habitDao.getAllHabits()
-        }
-        val habitJsonList = habitJsonListResponseAsync.await()
-        val habitEntityList = habitLocalListAsync.await()
-
-        if (!habitJsonList.isNullOrEmpty()) {
-            val notSavedHabitJsonList = habitJsonList.filter { getHabitJson ->
-                habitEntityList.none { habitEntity ->
-                    habitEntity.uid == getHabitJson.uid || !habitEntity.deleted
-                }
-            }
-            val notSavedHabitEntityList =
-                notSavedHabitJsonList.map(this@HabitRepositoryImpl::toHabitEntity)
-            habitDao.upsertHabitList(notSavedHabitEntityList)
+            toHabit(updatedHabit)
         }
     }
 
-    override suspend fun deleteOfflineDeletedHabits() {
-        val deletedOfflineHabitList = habitDao.getAllDeletedHabits()
-        deletedOfflineHabitList.forEach { deletedHabitEntity ->
-            val response = deletedHabitEntity.uid?.let {
-                networkRetry.commonRetrying(null) {
-                    api.deleteHabit(TOKEN, DeleteHabitJson(deletedHabitEntity.uid))
-                }
+override suspend fun fetchHabitList() = coroutineScope {
+    val habitJsonListResponseAsync =
+        async {
+            networkRetry.commonRetrying(null) { api.getHabitList(TOKEN) }
+        }
+    val habitLocalListAsync = async {
+        habitDao.getAllHabits()
+    }
+    val habitJsonList = habitJsonListResponseAsync.await()
+    val habitEntityList = habitLocalListAsync.await()
+
+    if (!habitJsonList.isNullOrEmpty()) {
+        val notSavedHabitJsonList = habitJsonList.filter { getHabitJson ->
+            habitEntityList.none { habitEntity ->
+                habitEntity.uid == getHabitJson.uid || !habitEntity.deleted
             }
-            if (response != null) {
-                habitDao.deleteHabitById(deletedHabitEntity.id)
+        }
+        val notSavedHabitEntityList =
+            notSavedHabitJsonList.map(this@HabitRepositoryImpl::toHabitEntity)
+        habitDao.upsertHabitList(notSavedHabitEntityList)
+    }
+}
+
+override suspend fun deleteOfflineDeletedHabits() {
+    val deletedOfflineHabitList = habitDao.getAllDeletedHabits()
+    deletedOfflineHabitList.forEach { deletedHabitEntity ->
+        val response = deletedHabitEntity.uid?.let {
+            networkRetry.commonRetrying(null) {
+                api.deleteHabit(TOKEN, DeleteHabitJson(deletedHabitEntity.uid))
+            }
+        }
+        if (response != null) {
+            habitDao.deleteHabitById(deletedHabitEntity.id)
+        }
+    }
+}
+
+override suspend fun putOfflineHabitList() {
+    val habitJsonList = networkRetry.commonRetrying(null) {
+        api.getHabitList(TOKEN)
+    }
+    if (habitJsonList != null) {
+        val localHabitEntityList = habitDao.getAllHabits()
+        val notSavedOfflineHabitListFlow = localHabitEntityList.filter { habitEntity ->
+            habitJsonList.none { getHabitJson ->
+                getHabitJson.uid == habitEntity.uid
+            }
+        }
+        notSavedOfflineHabitListFlow.forEach { habitEntity ->
+            val habitUid = networkRetry.commonRetrying(null) {
+                api.putHabit(TOKEN, toHabitJson(habitEntity))
+            }
+            if (habitUid != null) {
+                val habitEntityWithUid = habitEntity.copy(
+                    uid = habitUid.uid
+                )
+                habitDao.upsertHabit(habitEntityWithUid)
             }
         }
     }
+}
 
-    override suspend fun putOfflineHabitList() {
-        val habitJsonList = networkRetry.commonRetrying(null) {
-            api.getHabitList(TOKEN)
-        }
-        if (habitJsonList != null) {
-            val localHabitEntityList = habitDao.getAllHabits()
-            val notSavedOfflineHabitListFlow = localHabitEntityList.filter { habitEntity ->
-                habitJsonList.none { getHabitJson ->
-                    getHabitJson.uid == habitEntity.uid
-                }
-            }
-            notSavedOfflineHabitListFlow.forEach { habitEntity ->
-                val habitUid = networkRetry.commonRetrying(null) {
-                    api.putHabit(TOKEN, toHabitJson(habitEntity))
-                }
-                if (habitUid != null) {
-                    val habitEntityWithUid = habitEntity.copy(
-                        uid = habitUid.uid
+
+override suspend fun getHabitById(habitId: String): Habit {
+    return toHabit(habitDao.getHabitById(habitId))
+}
+
+
+override suspend fun postOfflineHabit() {
+    val habitList = habitDao.getAllHabits()
+    val getHabitJsonList = networkRetry.commonRetrying(null) {
+        api.getHabitList(TOKEN)
+    }
+    if (getHabitJsonList != null) {
+        habitList.flatMap { habitEntity ->
+            val habitJson = getHabitJsonList.find { it.uid == habitEntity.uid }
+            if (habitJson != null) {
+                habitEntity.doneDates.filter { localDoneDate ->
+                    !habitJson.doneDates.contains(localDoneDate)
+                }.map { doneDate ->
+                    PostHabitJson(
+                        doneDate = doneDate,
+                        uid = habitEntity.uid ?: return
                     )
-                    habitDao.upsertHabit(habitEntityWithUid)
                 }
+            } else {
+                emptyList()
+            }
+        }.forEach {
+            networkRetry.commonRetrying(null) {
+                api.postHabit(TOKEN, it)
             }
         }
     }
+}
 
 
-    override suspend fun getHabitById(habitId: String): Habit {
-        return toHabit(habitDao.getHabitById(habitId))
+override fun toHabitJson(saveHabit: HabitSave): PutHabitJson {
+    return with(saveHabit) {
+        PutHabitJson(
+            uid = null,
+            title = title,
+            description = description,
+            creationDate = creationDate,
+            color = HabitColor.values().indexOf(color),
+            priority = HabitPriority.values().indexOf(priority),
+            type = HabitType.values().indexOf(type),
+            frequency = frequency,
+            count = 0,
+            doneDates = doneDates
+        )
     }
+}
 
-
-    override suspend fun postOfflineHabit() {
-        val habitList = habitDao.getAllHabits()
-        val getHabitJsonList = networkRetry.commonRetrying(null) {
-            api.getHabitList(TOKEN)
-        }
-        if (getHabitJsonList != null) {
-            habitList.flatMap { habitEntity ->
-                val habitJson = getHabitJsonList.find { it.uid == habitEntity.uid }
-                if (habitJson != null) {
-                    habitEntity.doneDates.filter { localDoneDate ->
-                        !habitJson.doneDates.contains(localDoneDate)
-                    }.map { doneDate ->
-                        PostHabitJson(
-                            doneDate = doneDate,
-                            uid = habitEntity.uid ?: return
-                        )
-                    }
-                } else {
-                    emptyList()
-                }
-            }.forEach {
-                networkRetry.commonRetrying(null) {
-                    api.postHabit(TOKEN, it)
-                }
-            }
-        }
+override fun toHabitJson(habit: HabitEntity): PutHabitJson {
+    return with(habit) {
+        PutHabitJson(
+            uid = null,
+            title = title,
+            description = description,
+            creationDate = creationDate,
+            color = HabitColor.values().indexOf(color),
+            priority = HabitPriority.values().indexOf(priority),
+            type = HabitType.values().indexOf(type),
+            frequency = frequency,
+            count = 0,
+            doneDates = doneDates
+        )
     }
+}
 
-
-    override fun toHabitJson(saveHabit: HabitSave): PutHabitJson {
-        return with(saveHabit) {
-            PutHabitJson(
-                uid = null,
-                title = title,
-                description = description,
-                creationDate = creationDate,
-                color = HabitColor.values().indexOf(color),
-                priority = HabitPriority.values().indexOf(priority),
-                type = HabitType.values().indexOf(type),
-                frequency = frequency,
-                count = 0,
-                doneDates = doneDates
-            )
-        }
+override fun toHabitEntity(habit: HabitSave, habitId: String?): HabitEntity {
+    return with(habit) {
+        HabitEntity(
+            id = habitId ?: UUID.randomUUID().toString(),
+            uid = null,
+            title = title,
+            description = description,
+            creationDate = creationDate,
+            color = color,
+            priority = priority,
+            type = type,
+            frequency = frequency,
+            doneDates = doneDates,
+            count = count,
+            deleted = false
+        )
     }
+}
 
-    override fun toHabitJson(habit: HabitEntity): PutHabitJson {
-        return with(habit) {
-            PutHabitJson(
-                uid = null,
-                title = title,
-                description = description,
-                creationDate = creationDate,
-                color = HabitColor.values().indexOf(color),
-                priority = HabitPriority.values().indexOf(priority),
-                type = HabitType.values().indexOf(type),
-                frequency = frequency,
-                count = 0,
-                doneDates = doneDates
-            )
-        }
+override fun toHabitEntity(habit: GetHabitJson): HabitEntity {
+    return with(habit) {
+        HabitEntity(
+            id = UUID.randomUUID().toString(),
+            uid = uid,
+            title = title,
+            description = description,
+            creationDate = creationDate,
+            color = HabitColor.values()[color],
+            priority = HabitPriority.values()[priority],
+            type = HabitType.values()[type],
+            frequency = frequency,
+            doneDates = doneDates,
+            count = HabitCount.values()[count],
+            deleted = false
+        )
     }
+}
 
-    override fun toHabitEntity(habit: HabitSave, habitId: String?): HabitEntity {
-        return with(habit) {
-            HabitEntity(
-                id = habitId ?: UUID.randomUUID().toString(),
-                uid = null,
-                title = title,
-                description = description,
-                creationDate = creationDate,
-                color = color,
-                priority = priority,
-                type = type,
-                frequency = frequency,
-                doneDates = doneDates,
-                count = count,
-                deleted = false
-            )
-        }
+override fun toHabitEntity(habit: Habit): HabitEntity {
+    return with(habit) {
+        HabitEntity(
+            id = id,
+            uid = uid,
+            title = title,
+            description = description,
+            creationDate = creationDate,
+            color = color,
+            priority = priority,
+            type = type,
+            frequency = frequency,
+            doneDates = doneDates,
+            count = count,
+            deleted = false
+        )
     }
+}
 
-    override fun toHabitEntity(habit: GetHabitJson): HabitEntity {
-        return with(habit) {
-            HabitEntity(
-                id = UUID.randomUUID().toString(),
-                uid = uid,
-                title = title,
-                description = description,
-                creationDate = creationDate,
-                color = HabitColor.values()[color],
-                priority = HabitPriority.values()[priority],
-                type = HabitType.values()[type],
-                frequency = frequency,
-                doneDates = doneDates,
-                count = HabitCount.values()[count],
-                deleted = false
-            )
-        }
+override fun toHabit(habitEntity: HabitEntity): Habit {
+    return with(habitEntity) {
+        Habit(
+            id = id,
+            uid = uid,
+            title = title,
+            description = description,
+            creationDate = creationDate,
+            color = color,
+            priority = priority,
+            type = type,
+            frequency = frequency,
+            count = count,
+            doneDates = doneDates
+        )
     }
-
-    override fun toHabitEntity(habit: Habit): HabitEntity {
-        return with(habit) {
-            HabitEntity(
-                id = id,
-                uid = uid,
-                title = title,
-                description = description,
-                creationDate = creationDate,
-                color = color,
-                priority = priority,
-                type = type,
-                frequency = frequency,
-                doneDates = doneDates,
-                count = count,
-                deleted = false
-            )
-        }
-    }
-
-    override fun toHabit(habitEntity: HabitEntity): Habit {
-        return with(habitEntity) {
-            Habit(
-                id = id,
-                uid = uid,
-                title = title,
-                description = description,
-                creationDate = creationDate,
-                color = color,
-                priority = priority,
-                type = type,
-                frequency = frequency,
-                count = count,
-                doneDates = doneDates
-            )
-        }
-    }
+}
 }

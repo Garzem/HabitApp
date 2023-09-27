@@ -8,9 +8,9 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.ListAdapter
 import com.example.newapppp.databinding.ItemLayoutBinding
 import com.example.newapppp.domain.model.HabitUI
-import com.example.newapppp.presentation.habit_list.HabitColorMapper
-import com.example.newapppp.presentation.habit_list.HabitCountMapperAdapter
-import com.example.newapppp.presentation.habit_list.HabitPriorityMapper
+import com.example.newapppp.presentation.habit_list.mapper.HabitColorMapper
+import com.example.newapppp.presentation.habit_list.mapper.HabitCountMapper
+import com.example.newapppp.presentation.habit_list.mapper.HabitPriorityMapper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -25,7 +25,7 @@ class HabitUIListAdapter @Inject constructor(
     lateinit var habitColorMapper: HabitColorMapper
 
     @Inject
-    lateinit var habitCountMapperAdapter: HabitCountMapperAdapter
+    lateinit var habitCountMapper: HabitCountMapper
 
 
     var openHabitClick: (String) -> Unit = {}
@@ -40,13 +40,12 @@ class HabitUIListAdapter @Inject constructor(
             openHabitClick = openHabitClick,
             openDoneDatesDialog = openDoneDatesDialog,
             habitPriorityMapper = habitPriorityMapper,
-            habitCountMapperAdapter = habitCountMapperAdapter,
+            habitCountMapper = habitCountMapper,
             habitColorMapper = habitColorMapper,
             context = context
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: HabitUIViewHolder, position: Int) {
         holder.bind(getItem(position))
     }

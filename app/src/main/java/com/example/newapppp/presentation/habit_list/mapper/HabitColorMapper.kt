@@ -1,4 +1,4 @@
-package com.example.newapppp.presentation.habit_list
+package com.example.newapppp.presentation.habit_list.mapper
 
 import com.example.newapppp.R
 import com.example.newapppp.domain.model.HabitColor

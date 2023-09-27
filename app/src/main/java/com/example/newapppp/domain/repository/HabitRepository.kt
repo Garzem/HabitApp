@@ -3,7 +3,6 @@ package com.example.newapppp.domain.repository
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.data.database.habit_local.HabitEntity
 import com.example.newapppp.data.remote.modul.GetHabitJson
-import com.example.newapppp.data.remote.modul.PostHabitJson
 import com.example.newapppp.domain.model.HabitSave
 import com.example.newapppp.data.remote.modul.PutHabitJson
 import kotlinx.coroutines.Job
@@ -28,7 +27,7 @@ interface HabitRepository {
 
     suspend fun getHabitById(habitId: String): Habit
 
-    suspend fun saveOrUpdateSelectedDates(habit: Habit): Job
+    suspend fun updateHabitDates(habitId: String, date: Long): Habit
 
     suspend fun postOfflineHabit()
 

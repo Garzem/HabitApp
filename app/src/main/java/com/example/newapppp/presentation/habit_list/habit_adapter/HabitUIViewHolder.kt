@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.newapppp.R
 import com.example.newapppp.databinding.ItemLayoutBinding
 import com.example.newapppp.domain.model.HabitUI
-import com.example.newapppp.presentation.habit_list.HabitColorMapper
-import com.example.newapppp.presentation.habit_list.HabitCountMapperAdapter
-import com.example.newapppp.presentation.habit_list.HabitPriorityMapper
+import com.example.newapppp.presentation.habit_list.mapper.HabitColorMapper
+import com.example.newapppp.presentation.habit_list.mapper.HabitCountMapper
+import com.example.newapppp.presentation.habit_list.mapper.HabitPriorityMapper
 import java.time.LocalDate
 
 class HabitUIViewHolder(
@@ -19,14 +19,13 @@ class HabitUIViewHolder(
     private val openHabitClick: (String) -> Unit,
     private val openDoneDatesDialog: (String) -> Unit,
     private val habitPriorityMapper: HabitPriorityMapper,
-    private val habitCountMapperAdapter: HabitCountMapperAdapter,
+    private val habitCountMapper: HabitCountMapper,
     private val habitColorMapper: HabitColorMapper,
     private val context: Context
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var isButtonsVisible = false
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun bind(habit: HabitUI) {
         binding.apply {
             title.text = habit.title
@@ -36,8 +35,8 @@ class HabitUIViewHolder(
             colorSupport.setBackgroundResource(habitColorMapper.getBackGroundResId(habit.color))
             priority.text = habitPriorityMapper.getPriorityName(habit.priority)
             performanceStandard.text = context.getString(
-                R.string.performance_standard_adapter, habit.frequency, habitCountMapperAdapter
-                    .getCountName(habit.count))
+                R.string.performance_standard_adapter, habit.frequency, habitCountMapper
+                    .getCountNameHabitListFragment(habit.count))
             doneDatesCounter.text = context.getString(
                 R.string.done_dates_adapter, habit.doneDates.size)
 
@@ -52,7 +51,7 @@ class HabitUIViewHolder(
                 if (isButtonsVisible) {
                     editHabitButton.isVisible = true
                     if (habit.doneDates.isNotEmpty()) {
-                        if (habit.doneDates.last() != LocalDate.now().toEpochDay()) {
+                        if (!habit.doneDates.any { it == LocalDate.now().toEpochDay() }) {
                             openMarkDayButton.isVisible = true
                             openMarkDayButton.startAnimation(fadeInAnimation)
                         } else {
@@ -68,7 +67,7 @@ class HabitUIViewHolder(
                 } else {
                     editHabitButton.isVisible = false
                     if (habit.doneDates.isNotEmpty()) {
-                        if (habit.doneDates.last() != LocalDate.now().toEpochDay()) {
+                        if (!habit.doneDates.any { it == LocalDate.now().toEpochDay() }) {
                             openMarkDayButton.isVisible = false
                             openMarkDayButton.startAnimation(fadeOutAnimation)
                         } else {
