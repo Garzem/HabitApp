@@ -16,9 +16,9 @@ interface RepositoryModule {
 
     @Binds
     @Singleton
-    fun provideHabitRepository(impl: HabitRepositoryImpl): HabitRepository
+    fun provideHabitRepository(impl: com.example.newapppp.data.repository.HabitRepositoryImpl): HabitRepository
 
     @Binds
     @Singleton
-    fun provideFilterRepository(impl: FilterRepositoryImpl): FilterRepository
+    fun provideFilterRepository(impl: com.example.newapppp.data.repository.FilterRepositoryImpl): FilterRepository
 }

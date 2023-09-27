@@ -7,9 +7,7 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.databinding.HorizontalColorChooseDialogBinding
-import com.example.newapppp.domain.Constants
 import com.example.newapppp.domain.model.HabitColor
-
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,7 +24,7 @@ class ColorChooseDialog : DialogFragment(R.layout.horizontal_color_choose_dialog
                 findNavController().apply {
                     popBackStack()
                     val entry = currentBackStackEntry ?: return@apply
-                    entry.savedStateHandle[Constants.COLOR_KEY] = HabitColor.values()[i]
+                    entry.savedStateHandle[com.example.newapppp.domain.Constants.COLOR_KEY] = HabitColor.values()[i]
                 }
             }
         }

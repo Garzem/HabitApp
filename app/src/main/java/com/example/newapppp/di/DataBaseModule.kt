@@ -18,16 +18,16 @@ object DataBaseModule {
 
     @Provides
     @Singleton
-    fun provideHabitDao(database: HabitDataBase): HabitDao {
+    fun provideHabitDao(database: com.example.newapppp.data.database.HabitDataBase): com.example.newapppp.data.database.HabitDao {
         return database.habitDao()
     }
 
     @Provides
     @Singleton
-    fun provideDataBase(@ApplicationContext appContext: Context): HabitDataBase {
+    fun provideDataBase(@ApplicationContext appContext: Context): com.example.newapppp.data.database.HabitDataBase {
         return Room.databaseBuilder(
             appContext,
-            HabitDataBase::class.java, "database-habit"
+            com.example.newapppp.data.database.HabitDataBase::class.java, "database-habit"
         )
             .fallbackToDestructiveMigration()
             .build()

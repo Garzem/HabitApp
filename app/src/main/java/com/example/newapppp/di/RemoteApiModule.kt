@@ -1,7 +1,5 @@
 package com.example.newapppp.di
 
-import com.example.newapppp.data.remote.HabitApi
-import com.example.newapppp.domain.Constants
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -31,14 +29,14 @@ object RemoteApiModule {
 
     @Provides
     @Singleton
-    fun provideHabitApi(okHttpClient: OkHttpClient): HabitApi {
+    fun provideHabitApi(okHttpClient: OkHttpClient): com.example.newapppp.data.remote.HabitApi {
         val json = Json { ignoreUnknownKeys = true }
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(com.example.newapppp.domain.Constants.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
-            .create(HabitApi::class.java)
+            .create(com.example.newapppp.data.remote.HabitApi::class.java)
     }
 
 }

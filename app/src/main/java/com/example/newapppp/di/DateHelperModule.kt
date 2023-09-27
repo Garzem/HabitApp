@@ -14,5 +14,5 @@ interface DateHelperModule {
 
     @Binds
     @Singleton
-    fun provideDateHelper(impl: DateHelperImpl): DateHelper
+    fun provideDateHelper(impl: com.example.newapppp.data.DateHelperImpl): DateHelper
 }

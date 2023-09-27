@@ -5,22 +5,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newapppp.domain.model.Filter
 import com.example.newapppp.domain.model.HabitPriority
-import com.example.newapppp.data.repository.FilterRepositoryImpl
 import com.example.newapppp.domain.repository.FilterRepository
-import com.example.newapppp.domain.usecase.GetHabitPriorityListUseCase
+import com.example.newapppp.presentation.habit_list.mapper.HabitPriorityMapper
 import com.example.newapppp.presentation.util.SingleLiveEvent
 import com.example.newapppp.presentation.util.emit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class BottomFilterViewModel @Inject constructor(
-    private val getHabitPriorityListUseCase: GetHabitPriorityListUseCase,
+    private val habitPriorityMapper: HabitPriorityMapper,
     private val filterRepository: FilterRepository
 ): ViewModel() {
 
@@ -64,6 +61,8 @@ class BottomFilterViewModel @Inject constructor(
     }
 
     fun getList(): List<String> {
-        return getHabitPriorityListUseCase()
+        return HabitPriority.values().map {
+            habitPriorityMapper.getPriorityName(it)
+        }
     }
 }

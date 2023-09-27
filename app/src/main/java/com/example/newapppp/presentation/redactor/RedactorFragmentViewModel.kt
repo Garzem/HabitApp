@@ -3,18 +3,18 @@ package com.example.newapppp.presentation.redactor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newapppp.domain.model.HabitColor
-import com.example.newapppp.domain.model.HabitPriority
-import com.example.newapppp.domain.model.HabitType
-import com.example.newapppp.domain.model.HabitSave
 import com.example.newapppp.domain.model.Habit
+import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.domain.model.HabitCount
-import com.example.newapppp.presentation.redactor.state.UiState
+import com.example.newapppp.domain.model.HabitPriority
+import com.example.newapppp.domain.model.HabitSave
+import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.domain.usecase.DeleteHabitUseCase
-import com.example.newapppp.domain.usecase.GetHabitPriorityListUseCase
-import com.example.newapppp.domain.usecase.habit_list.GetHabitCountListUseCase
 import com.example.newapppp.domain.usecase.redactor.GetHabitByIdUseCase
 import com.example.newapppp.domain.usecase.redactor.SaveOrUpdateHabitUseCase
+import com.example.newapppp.presentation.habit_list.mapper.HabitCountMapper
+import com.example.newapppp.presentation.habit_list.mapper.HabitPriorityMapper
+import com.example.newapppp.presentation.redactor.state.UiState
 import com.example.newapppp.presentation.util.SingleLiveEvent
 import com.example.newapppp.presentation.util.emit
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,11 +27,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RedactorFragmentViewModel @Inject constructor(
-    private val getHabitPriorityListUseCase: GetHabitPriorityListUseCase,
-    private val getHabitCountListUseCase: GetHabitCountListUseCase,
     private val saveOrUpdateHabitUseCase: SaveOrUpdateHabitUseCase,
     private val getHabitByIdUseCase: GetHabitByIdUseCase,
-    private val deleteHabitUseCase: DeleteHabitUseCase
+    private val deleteHabitUseCase: DeleteHabitUseCase,
+    private val habitCountMapper: HabitCountMapper,
+    private val habitPriorityMapper: HabitPriorityMapper
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -131,7 +131,9 @@ class RedactorFragmentViewModel @Inject constructor(
     }
 
     fun getHabitPriorityList(): List<String> {
-        return getHabitPriorityListUseCase()
+        return HabitPriority.values().map {
+            habitPriorityMapper.getPriorityName(it)
+        }
     }
 
 
@@ -142,7 +144,9 @@ class RedactorFragmentViewModel @Inject constructor(
     }
 
     fun getHabitCountList(): List<String> {
-        return getHabitCountListUseCase()
+        return HabitCount.values().map {
+            habitCountMapper.getCountNameInRedactorFragment(it)
+        }
     }
 
     fun onNewCountSelected(countPosition: Int) {
