@@ -175,7 +175,7 @@ class HabitRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun postOfflineHabit() {
+    override suspend fun postOfflineHabitList() {
         val habitList = habitDao.getAllHabits()
         val getHabitJsonList = networkRetry.commonRetrying(null) {
             api.getHabitList(TOKEN)
@@ -204,8 +204,8 @@ class HabitRepositoryImpl @Inject constructor(
     }
 
 
-    private fun toHabitJson(saveHabit: HabitSave): PutHabitJson {
-        return with(saveHabit) {
+    private fun toHabitJson(habitSave: HabitSave): PutHabitJson {
+        return with(habitSave) {
             PutHabitJson(
                 uid = null,
                 title = title,

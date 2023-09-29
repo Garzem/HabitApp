@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class SaveOrUpdateHabitUseCase @Inject constructor(private val habitRepository: HabitRepository) {
 
-    suspend operator fun invoke(saveHabit: HabitSave, habitId: String?) {
-        habitRepository.saveOrUpdateHabit(saveHabit, habitId)
+    suspend operator fun invoke(habitSave: HabitSave, habitId: String?) {
+        habitRepository.saveOrUpdateHabit(habitSave, habitId)
     }
 }

@@ -184,7 +184,7 @@ class RedactorFragmentViewModel @Inject constructor(
         if (validation()) {
             viewModelScope.launch {
                 val habitId = uiState.id
-                val saveHabit = HabitSave(
+                val habitSave = HabitSave(
                     color = uiState.color,
                     creationDate = creationDate ?: System.currentTimeMillis(),
                     description = uiState.description,
@@ -197,7 +197,7 @@ class RedactorFragmentViewModel @Inject constructor(
                         ?: HabitCount.WEEK,
                     doneDates = uiState.doneDates
                 )
-                saveOrUpdateHabitUseCase(saveHabit, habitId)
+                saveOrUpdateHabitUseCase(habitSave, habitId)
                 _goBack.emit()
             }
         } else {

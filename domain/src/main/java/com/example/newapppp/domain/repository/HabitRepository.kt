@@ -26,5 +26,5 @@ interface HabitRepository {
 
     suspend fun updateHabitDates(habitId: String, date: Long): Habit
 
-    suspend fun postOfflineHabit()
+    suspend fun postOfflineHabitList()
 }
