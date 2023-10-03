@@ -22,6 +22,4 @@ class FilterRepositoryImpl @Inject constructor() : FilterRepository {
     override fun valueFilter(): Filter {
         return filterFlow.value
     }
-
-
 }

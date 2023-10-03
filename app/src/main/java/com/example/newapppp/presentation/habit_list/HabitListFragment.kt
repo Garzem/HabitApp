@@ -103,7 +103,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
         habitViewModel.showMessage.observe(viewLifecycleOwner) { message ->
             when (message) {
                 is Message.TimesLeftForBadHabit -> {
-                    val text = getString(R.string.times_left_for_bad_habit, message.count)
+                    val text = getString(R.string.times_left_for_bad_habit, message.remainingDays)
                     Toast.makeText(
                         requireContext(),
                         text,
@@ -118,7 +118,7 @@ class HabitListFragment : Fragment(R.layout.habit_list_fragment) {
                     ).show()
                 }
                 is Message.TimesLeftForGoodHabit -> {
-                    val text = getString(R.string.times_left_for_good_habit, message.count)
+                    val text = getString(R.string.times_left_for_good_habit, message.remainingDays)
                     Toast.makeText(
                         requireContext(),
                         text,

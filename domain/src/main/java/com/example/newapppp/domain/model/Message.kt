@@ -2,9 +2,9 @@ package com.example.newapppp.domain.model
 
 sealed interface Message {
 
-    class TimesLeftForBadHabit(val count: Int) : Message
+    data class TimesLeftForBadHabit(val remainingDays: Int) : Message
 
-    class TimesLeftForGoodHabit(val count: Int) : Message
+    data class TimesLeftForGoodHabit(val remainingDays: Int) : Message
 
     object StopDoingBadHabit : Message
 
