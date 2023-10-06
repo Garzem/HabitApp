@@ -12,16 +12,13 @@ import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
-import java.time.LocalDate
 
 internal class GetHabitUpdatedMessageUseCaseTest {
 
     private val dateHelper = mock<DateHelper>()
     private lateinit var getHabitUpdatedMessageUseCase: GetHabitUpdatedMessageUseCase
 
-    private val currentDate = LocalDate.of(2023, 9, 30).toEpochDay()
-    private val periodStart = LocalDate.of(2023, 9, 1).toEpochDay()
-
+    private val currentDate = 19630L // 30/9/2023
 
     @Before
     fun setUp() {
@@ -29,9 +26,15 @@ internal class GetHabitUpdatedMessageUseCaseTest {
     }
 
     @Test
-    fun `return message about remaining repetition amounts for bad habit`() {
+    fun `when doneDates less than frequency in count and type is bad then return message about remaining repetition amounts for bad habit`() {
         // Given
-        val habit = getMockHabit(HabitType.BAD, 2)
+        val habit = getMockHabit(
+            type = HabitType.BAD,
+            frequency = 2,
+            count = HabitCount.WEEK,
+            doneDates = listOf(19630L)
+            )
+        val periodStart = 19625L // 25/9/2023
         val expected = Message.TimesLeftForBadHabit(1)
         `when`(dateHelper.getStartDate(currentDate, habit.count)).thenReturn(periodStart)
 
@@ -43,9 +46,15 @@ internal class GetHabitUpdatedMessageUseCaseTest {
     }
 
     @Test
-    fun `return message about remaining repetition amounts for good habit`() {
+    fun `when doneDates less than frequency in count and type is good then return message about remaining repetition amounts for good habit`() {
         // Given
-        val habit = getMockHabit(HabitType.GOOD, 3)
+        val habit = getMockHabit(
+            type = HabitType.GOOD,
+            frequency = 3,
+            count = HabitCount.MONTH,
+            doneDates = listOf(19630L)
+        )
+        val periodStart = 19601L // 1/9/2023
         val expected = Message.TimesLeftForGoodHabit(2)
         `when`(dateHelper.getStartDate(currentDate, habit.count)).thenReturn(periodStart)
 
@@ -57,9 +66,15 @@ internal class GetHabitUpdatedMessageUseCaseTest {
     }
 
     @Test
-    fun `return message about completed bad habit`() {
+    fun `when frequency is equal to doneDates in count and type is bad then return message about completed bad habit`() {
         // Given
-        val habit = getMockHabit(HabitType.BAD, 1)
+        val habit = getMockHabit(
+            type = HabitType.BAD,
+            frequency = 1,
+            count = HabitCount.YEAR,
+            doneDates = listOf(19630L)
+        )
+        val periodStart = 19358L // 1/1/2023
         val expected = Message.StopDoingBadHabit
         `when`(dateHelper.getStartDate(currentDate, habit.count)).thenReturn(periodStart)
 
@@ -71,9 +86,15 @@ internal class GetHabitUpdatedMessageUseCaseTest {
     }
 
     @Test
-    fun `return message about completed good habit`() {
+    fun `when frequency is equal to doneDates in count and type is good then return message about completed good habit`() {
         // Given
-        val habit = getMockHabit(HabitType.GOOD, 1)
+        val habit = getMockHabit(
+            type = HabitType.GOOD,
+            frequency = 1,
+            count = HabitCount.WEEK,
+            doneDates = listOf(19630L)
+        )
+        val periodStart = 19625L // 25/9/2023
         val expected = Message.MetOrExceededGoodHabit
         `when`(dateHelper.getStartDate(currentDate, habit.count)).thenReturn(periodStart)
 
@@ -85,9 +106,15 @@ internal class GetHabitUpdatedMessageUseCaseTest {
     }
 
     @Test
-    fun `return error message`() {
+    fun `incorrect frequency should return error message`() {
         // Given
-        val habit = getMockHabit(HabitType.GOOD, -1)
+        val habit = getMockHabit(
+            type = HabitType.GOOD,
+            frequency = -1,
+            count = HabitCount.MONTH,
+            doneDates = listOf(19630L)
+        )
+        val periodStart = 19601L // 1/9/2023
         val expected = Message.Error
         `when`(dateHelper.getStartDate(currentDate, habit.count)).thenReturn(periodStart)
 
@@ -98,7 +125,12 @@ internal class GetHabitUpdatedMessageUseCaseTest {
         assertEquals(expected, actual)
     }
 
-    private fun getMockHabit(type: HabitType, frequency: Int): Habit {
+    private fun getMockHabit(
+        type: HabitType,
+        frequency: Int,
+        count: HabitCount,
+        doneDates: List<Long> = emptyList()
+    ): Habit {
         return Habit(
             id = "id",
             uid = "uid",
@@ -108,8 +140,8 @@ internal class GetHabitUpdatedMessageUseCaseTest {
             color = HabitColor.BLUE,
             priority = HabitPriority.HIGH,
             type = type,
-            doneDates = listOf(LocalDate.of(2023, 9, 10).toEpochDay()),
-            count = HabitCount.MONTH,
+            doneDates = doneDates,
+            count = count,
             frequency = frequency
         )
     }

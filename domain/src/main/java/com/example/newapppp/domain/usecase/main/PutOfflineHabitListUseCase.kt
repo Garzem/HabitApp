@@ -1,4 +1,4 @@
-package com.example.newapppp.domain.usecase.main_activity
+package com.example.newapppp.domain.usecase.main
 
 import com.example.newapppp.domain.repository.HabitRepository
 import javax.inject.Inject

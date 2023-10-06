@@ -1,4 +1,4 @@
-package com.example.newapppp.presentation.main_activity
+package com.example.newapppp.presentation.main
 
 import android.os.Bundle
 import android.widget.ImageView

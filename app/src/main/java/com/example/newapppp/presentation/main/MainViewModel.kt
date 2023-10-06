@@ -1,12 +1,12 @@
-package com.example.newapppp.presentation.main_activity
+package com.example.newapppp.presentation.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newapppp.domain.INetworkUtil
-import com.example.newapppp.domain.usecase.main_activity.FetchHabitListUseCase
-import com.example.newapppp.domain.usecase.main_activity.DeleteOfflineDeletedHabitsUseCase
-import com.example.newapppp.domain.usecase.main_activity.PostOfflineHabitListUseCase
-import com.example.newapppp.domain.usecase.main_activity.PutOfflineHabitListUseCase
+import com.example.newapppp.domain.usecase.main.FetchHabitListUseCase
+import com.example.newapppp.domain.usecase.main.DeleteOfflineDeletedHabitsUseCase
+import com.example.newapppp.domain.usecase.main.PostOfflineHabitListUseCase
+import com.example.newapppp.domain.usecase.main.PutOfflineHabitListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
