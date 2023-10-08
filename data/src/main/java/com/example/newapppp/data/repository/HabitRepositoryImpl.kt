@@ -1,5 +1,6 @@
 package com.example.newapppp.data.repository
 
+import com.example.newapppp.data.UuidGenerator
 import com.example.newapppp.data.database.HabitDao
 import com.example.newapppp.data.database.habit_local.HabitEntity
 import com.example.newapppp.data.remote.HabitApi
@@ -23,14 +24,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.UUID
 import javax.inject.Inject
 
 
 class HabitRepositoryImpl @Inject constructor(
     private val api: HabitApi,
     private val habitDao: HabitDao,
-    private val networkRetry: NetworkRetry
+    private val networkRetry: NetworkRetry,
+    private val uuidGenerator: UuidGenerator
 ) : HabitRepository {
 
     override fun getHabitListFlow(): Flow<List<Habit>> {
@@ -193,12 +194,12 @@ class HabitRepositoryImpl @Inject constructor(
 
 
     override suspend fun postOfflineHabitList() {
-        val habitList = habitDao.getAllHabits()
+        val habitEntityList = habitDao.getAllHabits()
         val getHabitJsonList = networkRetry.commonRetrying(null) {
             api.getHabitList(TOKEN)
         }
         if (getHabitJsonList != null) {
-            habitList.flatMap { habitEntity ->
+            habitEntityList.flatMap { habitEntity ->
                 val habitJson = getHabitJsonList.find { it.uid == habitEntity.uid }
                 if (habitJson != null) {
                     habitEntity.doneDates.filter { localDoneDate ->
@@ -206,7 +207,7 @@ class HabitRepositoryImpl @Inject constructor(
                     }.map { doneDate ->
                         PostHabitJson(
                             doneDate = doneDate,
-                            uid = habitEntity.uid ?: return
+                            uid = habitJson.uid
                         )
                     }
                 } else {
@@ -258,7 +259,7 @@ class HabitRepositoryImpl @Inject constructor(
     private fun toHabitEntity(habit: HabitSave, habitId: String?): HabitEntity {
         return with(habit) {
             HabitEntity(
-                id = habitId ?: UUID.randomUUID().toString(),
+                id = habitId ?: uuidGenerator.generateUuid(),
                 uid = null,
                 title = title,
                 description = description,
@@ -277,7 +278,7 @@ class HabitRepositoryImpl @Inject constructor(
     private fun toHabitEntity(habit: GetHabitJson): HabitEntity {
         return with(habit) {
             HabitEntity(
-                id = UUID.randomUUID().toString(),
+                id = uuidGenerator.generateUuid(),
                 uid = uid,
                 title = title,
                 description = description,

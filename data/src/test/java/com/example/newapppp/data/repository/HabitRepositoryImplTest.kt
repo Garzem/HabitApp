@@ -1,11 +1,15 @@
 package com.example.newapppp.data.repository
 
+import com.example.newapppp.data.UuidGenerator
 import com.example.newapppp.data.database.HabitDao
 import com.example.newapppp.data.database.habit_local.HabitEntity
 import com.example.newapppp.data.remote.HabitApi
 import com.example.newapppp.data.remote.NetworkRetry
+import com.example.newapppp.data.remote.model.DeleteHabitJson
 import com.example.newapppp.data.remote.model.GetHabitJson
 import com.example.newapppp.data.remote.model.HabitUidJson
+import com.example.newapppp.data.remote.model.PostHabitJson
+import com.example.newapppp.domain.Constants
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.domain.model.HabitCount
@@ -18,10 +22,12 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.mockito.Mockito.anyString
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
+import org.mockito.internal.junit.JUnitRule
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doAnswer
@@ -32,25 +38,19 @@ internal class HabitRepositoryImplTest {
 
     private val api = mock<HabitApi>()
     private val habitDao = mock<HabitDao>()
-    private val networkRetry = mock<NetworkRetry>()
+    private val networkRetry = NetworkRetry()
+    private val uuidGenerator = mock<UuidGenerator>()
 
     @Before
     fun setUp() {
-        habitRepository = HabitRepositoryImpl(api, habitDao, networkRetry)
+        habitRepository = HabitRepositoryImpl(api, habitDao, networkRetry, uuidGenerator)
     }
 
     @Test
-    fun `getHabitListFlow should get habitEntity from db, convert and return habit`() = runTest {
+    fun `getHabitListFlow should get habitEntity from db and return habit`() = runTest {
         // Given
-        val habitEntity = getMockHabitEntity(
-            uid = null,
-            deleted = false
-        )
-        val expected = listOf(
-            getMockHabit(
-                uid = null
-            )
-        )
+        val habitEntity = getMockHabitEntity(uid = null)
+        val expected = listOf(getMockHabit(uid = null))
         `when`(habitDao.getAllHabitsFlow()).thenReturn(flowOf(listOf(habitEntity)))
 
         //When
@@ -61,70 +61,54 @@ internal class HabitRepositoryImplTest {
     }
 
     @Test
-    fun `saveOrUpdateHabit should save habit to database, server and update UID`() = runTest {
+    fun `saveOrUpdateHabit should save habit to db and api with UID`() = runTest {
         // Given
         val habitId = getMockHabitId()
         val habitSave = getMockHabitSave()
-        val habitEntity = getMockHabitEntity(
-            uid = null,
-            deleted = false
-        )
-        val habitUidJson = getMockHabitUidJson(
-            uid = "uid"
-        )
+        val habitEntity = getMockHabitEntity(uid = null)
+        val habitUidJson = getMockHabitUidJson(uid = "uid")
         `when`(habitDao.upsertHabit(habitEntity)).thenReturn(Unit)
-        `when`(api.putHabit(any(), any())).thenReturn(habitUidJson)
+        `when`(api.putHabit(anyString(), any())).thenReturn(habitUidJson)
 
         //When
         habitRepository.saveOrUpdateHabit(habitSave, habitId)
 
         // Then
         verify(habitDao, times(1)).upsertHabit(habitEntity)
-        verify(api, times(1)).putHabit(any(), any())
+        verify(api, times(1)).putHabit(anyString(), any())
         verify(habitDao, times(1)).upsertHabit(
-            habitEntity.copy(
-                uid = habitUidJson.uid
-            )
+            habitEntity.copy(uid = habitUidJson.uid)
         )
     }
 
     @Test
-    fun `saveOrUpdateHabit should save habit to database and handle when there isn't internet connection`() =
+    fun `saveOrUpdateHabit should save habit to db only when internet`() =
         runTest {
             // Given
             val habitId = getMockHabitId()
             val habitSave = getMockHabitSave()
-            val habitEntity = getMockHabitEntity(
-                uid = null,
-                deleted = false
-            )
+            val habitEntity = getMockHabitEntity(uid = null)
             `when`(habitDao.upsertHabit(habitEntity)).thenReturn(Unit)
             doAnswer { throw Exception() }
-                .`when`(api)
-                .putHabit(any(), any())
+                .`when`(api).putHabit(anyString(), any())
 
             //When
             habitRepository.saveOrUpdateHabit(habitSave, habitId)
 
             // Then
             verify(habitDao, times(1)).upsertHabit(habitEntity)
-            verify(api).putHabit(any(), any())
+            verify(api).putHabit(anyString(), any())
         }
 
 
     @Test
-    fun `deleteHabit should mark habit as deleted because UID isn't null and delete all deleted habits from db and server`() =
+    fun `deleteHabit should delete habit from db and api`() =
         runTest {
             // Given
-            val habit = getMockHabit(
-                uid = "uid"
-            )
-            val habitEntityDeleted = getMockHabitEntity(
-                uid = "uid",
-                deleted = true
-            )
+            val habit = getMockHabit(uid = "uid")
+            val habitEntityDeleted = getMockHabitEntity(uid = "uid", deleted = true)
             `when`(habitDao.upsertHabit(habitEntityDeleted)).thenReturn(Unit)
-            `when`(api.deleteHabit(any(), any())).thenReturn(Unit)
+            `when`(api.deleteHabit(anyString(), any())).thenReturn(Unit)
             `when`(habitDao.deleteHabitById(habit.id)).thenReturn(Unit)
 
             // When
@@ -132,41 +116,33 @@ internal class HabitRepositoryImplTest {
 
             // Then
             verify(habitDao, times(1)).upsertHabit(habitEntityDeleted)
-            verify(api, times(1)).deleteHabit(any(), any())
+            verify(api, times(1)).deleteHabit(anyString(), any())
             verify(habitDao, times(1)).deleteHabitById(habit.id)
         }
 
     @Test
-    fun `deleteHabit should mark habit as deleted because UID isn't null, delete all deleted habits from db and handle when there isn't internet connection`() =
+    fun `deleteHabit should delete habit from db only when no internet`() =
         runTest {
             // Given
-            val habit = getMockHabit(
-                uid = "uid"
-            )
-            val habitEntityDeleted = getMockHabitEntity(
-                uid = "uid",
-                deleted = true
-            )
+            val habit = getMockHabit(uid = "uid")
+            val habitEntityDeleted = getMockHabitEntity(uid = "uid", deleted = true)
             `when`(habitDao.upsertHabit(habitEntityDeleted)).thenReturn(Unit)
             doAnswer { throw Exception() }
-                .`when`(api)
-                .deleteHabit(any(), any())
+                .`when`(api).deleteHabit(anyString(), any())
 
             // When
             habitRepository.deleteHabit(habit)
 
             // Then
             verify(habitDao, times(1)).upsertHabit(habitEntityDeleted)
-            verify(api, times(1)).deleteHabit(any(), any())
+            verify(api, times(1)).deleteHabit(anyString(), any())
         }
 
     @Test
-    fun `deleteHabit should delete habit without UID from db by ID`() =
+    fun `deleteHabit should delete habit without UID from db`() =
         runTest {
             // Given
-            val habit = getMockHabit(
-                uid = null
-            )
+            val habit = getMockHabit(uid = null)
             `when`(habitDao.deleteHabitById(habit.id)).thenReturn(Unit)
 
             // When
@@ -177,108 +153,104 @@ internal class HabitRepositoryImplTest {
         }
 
     @Test
-    fun `deleteAllHabits should mark habits as deleted because UIDs aren't null and delete all deleted habits from db and server`() =
+    fun `deleteAllHabits should delete all deleted habits from db and api`() =
         runTest {
             // Given
-            val habit = getMockHabit(
-                uid = "uid"
-            )
-            val habitEntity = getMockHabitEntity(
-                uid = "uid",
-                deleted = false
-            )
-            val habitEntityDeleted = getMockHabitEntity(
-                uid = "uid",
+            val habitEntity1 = getMockHabitEntity(id = "id1", uid = "uid1")
+            val habitEntity2 = getMockHabitEntity(id = "id2", uid = "uid2")
+            val habitEntityDeleted1 = getMockHabitEntity(
+                id = "id1",
+                uid = "uid1",
                 deleted = true
             )
-            `when`(habitDao.getAllHabits()).thenReturn(listOf(habitEntity, habitEntity))
-            `when`(habitDao.upsertHabit(habitEntityDeleted)).thenReturn(Unit)
-            `when`(api.deleteHabit(any(), any())).thenReturn(Unit)
-            `when`(habitDao.deleteHabitById(habit.id)).thenReturn(Unit)
+            val habitEntityDeleted2 = getMockHabitEntity(
+                id = "id2",
+                uid = "uid2",
+                deleted = true
+            )
+            `when`(habitDao.getAllHabits()).thenReturn(listOf(habitEntity1, habitEntity2))
+            `when`(habitDao.upsertHabit(habitEntityDeleted1)).thenReturn(Unit)
+            `when`(habitDao.upsertHabit(habitEntityDeleted2)).thenReturn(Unit)
+            `when`(api.deleteHabit(anyString(), any())).thenReturn(Unit)
+            `when`(habitDao.deleteHabitById(habitEntityDeleted1.id)).thenReturn(Unit)
+            `when`(habitDao.deleteHabitById(habitEntityDeleted2.id)).thenReturn(Unit)
 
             // When
             habitRepository.deleteAllHabits()
 
             // Then
             verify(habitDao, times(1)).getAllHabits()
-            verify(habitDao, times(2)).upsertHabit(habitEntityDeleted)
-            verify(api, times(2)).deleteHabit(any(), any())
-            verify(habitDao, times(2)).deleteHabitById(habit.id)
+            verify(habitDao, times(1)).upsertHabit(habitEntityDeleted1)
+            verify(habitDao, times(1)).upsertHabit(habitEntityDeleted2)
+            verify(api, times(2)).deleteHabit(anyString(), any())
+            verify(habitDao, times(1)).deleteHabitById(habitEntityDeleted1.id)
+            verify(habitDao, times(1)).deleteHabitById(habitEntityDeleted2.id)
         }
 
     @Test
-    fun `deleteAllHabits should mark habits as deleted because UIDs aren't null, delete all deleted habits from db and handle when there isn't internet connection`() =
+    fun `deleteAllHabits should delete all deleted habits from db only when no internet`() =
         runTest {
             // Given
-            val habitEntity = getMockHabitEntity(
-                uid = "uid",
-                deleted = false
-            )
-            val habitEntityDeleted = getMockHabitEntity(
-                uid = "uid",
+            val habitEntity1 = getMockHabitEntity(uid = "uid1")
+            val habitEntity2 = getMockHabitEntity(uid = "uid2")
+            val habitEntityDeleted1 = getMockHabitEntity(
+                uid = "uid1",
                 deleted = true
             )
-            `when`(habitDao.getAllHabits()).thenReturn(listOf(habitEntity, habitEntity))
-            `when`(habitDao.upsertHabit(habitEntityDeleted)).thenReturn(Unit)
+            `when`(habitDao.getAllHabits()).thenReturn(listOf(habitEntity1, habitEntity2))
+            `when`(habitDao.upsertHabit(habitEntityDeleted1)).thenReturn(Unit)
             doAnswer { throw Exception() }
-                .`when`(api)
-                .deleteHabit(any(), any())
+                .`when`(api).deleteHabit(anyString(), any())
 
             // When
             habitRepository.deleteAllHabits()
 
             // Then
             verify(habitDao, times(1)).getAllHabits()
-            verify(habitDao, times(1)).upsertHabit(habitEntityDeleted)
-            verify(api, times(1)).deleteHabit(any(), any())
+            verify(habitDao, times(1)).upsertHabit(habitEntityDeleted1)
+            verify(api, times(1)).deleteHabit(anyString(), any())
         }
 
     @Test
-    fun `deleteAllHabits should delete habits without UIDs from db by IDs`() =
+    fun `deleteAllHabits should delete habits without UIDs from db`() =
         runTest {
             // Given
-            val habit = getMockHabit(
+            val habitEntity1 = getMockHabitEntity(
+                id = "id1",
                 uid = null
             )
-            val habitEntity = getMockHabitEntity(
-                uid = null,
-                deleted = false
+            val habitEntity2 = getMockHabitEntity(
+                id = "id2",
+                uid = null
             )
-            `when`(habitDao.getAllHabits()).thenReturn(listOf(habitEntity, habitEntity))
-            `when`(habitDao.deleteHabitById(habit.id)).thenReturn(Unit)
+            `when`(habitDao.getAllHabits()).thenReturn(listOf(habitEntity1, habitEntity2))
+            `when`(habitDao.deleteHabitById(habitEntity1.id)).thenReturn(Unit)
+            `when`(habitDao.deleteHabitById(habitEntity2.id)).thenReturn(Unit)
 
             // When
             habitRepository.deleteAllHabits()
 
             // Then
             verify(habitDao, times(1)).getAllHabits()
-            verify(habitDao, times(2)).deleteHabitById(habit.id)
+            verify(habitDao, times(1)).deleteHabitById(habitEntity1.id)
+            verify(habitDao, times(1)).deleteHabitById(habitEntity2.id)
         }
 
 
     @Test
-    fun `updateHabitDates should update field doneDates in habit and save it in db and server`() =
+    fun `updateHabitDates should update habit doneDates in db and api`() =
         runTest {
             // Given
             val habitId = getMockHabitId()
-            val habitEntity = getMockHabitEntity(
-                uid = "uid",
-                deleted = false
-            )
+            val habitEntity = getMockHabitEntity(uid = "uid")
             val doneDate = 19615L // 15/9/2023
             val updatedHabitEntity =
-                habitEntity.copy(
-                    doneDates = habitEntity.doneDates + doneDate
-                )
-            val habit = getMockHabit(
-                uid = "uid"
-            )
-            val expected = habit.copy(
-                doneDates = habit.doneDates + doneDate
-            )
+                habitEntity.copy(doneDates = habitEntity.doneDates + doneDate)
+            val habit = getMockHabit(uid = "uid")
+            val expected = habit.copy(doneDates = habit.doneDates + doneDate)
             `when`(habitDao.getHabitById(habitId)).thenReturn(habitEntity)
             `when`(habitDao.upsertHabit(updatedHabitEntity)).thenReturn(Unit)
-            `when`(api.postHabit(any(), any())).thenReturn(Unit)
+            `when`(api.postHabit(anyString(), any())).thenReturn(Unit)
 
             // When
             val actual = habitRepository.updateHabitDates(habitId, doneDate)
@@ -286,35 +258,26 @@ internal class HabitRepositoryImplTest {
             // Then
             verify(habitDao, times(1)).getHabitById(habitId)
             verify(habitDao, times(1)).upsertHabit(updatedHabitEntity)
-            verify(api, times(1)).postHabit(any(), any())
+            verify(api, times(1)).postHabit(anyString(), any())
             assertEquals(expected, actual)
         }
 
     @Test
-    fun `updateHabitDates should update field doneDates in habit and save it in db and handle when there isn't internet connection`() =
+    fun `updateHabitDates should update habit doneDates in db only when no internet`() =
         runTest {
             // Given
             val habitId = getMockHabitId()
-            val habitEntity = getMockHabitEntity(
-                uid = "uid",
-                deleted = false
-            )
+            val habitEntity = getMockHabitEntity(uid = "uid")
             val doneDate = 19615L // 15/9/2023
             val updatedHabitEntity =
-                habitEntity.copy(
-                    doneDates = habitEntity.doneDates + doneDate
-                )
-            val habit = getMockHabit(
-                uid = "uid"
-            )
-            val expected = habit.copy(
-                doneDates = habit.doneDates + doneDate
-            )
+                habitEntity.copy(doneDates = habitEntity.doneDates + doneDate)
+            val habit = getMockHabit(uid = "uid")
+            val expected = habit.copy(doneDates = habit.doneDates + doneDate)
             `when`(habitDao.getHabitById(habitId)).thenReturn(habitEntity)
             `when`(habitDao.upsertHabit(updatedHabitEntity)).thenReturn(Unit)
             doAnswer { throw Exception() }
                 .`when`(api)
-                .postHabit(any(), any())
+                .postHabit(anyString(), any())
 
             // When
             val actual = habitRepository.updateHabitDates(habitId, doneDate)
@@ -322,30 +285,21 @@ internal class HabitRepositoryImplTest {
             // Then
             verify(habitDao, times(1)).getHabitById(habitId)
             verify(habitDao, times(1)).upsertHabit(updatedHabitEntity)
-            verify(api, times(1)).postHabit(any(), any())
+            verify(api, times(1)).postHabit(anyString(), any())
             assertEquals(expected, actual)
         }
 
     @Test
-    fun `updateHabitDates should update field doneDates in habit where UID is null and save it only in db`() =
+    fun `updateHabitDates should update habit doneDates in db only when UID is null`() =
         runTest {
             // Given
             val habitId = getMockHabitId()
-            val habitEntity = getMockHabitEntity(
-                uid = null,
-                deleted = false
-            )
+            val habitEntity = getMockHabitEntity(uid = null)
             val doneDate = 19615L // 15/9/2023
             val updatedHabitEntity =
-                habitEntity.copy(
-                    doneDates = habitEntity.doneDates + doneDate
-                )
-            val habit = getMockHabit(
-                uid = null
-            )
-            val expected = habit.copy(
-                doneDates = habit.doneDates + doneDate
-            )
+                habitEntity.copy(doneDates = habitEntity.doneDates + doneDate)
+            val habit = getMockHabit(uid = null)
+            val expected = habit.copy(doneDates = habit.doneDates + doneDate)
             `when`(habitDao.getHabitById(habitId)).thenReturn(habitEntity)
             `when`(habitDao.upsertHabit(updatedHabitEntity)).thenReturn(Unit)
 
@@ -361,118 +315,108 @@ internal class HabitRepositoryImplTest {
 
     // ???
     @Test
-    fun `fetchHabitList should get habits from server and save those that aren't in db into db`() =
+    fun `fetchHabitList should get habits from api and save into db`() =
         runTest {
             // Given
-            val habitJsonList = listOf(
-                getMockGetHabitJson(
-                    uid = "uid"
-                ),
-                getMockGetHabitJson(
-                    uid = "uid1"
+            val getHabitJson1 = getMockGetHabitJson(uid = "uid1")
+            val getHabitJson2 = getMockGetHabitJson(uid = "uid2")
+            val getHabitJson3 = getMockGetHabitJson(uid = "uid3")
+            val habitEntity3 = getMockHabitEntity(uid = "uid3")
+            val habitEntity4 = getMockHabitEntity(uid = "uid4")
+            val notSavedHabitEntityList = listOf(
+                getMockHabitEntity(id = "id1", uid = "uid1"),
+                getMockHabitEntity(id = "id2", uid = "uid2"),
+            )
+            `when`(api.getHabitList(anyString())).thenReturn(
+                listOf(
+                    getHabitJson1,
+                    getHabitJson2,
+                    getHabitJson3
                 )
             )
-            val habitEntityList = listOf(
-                getMockHabitEntity(
-                    uid = "uid",
-                    deleted = false
-                )
-            )
-            `when`(networkRetry.commonRetrying<List<GetHabitJson>>(anyOrNull(), anyOrNull()))
-                .thenReturn(habitJsonList)
-            `when`(habitDao.getAllHabits()).thenReturn(habitEntityList)
-            `when`(habitDao.upsertHabitList(any())).thenReturn(Unit)
+            `when`(habitDao.getAllHabits()).thenReturn(listOf(habitEntity3, habitEntity4))
+            `when`(uuidGenerator.generateUuid()).thenReturn("id1", "id2")
+            `when`(habitDao.upsertHabitList(notSavedHabitEntityList)).thenReturn(Unit)
 
 
             // When
             habitRepository.fetchHabitList()
 
             // Then
-            verify(networkRetry, times(1))
-                .commonRetrying<List<GetHabitJson>>(anyOrNull(), anyOrNull())
+            verify(api, times(1)).getHabitList(anyString())
             verify(habitDao, times(1)).getAllHabits()
-            verify(habitDao, times(1)).upsertHabitList(any())
+            verify(uuidGenerator, times(2)).generateUuid()
+            verify(habitDao, times(1)).upsertHabitList(notSavedHabitEntityList)
         }
 
     @Test
-    fun `fetchHabitList shouldn't save anything in db, because habitJsonList is empty`() =
+    fun `fetchHabitList shouldn't save anything in db when habitJsonList is empty`() =
         runTest {
             // Given
-            val habitJsonList = emptyList<GetHabitJson>()
-            val habitEntityList = listOf(
-                getMockHabitEntity(
-                    uid = "uid",
-                    deleted = false
-                )
-            )
-            `when`(networkRetry.commonRetrying<List<GetHabitJson>>(anyOrNull(), anyOrNull()))
-                .thenReturn(habitJsonList)
+            val getHabitJsonList = emptyList<GetHabitJson>()
+            val habitEntityList = listOf(getMockHabitEntity(uid = "uid"))
+            `when`(api.getHabitList(anyString())).thenReturn(getHabitJsonList)
             `when`(habitDao.getAllHabits()).thenReturn(habitEntityList)
 
             // When
             habitRepository.fetchHabitList()
 
             // Then
-            verify(networkRetry, times(1))
-                .commonRetrying<List<GetHabitJson>>(anyOrNull(), anyOrNull())
+            verify(api, times(1)).getHabitList(anyString())
             verify(habitDao, times(1)).getAllHabits()
         }
 
     @Test
-    fun `fetchHabitList shouldn't save anything in db, because habitJsonList(response) is null`() =
+    fun `fetchHabitList shouldn't save anything in db when habitJsonList(response) is null`() =
         runTest {
             // Given
             val habitJsonList = null
-            val habitEntityList = listOf(
-                getMockHabitEntity(
-                    uid = "uid",
-                    deleted = false
-                )
-            )
-            `when`(networkRetry.commonRetrying<List<GetHabitJson>?>(anyOrNull(), anyOrNull()))
-                .thenReturn(habitJsonList)
+            val habitEntityList = listOf(getMockHabitEntity(uid = "uid"))
+            `when`(api.getHabitList(anyString())).thenReturn(habitJsonList)
             `when`(habitDao.getAllHabits()).thenReturn(habitEntityList)
 
             // When
             habitRepository.fetchHabitList()
 
             // Then
-            verify(networkRetry, times(1))
-                .commonRetrying<List<GetHabitJson>?>(anyOrNull(), anyOrNull())
+            verify(api, times(1)).getHabitList(anyString())
             verify(habitDao, times(1)).getAllHabits()
         }
 
     @Test
-    fun `deleteOfflineDeletedHabits should delete all deleted habits with UIDs from db and server`() =
+    fun `deleteOfflineDeletedHabits should delete all deleted habits from db and api`() =
         runTest {
             // Given
-            val deletedHabitEntity = getMockHabitEntity(
-                uid = "uid",
+            val deletedHabitEntity1 = getMockHabitEntity(
+                id = "id1",
+                uid = "uid1",
+                deleted = true
+            )
+            val deletedHabitEntity2 = getMockHabitEntity(
+                id = "id2",
+                uid = "uid2",
                 deleted = true
             )
             val response = Unit
             `when`(habitDao.getAllDeletedHabits()).thenReturn(
-                listOf(
-                    deletedHabitEntity,
-                    deletedHabitEntity
-                )
+                listOf(deletedHabitEntity1, deletedHabitEntity2)
             )
-            `when`(networkRetry.commonRetrying<Unit>(anyOrNull(), anyOrNull()))
-                .thenReturn(response)
-            `when`(habitDao.deleteHabitById(deletedHabitEntity.id)).thenReturn(Unit)
+            `when`(api.deleteHabit(anyString(), any())).thenReturn(response)
+            `when`(habitDao.deleteHabitById(deletedHabitEntity1.id)).thenReturn(Unit)
+            `when`(habitDao.deleteHabitById(deletedHabitEntity2.id)).thenReturn(Unit)
 
             // When
             habitRepository.deleteOfflineDeletedHabits()
 
             // Then
             verify(habitDao, times(1)).getAllDeletedHabits()
-            verify(networkRetry, times(2))
-                .commonRetrying<Unit>(anyOrNull(), anyOrNull())
-            verify(habitDao, times(2)).deleteHabitById(deletedHabitEntity.id)
+            verify(api, times(2)).deleteHabit(anyString(), any())
+            verify(habitDao, times(1)).deleteHabitById(deletedHabitEntity1.id)
+            verify(habitDao, times(1)).deleteHabitById(deletedHabitEntity2.id)
         }
 
     @Test
-    fun `deleteOfflineDeletedHabits shouldn't delete any deleted habits because response is null`() =
+    fun `deleteOfflineDeletedHabits shouldn't delete any deleted habits when response is null`() =
         runTest {
             // Given
             val deletedHabitEntity = getMockHabitEntity(
@@ -481,27 +425,22 @@ internal class HabitRepositoryImplTest {
             )
             val response = null
             `when`(habitDao.getAllDeletedHabits()).thenReturn(
-                listOf(
-                    deletedHabitEntity,
-                    deletedHabitEntity
-                )
+                listOf(deletedHabitEntity, deletedHabitEntity)
             )
-            `when`(networkRetry.commonRetrying<Unit?>(anyOrNull(), anyOrNull()))
-                .thenReturn(response)
+            `when`(api.deleteHabit(anyString(), any())).thenReturn(response)
 
             // When
             habitRepository.deleteOfflineDeletedHabits()
 
             // Then
             verify(habitDao, times(1)).getAllDeletedHabits()
-            verify(networkRetry, times(2))
-                .commonRetrying<Unit?>(anyOrNull(), anyOrNull())
+            verify(api, times(2)).deleteHabit(anyString(), any())
         }
 
 
     // ???
     @Test
-    fun `deleteOfflineDeletedHabits shouldn't delete any deleted habits because UIDs are null`() =
+    fun `deleteOfflineDeletedHabits shouldn't delete any deleted habits when UIDs are null`() =
         runTest {
             // Given
             val deletedHabitEntity = getMockHabitEntity(
@@ -509,10 +448,7 @@ internal class HabitRepositoryImplTest {
                 deleted = true
             )
             `when`(habitDao.getAllDeletedHabits()).thenReturn(
-                listOf(
-                    deletedHabitEntity,
-                    deletedHabitEntity
-                )
+                listOf(deletedHabitEntity, deletedHabitEntity)
             )
 
             // When
@@ -523,55 +459,169 @@ internal class HabitRepositoryImplTest {
         }
 
     @Test
-    fun `putOfflineHabitList should save habits which were saved only in db into server and save their UIDs in db`() =
+    fun `putOfflineHabitList should send local habits to api and save their UIDs in db`() =
         runTest {
             // When
-            val habitJson = getMockGetHabitJson(
-                uid = "uid"
-            )
-            val habitEntity = getMockHabitEntity(
-                uid = null,
-                deleted = false
-            )
-            val habitUidJson = getMockHabitUidJson(
-                uid = "uid1"
-            )
-            val updatedHabitEntity = habitEntity.copy(
-                uid = habitUidJson.uid
-            )
-            `when`(networkRetry.commonRetrying<List<GetHabitJson>>(anyOrNull(), anyOrNull()))
-                .thenReturn(listOf(habitJson, habitJson))
-            `when`(habitDao.getAllHabits()).thenReturn(listOf(habitEntity, habitEntity))
-            `when`(networkRetry.commonRetrying<HabitUidJson>(anyOrNull(), anyOrNull()))
-                .thenReturn(habitUidJson)
-            `when`(habitDao.upsertHabit(updatedHabitEntity)).thenReturn(Unit)
+            val getHabitJson1 = getMockGetHabitJson(uid = "uid1")
+            val getHabitJson2 = getMockGetHabitJson(uid = "uid2")
+            val getHabitJson3 = getMockGetHabitJson(uid = "uid3")
+            val habitEntity3 = getMockHabitEntity(uid = "uid3")
+            val habitEntity4 = getMockHabitEntity(uid = null)
+            val habitEntity5 = getMockHabitEntity(uid = null)
+            val habitUidJson4 = getMockHabitUidJson(uid = "uid4")
+            val habitUidJson5 = getMockHabitUidJson(uid = "uid5")
+            val habitEntity4WithUid = habitEntity4.copy(uid = habitUidJson4.uid)
+            val habitEntity5WithUid = habitEntity5.copy(uid = habitUidJson5.uid)
+
+            `when`(api.getHabitList(anyString()))
+                .thenReturn(listOf(getHabitJson1, getHabitJson2, getHabitJson3))
+            `when`(habitDao.getAllHabits())
+                .thenReturn(listOf(habitEntity3, habitEntity4, habitEntity5))
+            `when`(api.putHabit(anyString(), any())).thenReturn(habitUidJson4, habitUidJson5)
+            `when`(habitDao.upsertHabit(habitEntity4WithUid)).thenReturn(Unit)
+            `when`(habitDao.upsertHabit(habitEntity5WithUid)).thenReturn(Unit)
 
             // When
             habitRepository.putOfflineHabitList()
 
             // Then
-            verify(networkRetry, times(1))
-                .commonRetrying<List<GetHabitJson>>(anyOrNull(), anyOrNull())
+            verify(api, times(1)).getHabitList(anyString())
             verify(habitDao, times(1)).getAllHabits()
-            verify(networkRetry, times(2))
-                .commonRetrying<HabitUidJson>(anyOrNull(), anyOrNull())
-            verify(habitDao, times(2)).upsertHabit(updatedHabitEntity)
+            verify(api, times(2)).putHabit(anyString(), any())
+            verify(habitDao, times(1)).upsertHabit(habitEntity4WithUid)
+            verify(habitDao, times(1)).upsertHabit(habitEntity5WithUid)
         }
 
     @Test
-    fun `putOfflineHabitList shouldn't save habits into server because response is null`() =
+    fun `putOfflineHabitList shouldn't save habits into api when no internet`() =
         runTest {
             // When
-            val response = null
-            `when`(networkRetry.commonRetrying<List<GetHabitJson>?>(anyOrNull(), anyOrNull()))
-                .thenReturn(response)
+            doAnswer { throw Exception() }
+                .`when`(api).getHabitList(anyString())
 
             // When
             habitRepository.putOfflineHabitList()
 
             // Then
-            verify(networkRetry, times(1))
-                .commonRetrying<List<GetHabitJson>?>(anyOrNull(), anyOrNull())
+            verify(api, times(3)).getHabitList(anyString())
+        }
+
+    @Test
+    fun `putOfflineHabitList shouldn't save habits into api when no only local save habits`() =
+        runTest {
+            // When
+            val getHabitJson1 = getMockGetHabitJson(uid = "uid1")
+            val getHabitJson2 = getMockGetHabitJson(uid = "uid2")
+            val habitEntity1 = getMockHabitEntity(uid = "uid1")
+            val habitEntity2 = getMockHabitEntity(uid = "uid2")
+
+            `when`(api.getHabitList(anyString()))
+                .thenReturn(listOf(getHabitJson1, getHabitJson2))
+            `when`(habitDao.getAllHabits())
+                .thenReturn(listOf(habitEntity1, habitEntity2))
+
+            // When
+            habitRepository.putOfflineHabitList()
+
+            // Then
+            verify(api, times(1)).getHabitList(anyString())
+            verify(habitDao, times(1)).getAllHabits()
+        }
+
+    @Test
+    fun `postOfflineHabitList should send doneDates to api`() =
+        runTest {
+            // Given
+            val habitEntity1 = getMockHabitEntity(uid = "uid1", doneDates = listOf(
+                19610L, // 10/9/2023
+                19613L, // 13/9/2023
+            ))
+            val habitEntity2 = getMockHabitEntity(uid = "uid2", doneDates = listOf(
+                19611L, // 11/9/2023
+                19614L, // 14/9/2023
+            ))
+            val habitEntity3 = getMockHabitEntity(uid = "uid3", doneDates = listOf(
+                19611L, // 11/9/2023
+                19615L, // 15/9/2023
+            ))
+            val getHabitJson1 = getMockGetHabitJson(uid = "uid1", doneDates = listOf(
+                19610L, // 10/9/2023
+                19613L, // 13/9/2023
+            ))
+            val getHabitJson2 = getMockGetHabitJson(uid = "uid2", doneDates = listOf(
+                19611L, // 11/9/2023
+            ))
+            val getHabitJson3 = getMockGetHabitJson(uid = "uid3", doneDates = listOf(
+                19615L, // 15/9/2023
+            ))
+            val getHabitJson4 = getMockGetHabitJson(uid = "uid4", doneDates = listOf(
+                19616L, // 16/9/2023
+            ))
+
+            `when`(habitDao.getAllHabits()).thenReturn(listOf(habitEntity1, habitEntity2, habitEntity3))
+            `when`(api.getHabitList(anyString())).thenReturn(
+                listOf(getHabitJson1, getHabitJson2, getHabitJson3, getHabitJson4)
+            )
+            `when`(api.postHabit(anyString(), any())).thenReturn(Unit)
+
+            // When
+            habitRepository.postOfflineHabitList()
+
+            // Then
+            verify(habitDao, times(1)).getAllHabits()
+            verify(api, times(1)).getHabitList(anyString())
+            verify(api, times(2)).postHabit(anyString(), any())
+        }
+
+    @Test
+    fun `postOfflineHabitList shouldn't send doneDates to api when on internet`() =
+        runTest {
+            // Given
+            val habitEntity1 = getMockHabitEntity(uid = "uid1", doneDates = listOf(
+                19610L, // 10/9/2023
+                19613L, // 13/9/2023
+            ))
+
+            `when`(habitDao.getAllHabits()).thenReturn(listOf(habitEntity1))
+            doAnswer { throw Exception() }
+                .`when`(api).getHabitList(anyString())
+
+            // When
+            habitRepository.postOfflineHabitList()
+
+            // Then
+            verify(habitDao, times(1)).getAllHabits()
+            verify(api, times(3)).getHabitList(anyString())
+        }
+
+    @Test
+    fun `postOfflineHabitList shouldn't send doneDates to api when doneDates are equal`() =
+        runTest {
+            // Given
+            val habitEntity1 = getMockHabitEntity(uid = "uid1", doneDates = listOf(
+                19610L, // 10/9/2023
+                19613L, // 13/9/2023
+            ))
+            val habitEntity2 = getMockHabitEntity(uid = "uid2", doneDates = listOf(
+                19612L, // 12/9/2023
+            ))
+            val getHabitJson1 = getMockGetHabitJson(uid = "uid1", doneDates = listOf(
+                19610L, // 10/9/2023
+                19613L, // 13/9/2023
+            ))
+            val getHabitJson2 = getMockGetHabitJson(uid = "uid2", doneDates = listOf(
+                19612L, // 12/9/2023
+            ))
+
+            `when`(habitDao.getAllHabits()).thenReturn(listOf(habitEntity1, habitEntity2))
+            `when`(api.getHabitList(anyString())).thenReturn(listOf(getHabitJson1, getHabitJson2))
+
+            // When
+            habitRepository.postOfflineHabitList()
+
+            // Then
+            verify(habitDao, times(1)).getAllHabits()
+            verify(api, times(1)).getHabitList(anyString())
         }
 
 
@@ -581,7 +631,10 @@ internal class HabitRepositoryImplTest {
         )
     }
 
-    private fun getMockGetHabitJson(uid: String): GetHabitJson {
+    private fun getMockGetHabitJson(
+        uid: String,
+        doneDates: List<Long> = listOf(19610L), // 10/9/2023
+    ): GetHabitJson {
         return GetHabitJson(
             uid = uid,
             title = "title",
@@ -590,7 +643,7 @@ internal class HabitRepositoryImplTest {
             color = 0,
             priority = 0,
             type = 0,
-            doneDates = listOf(19610L), // 10/9/2023
+            doneDates = doneDates,
             count = 0,
             frequency = 3
         )
@@ -626,9 +679,14 @@ internal class HabitRepositoryImplTest {
         )
     }
 
-    private fun getMockHabitEntity(uid: String?, deleted: Boolean): HabitEntity {
+    private fun getMockHabitEntity(
+        id: String = "id",
+        uid: String?,
+        doneDates: List<Long> = listOf(19610L), // 10/9/2023
+        deleted: Boolean = false
+    ): HabitEntity {
         return HabitEntity(
-            id = "id",
+            id = id,
             uid = uid,
             title = "title",
             description = "description",
@@ -636,7 +694,7 @@ internal class HabitRepositoryImplTest {
             color = HabitColor.PINK,
             priority = HabitPriority.LOW,
             type = HabitType.GOOD,
-            doneDates = listOf(19610L), // 10/9/2023
+            doneDates = doneDates,
             count = HabitCount.WEEK,
             frequency = 3,
             deleted = deleted
