@@ -26,7 +26,7 @@ internal class GetHabitUpdatedMessageUseCaseTest {
     }
 
     @Test
-    fun `when doneDates less than frequency in count and type is bad then return message about remaining repetition amounts for bad habit`() {
+    fun `should return message about remaining repetition amounts for bad habit`() {
         // Given
         val habit = getMockHabit(
             type = HabitType.BAD,
@@ -46,7 +46,7 @@ internal class GetHabitUpdatedMessageUseCaseTest {
     }
 
     @Test
-    fun `when doneDates less than frequency in count and type is good then return message about remaining repetition amounts for good habit`() {
+    fun `should then return message about remaining repetition amounts for good habit`() {
         // Given
         val habit = getMockHabit(
             type = HabitType.GOOD,
@@ -66,7 +66,7 @@ internal class GetHabitUpdatedMessageUseCaseTest {
     }
 
     @Test
-    fun `when frequency is equal to doneDates in count and type is bad then return message about completed bad habit`() {
+    fun `should return message about completed bad habit`() {
         // Given
         val habit = getMockHabit(
             type = HabitType.BAD,
@@ -86,7 +86,7 @@ internal class GetHabitUpdatedMessageUseCaseTest {
     }
 
     @Test
-    fun `when frequency is equal to doneDates in count and type is good then return message about completed good habit`() {
+    fun `should return message about completed good habit`() {
         // Given
         val habit = getMockHabit(
             type = HabitType.GOOD,

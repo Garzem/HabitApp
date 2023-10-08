@@ -64,7 +64,7 @@ internal class FilterRepositoryImplTest {
     }
 
     @Test
-    fun `return correct value of filterFlow`() = runTest {
+    fun `value should return correct value of filterFlow`() = runTest {
         // Given
         val expectedFilter = Filter(
             filterByTitle = "",
