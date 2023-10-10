@@ -42,8 +42,6 @@ class HabitListViewModel @Inject constructor(
     private val _showMessage = SingleLiveEvent<Message>()
     val showMessage: LiveData<Message> get() = _showMessage
 
-
-
     init {
         filterRepository.filterFlow.onEach { filter ->
             _habitState.update { state ->

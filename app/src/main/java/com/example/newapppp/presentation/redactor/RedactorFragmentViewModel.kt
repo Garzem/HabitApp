@@ -124,12 +124,6 @@ class RedactorFragmentViewModel @Inject constructor(
         }
     }
 
-    fun setupType(type: HabitType) {
-        _uiState.update { state ->
-            state.copy(type = HabitType.values().indexOf(type))
-        }
-    }
-
     fun getHabitPriorityList(): List<String> {
         return HabitPriority.values().map {
             habitPriorityMapper.getPriorityName(it)
@@ -137,7 +131,7 @@ class RedactorFragmentViewModel @Inject constructor(
     }
 
 
-    fun onNewPrioritySelected(priorityPosition: Int) {
+    fun onPrioritySelected(priorityPosition: Int) {
         _uiState.update { state ->
             state.copy(priority = priorityPosition)
         }
@@ -149,7 +143,7 @@ class RedactorFragmentViewModel @Inject constructor(
         }
     }
 
-    fun onNewCountSelected(countPosition: Int) {
+    fun onCountSelected(countPosition: Int) {
         _uiState.update { state ->
             state.copy(count = countPosition)
         }

@@ -71,9 +71,8 @@ internal class FilterRepositoryImplTest {
             filterByPriority = HabitPriority.CHOOSE
         )
 
-
         // When
-        val actual = filterRepository.filterFlow.value
+        val actual = filterRepository.valueFilter()
 
         // Then
         assertEquals(expectedFilter, actual)

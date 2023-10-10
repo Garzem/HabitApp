@@ -95,7 +95,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
                     position: Int,
                     id: Long
                 ) {
-                    redactorViewModel.onNewPrioritySelected(position)
+                    redactorViewModel.onPrioritySelected(position)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -117,7 +117,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
                     position: Int,
                     id: Long
                 ) {
-                    redactorViewModel.onNewCountSelected(position)
+                    redactorViewModel.onCountSelected(position)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -130,12 +130,12 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
         radioGood.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                redactorViewModel.setupType(HabitType.GOOD)
+                redactorViewModel.setType(HabitType.GOOD)
             }
         }
         radioBad.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                redactorViewModel.setupType(HabitType.BAD)
+                redactorViewModel.setType(HabitType.BAD)
             }
         }
     }

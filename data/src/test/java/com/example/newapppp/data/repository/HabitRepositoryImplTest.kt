@@ -5,11 +5,8 @@ import com.example.newapppp.data.database.HabitDao
 import com.example.newapppp.data.database.habit_local.HabitEntity
 import com.example.newapppp.data.remote.HabitApi
 import com.example.newapppp.data.remote.NetworkRetry
-import com.example.newapppp.data.remote.model.DeleteHabitJson
 import com.example.newapppp.data.remote.model.GetHabitJson
 import com.example.newapppp.data.remote.model.HabitUidJson
-import com.example.newapppp.data.remote.model.PostHabitJson
-import com.example.newapppp.domain.Constants
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.domain.model.HabitCount
@@ -27,9 +24,7 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
-import org.mockito.internal.junit.JUnitRule
 import org.mockito.kotlin.any
-import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doAnswer
 
 internal class HabitRepositoryImplTest {
