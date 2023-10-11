@@ -1,4 +1,4 @@
-package com.example.newapppp.domain.extension
+package com.example.newapppp.presentation.util
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle

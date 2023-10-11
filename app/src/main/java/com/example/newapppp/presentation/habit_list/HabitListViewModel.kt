@@ -3,6 +3,8 @@ package com.example.newapppp.presentation.habit_list
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.newapppp.abstracts.BaseViewModel
+import com.example.newapppp.abstracts.HabitListEvents
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.domain.model.Message
@@ -33,18 +35,12 @@ class HabitListViewModel @Inject constructor(
     private val updateHabitDatesUseCase: UpdateHabitDatesUseCase,
     private val getCurrentDateUseCase: GetCurrentDateUseCase,
     private val filterRepository: FilterRepository
-) : ViewModel() {
-
-    private val _habitState = MutableStateFlow<HabitState>(HabitState.Loading)
-
-    val habitState: StateFlow<HabitState> = _habitState.asStateFlow()
-
-    private val _showMessage = SingleLiveEvent<Message>()
-    val showMessage: LiveData<Message> get() = _showMessage
-
+) : BaseViewModel<HabitState, HabitListEvents>(
+    initState = HabitState.Loading
+) {
     init {
         filterRepository.filterFlow.onEach { filter ->
-            _habitState.update { state ->
+            _state.update { state ->
                 if (state is HabitState.Success) state.copy(filter = filter)
                 else state
             }
@@ -53,9 +49,9 @@ class HabitListViewModel @Inject constructor(
 
     fun getAndRefreshHabitList(habitType: HabitType) {
         viewModelScope.launch {
-            _habitState.update { HabitState.Loading }
+            _state.update { HabitState.Loading }
             getHabitListUseCase(habitType).collect { habitList ->
-                _habitState.update {
+                _state.update {
                     HabitState.Success(
                         habitList = habitList,
                         filter = filterRepository.valueFilter()
@@ -79,7 +75,9 @@ class HabitListViewModel @Inject constructor(
         viewModelScope.launch {
             val habit = updateHabitDatesUseCase(habitId, newDoneDate)
             val message = getHabitUpdatedMessageUseCase(habit, newDoneDate)
-            _showMessage.emit(message)
+            _events.update {
+                HabitListEvents.ShowMessage(message)
+            }
         }
     }
 }

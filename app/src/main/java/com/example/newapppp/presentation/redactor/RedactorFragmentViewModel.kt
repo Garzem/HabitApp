@@ -173,7 +173,7 @@ class RedactorFragmentViewModel @Inject constructor(
         }
     }
 
-    fun saveOrUpdateHabitToServer() {
+    fun saveClick() {
         val uiState = _uiState.value
         if (validation()) {
             viewModelScope.launch {

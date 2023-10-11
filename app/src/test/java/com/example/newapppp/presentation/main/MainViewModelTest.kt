@@ -2,12 +2,14 @@ package com.example.newapppp.presentation.main
 
 import app.cash.turbine.test
 import com.example.newapppp.domain.INetworkUtil
+import com.example.newapppp.domain.model.Filter
 import com.example.newapppp.domain.usecase.main.DeleteOfflineDeletedHabitsUseCase
 import com.example.newapppp.domain.usecase.main.FetchHabitListUseCase
 import com.example.newapppp.domain.usecase.main.PostOfflineHabitListUseCase
 import com.example.newapppp.domain.usecase.main.PutOfflineHabitListUseCase
 import com.example.newapppp.presentation.rule.UnconfinedDispatcherRule
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -37,8 +39,8 @@ internal class MainViewModelTest {
     @get:Rule
     val unconfinedDispatcherRule = UnconfinedDispatcherRule()
 
-    @Before
-    fun setUp() {
+    private fun initViewModel(filterFlow: (Flow<Filter>) = flowOf()) {
+
         mainViewModel = MainViewModel(
             networkUtil,
             deleteOfflineDeletedHabitsUseCase,

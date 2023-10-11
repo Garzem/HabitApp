@@ -1,10 +1,11 @@
 package com.example.newapppp.presentation.habit_list.state
 
+import com.example.newapppp.abstracts.BaseState
 import com.example.newapppp.domain.model.Filter
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitPriority
 
-sealed interface HabitState {
+sealed interface HabitState: BaseState {
     data class Success(
         val habitList: List<Habit>,
         val filter: Filter,
