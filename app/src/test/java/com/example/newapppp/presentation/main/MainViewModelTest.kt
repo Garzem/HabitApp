@@ -40,7 +40,7 @@ internal class MainViewModelTest {
     val unconfinedDispatcherRule = UnconfinedDispatcherRule()
 
     private fun initViewModel(filterFlow: (Flow<Filter>) = flowOf()) {
-
+        ``
         mainViewModel = MainViewModel(
             networkUtil,
             deleteOfflineDeletedHabitsUseCase,
