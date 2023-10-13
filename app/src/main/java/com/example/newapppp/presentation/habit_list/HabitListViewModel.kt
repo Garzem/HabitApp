@@ -1,13 +1,10 @@
 package com.example.newapppp.presentation.habit_list
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newapppp.abstracts.BaseViewModel
 import com.example.newapppp.abstracts.HabitListEvents
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitType
-import com.example.newapppp.domain.model.Message
 import com.example.newapppp.domain.repository.FilterRepository
 import com.example.newapppp.domain.usecase.DeleteHabitUseCase
 import com.example.newapppp.domain.usecase.habit_list.GetCurrentDateUseCase
@@ -15,12 +12,7 @@ import com.example.newapppp.domain.usecase.habit_list.GetHabitListUseCase
 import com.example.newapppp.domain.usecase.habit_list.GetHabitUpdatedMessageUseCase
 import com.example.newapppp.domain.usecase.habit_list.UpdateHabitDatesUseCase
 import com.example.newapppp.presentation.habit_list.state.HabitState
-import com.example.newapppp.presentation.util.SingleLiveEvent
-import com.example.newapppp.presentation.util.emit
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update

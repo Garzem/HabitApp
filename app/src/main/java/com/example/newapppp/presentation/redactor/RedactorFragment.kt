@@ -7,12 +7,13 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
+import com.example.newapppp.abstracts.BaseFragment
+import com.example.newapppp.abstracts.RedactorEvents
 import com.example.newapppp.domain.Constants.COLOR_KEY
 import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.domain.model.HabitType
@@ -24,14 +25,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class RedactorFragment : Fragment(R.layout.redactor_fragment) {
+class RedactorFragment : BaseFragment<UiState, RedactorEvents>(R.layout.redactor_fragment) {
 
     @Inject
     lateinit var habitColorMapper: HabitColorMapper
 
     private val binding by viewBinding(RedactorFragmentBinding::bind)
     private val args: RedactorFragmentArgs by navArgs()
-    private val redactorViewModel: RedactorFragmentViewModel by viewModels()
+    override val viewModel: RedactorFragmentViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,22 +45,36 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         setupColorButton()
         observeColorResult()
         args.habitType?.let {
-            redactorViewModel.setType(it)
+            viewModel.setType(it)
         }
-        redactorViewModel.setHabit(args.habitId)
-
-        collectWithLifecycle(redactorViewModel.uiState) { uiState ->
-            onChangedHabit(uiState)
-        }
+        viewModel.setHabit(args.habitId)
 
         setupButtons()
-        observeEvents()
+    }
+
+    override fun handleState(state: UiState) {
+        onChangedHabit(state)
+    }
+
+    override fun handleEvent(event: RedactorEvents) {
+        when (event) {
+            is RedactorEvents.ShowValidationError -> {
+                Toast.makeText(
+                    requireContext(),
+                    R.string.fill_the_line,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            is RedactorEvents.GoBack -> {
+                findNavController().popBackStack()
+            }
+        }
     }
 
     private fun setupTitleText() {
         binding.editTitle.addTextChangedListener(
             onTextChanged = { text, start, _, count ->
-                redactorViewModel.onTitleChanged(text.toString(), start + count)
+                viewModel.onTitleChanged(text.toString(), start + count)
             }
         )
     }
@@ -67,7 +82,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
     private fun setupDescriptionText() {
         binding.editDescription.addTextChangedListener(
             onTextChanged = { text, start, _, count ->
-                redactorViewModel.onDescriptionChanged(text.toString(), start + count)
+                viewModel.onDescriptionChanged(text.toString(), start + count)
             }
         )
     }
@@ -75,7 +90,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
     private fun setupFrequencyText() {
         binding.editFrequency.addTextChangedListener(
             onTextChanged = { text, start, _, count ->
-                    redactorViewModel.onFrequencyChanged(text.toString(), start + count)
+                viewModel.onFrequencyChanged(text.toString(), start + count)
             }
         )
     }
@@ -84,7 +99,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         binding.spinnerPriority.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            redactorViewModel.getHabitPriorityList()
+            viewModel.getHabitPriorityList()
         )
 
         binding.spinnerPriority.onItemSelectedListener =
@@ -95,7 +110,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
                     position: Int,
                     id: Long
                 ) {
-                    redactorViewModel.onPrioritySelected(position)
+                    viewModel.onPrioritySelected(position)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -106,7 +121,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
         binding.spinnerCount.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            redactorViewModel.getHabitCountList()
+            viewModel.getHabitCountList()
         )
 
         binding.spinnerCount.onItemSelectedListener =
@@ -117,7 +132,7 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
                     position: Int,
                     id: Long
                 ) {
-                    redactorViewModel.onCountSelected(position)
+                    viewModel.onCountSelected(position)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -130,12 +145,12 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
         radioGood.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                redactorViewModel.setType(HabitType.GOOD)
+                viewModel.setType(HabitType.GOOD)
             }
         }
         radioBad.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                redactorViewModel.setType(HabitType.BAD)
+                viewModel.setType(HabitType.BAD)
             }
         }
     }
@@ -149,50 +164,34 @@ class RedactorFragment : Fragment(R.layout.redactor_fragment) {
 
     private fun setupButtons() {
         binding.saveHabit.setOnClickListener {
-            redactorViewModel.saveClick()
+            viewModel.saveClick()
         }
         binding.deleteHabit.apply {
             setOnClickListener {
-                redactorViewModel.deleteHabit()
+                viewModel.deleteHabit()
             }
             isVisible = args.habitId != null
         }
     }
 
     private fun observeColorResult() {
-        collectWithLifecycle(redactorViewModel.uiState) { uiState ->
-            redactorViewModel.saveColor(uiState.color)
+        collectWithLifecycle(viewModel.state) { uiState ->
+            viewModel.saveColor(uiState.color)
         }
 
         findNavController().currentBackStackEntry?.let { entry ->
             entry.savedStateHandle.getLiveData<HabitColor>(COLOR_KEY).observe(viewLifecycleOwner)
             { color ->
-                redactorViewModel.saveColor(color)
+                viewModel.saveColor(color)
                 entry.savedStateHandle.remove<HabitColor>(COLOR_KEY)
             }
         }
     }
 
+
     private fun colorDialog() {
         val action = RedactorFragmentDirections.actionHabitRedactorFragmentToColorChooseDialog()
         findNavController().navigate(action)
-    }
-
-
-    private fun observeEvents() {
-        redactorViewModel.apply {
-            showValidationError.observe(viewLifecycleOwner) {
-                Toast.makeText(
-                    requireContext(),
-                    R.string.fill_the_line,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            goBack.observe(viewLifecycleOwner) {
-                findNavController().popBackStack()
-            }
-        }
     }
 
     private fun onChangedHabit(uiState: UiState) {

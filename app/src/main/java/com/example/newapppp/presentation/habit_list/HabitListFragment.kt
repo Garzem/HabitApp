@@ -65,22 +65,23 @@ class HabitListFragment : BaseFragment<HabitState, HabitListEvents>(R.layout.hab
         habitType?.let {
             viewModel.getAndRefreshHabitList(it)
         }
-        collectWithLifecycle(viewModel.state) { state ->
-            when (state) {
-                is HabitState.Success -> {
-                    binding.progressBar.isVisible = false
-                    adapter.submitList(state.filteredHabits.map { habit ->
-                        habitUIConverter.toHabitUI(habit)
-                    })
-                }
-
-                is HabitState.Loading -> {
-                    binding.progressBar.isVisible = true
-                }
-            }
-        }
         filterObserver()
         swipeToDelete()
+    }
+
+    override fun handleState(state: HabitState) {
+        when (state) {
+            is HabitState.Success -> {
+                binding.progressBar.isVisible = false
+                adapter.submitList(state.filteredHabits.map { habit ->
+                    habitUIConverter.toHabitUI(habit)
+                })
+            }
+
+            is HabitState.Loading -> {
+                binding.progressBar.isVisible = true
+            }
+        }
     }
 
     override fun handleEvent(event: HabitListEvents) {

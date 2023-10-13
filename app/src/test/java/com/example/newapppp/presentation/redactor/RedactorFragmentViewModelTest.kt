@@ -1,10 +1,14 @@
 package com.example.newapppp.presentation.redactor
 
+import android.provider.Settings
 import app.cash.turbine.test
+import app.cash.turbine.turbineScope
+import com.example.newapppp.abstracts.RedactorEvents
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.domain.model.HabitCount
 import com.example.newapppp.domain.model.HabitPriority
+import com.example.newapppp.domain.model.HabitSave
 import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.domain.usecase.DeleteHabitUseCase
 import com.example.newapppp.domain.usecase.redactor.GetHabitByIdUseCase
@@ -13,6 +17,9 @@ import com.example.newapppp.presentation.habit_list.mapper.HabitCountMapper
 import com.example.newapppp.presentation.habit_list.mapper.HabitPriorityMapper
 import com.example.newapppp.presentation.redactor.state.UiState
 import com.example.newapppp.presentation.rule.UnconfinedDispatcherRule
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -48,12 +55,12 @@ internal class RedactorFragmentViewModelTest {
     }
 
     @Test
-    fun `returns initial uiState when initialize`() = runTest {
+    fun `check initial uiState when initialize`() = runTest {
         // Given
         val expectedUiState = getMockUiState()
 
         // When
-        redactorFragmentViewModel.uiState.test {
+        redactorFragmentViewModel.state.test {
             val initialUiState = awaitItem()
 
             // Then
@@ -62,7 +69,7 @@ internal class RedactorFragmentViewModelTest {
     }
 
     @Test
-    fun `setHabit should set values from all habit fields to uiState`() = runTest {
+    fun `check uiState when set habit with habitId`() = runTest {
         // Given
         val habitId = "id"
         val habit = getMockHabit(id = "id")
@@ -84,25 +91,24 @@ internal class RedactorFragmentViewModelTest {
         `when`(getHabitByIdUseCase(habitId)).thenReturn(habit)
 
         // When
-        redactorFragmentViewModel.uiState.test {
+        redactorFragmentViewModel.state.test {
             skipItems(1)
             redactorFragmentViewModel.setHabit(habitId)
             val uiState = awaitItem()
 
             // Then
-            verify(getHabitByIdUseCase, times(1)).invoke(habitId)
             assertEquals(expectedUiState, uiState)
         }
     }
 
     @Test
-    fun `setHabit shouldn't set any values when habitId is null`() = runTest {
+    fun `check uiState when set habit with null habitId`() = runTest {
         // Given
         val habitId = null
         val expectedUiState = getMockUiState()
 
         // When
-        redactorFragmentViewModel.uiState.test {
+        redactorFragmentViewModel.state.test {
 
             redactorFragmentViewModel.setHabit(habitId)
             val uiState = awaitItem()
@@ -119,7 +125,7 @@ internal class RedactorFragmentViewModelTest {
         val expectedUiState = getMockUiState(type = 1)
 
         // When
-        redactorFragmentViewModel.uiState.test {
+        redactorFragmentViewModel.state.test {
             skipItems(1)
             redactorFragmentViewModel.setType(typeBad)
             val uiState = awaitItem()
@@ -135,7 +141,7 @@ internal class RedactorFragmentViewModelTest {
         val expectedUiState = getMockUiState(color = HabitColor.RED)
 
         // When
-        redactorFragmentViewModel.uiState.test {
+        redactorFragmentViewModel.state.test {
             skipItems(1)
             redactorFragmentViewModel.saveColor(colorRed)
             val uiState = awaitItem()
@@ -148,14 +154,14 @@ internal class RedactorFragmentViewModelTest {
     fun `onTitleChanged should save title and cursorPosition in uiState`() = runTest {
         // Given
         val title = "Hello"
-        val cursorPosition = 4
+        val cursorPosition = 5
         val expectedUiState = getMockUiState(
             title = "Hello",
-            titleCursorPosition = 4
+            titleCursorPosition = 5
         )
 
         // When
-        redactorFragmentViewModel.uiState.test {
+        redactorFragmentViewModel.state.test {
             skipItems(1)
             redactorFragmentViewModel.onTitleChanged(title, cursorPosition)
             val uiState = awaitItem()
@@ -175,7 +181,7 @@ internal class RedactorFragmentViewModelTest {
         )
 
         // When
-        redactorFragmentViewModel.uiState.test {
+        redactorFragmentViewModel.state.test {
             skipItems(1)
             redactorFragmentViewModel.onDescriptionChanged(description, cursorPosition)
             val uiState = awaitItem()
@@ -195,7 +201,7 @@ internal class RedactorFragmentViewModelTest {
         )
 
         // When
-        redactorFragmentViewModel.uiState.test {
+        redactorFragmentViewModel.state.test {
             skipItems(1)
             redactorFragmentViewModel.onFrequencyChanged(frequency, cursorPosition)
             val uiState = awaitItem()
@@ -211,7 +217,7 @@ internal class RedactorFragmentViewModelTest {
         val expectedUiState = getMockUiState(priority = 2)
 
         // When
-        redactorFragmentViewModel.uiState.test {
+        redactorFragmentViewModel.state.test {
             skipItems(1)
             redactorFragmentViewModel.onPrioritySelected(priority)
             val uiState = awaitItem()
@@ -227,7 +233,7 @@ internal class RedactorFragmentViewModelTest {
         val expectedUiState = getMockUiState(count = 2)
 
         // When
-        redactorFragmentViewModel.uiState.test {
+        redactorFragmentViewModel.state.test {
             skipItems(1)
             redactorFragmentViewModel.onCountSelected(count)
             val uiState = awaitItem()
@@ -236,11 +242,247 @@ internal class RedactorFragmentViewModelTest {
         }
     }
 
+    @Test
+    fun `check deleteHabit when uiState with id`() = runTest {
+        // Given
+        val habit = getMockHabit(id = "id")
+        val habitId = "id"
+        val expectedEvent = RedactorEvents.GoBack
+        `when`(getHabitByIdUseCase(habitId)).thenReturn(habit)
+        `when`(deleteHabitUseCase(habit)).thenReturn(Unit)
 
-    private fun getMockHabit(id: String): Habit {
-        return Habit(
-            id = id,
-            uid = "uid",
+        // When
+        turbineScope {
+            val stateTurbine = redactorFragmentViewModel.state.testIn(backgroundScope)
+            val eventTurbine = redactorFragmentViewModel.event.testIn(backgroundScope)
+            stateTurbine.skipItems(1)
+            eventTurbine.skipItems(1)
+            redactorFragmentViewModel.setHabit(habitId)
+            redactorFragmentViewModel.deleteHabit()
+            val event = eventTurbine.awaitItem()
+            // Then
+            verify(deleteHabitUseCase, times(1)).invoke(habit)
+            assertEquals(expectedEvent, event)
+        }
+    }
+
+    @Test
+    fun `should delete habit with automatically created creation date`() = runTest {
+        // Given
+        val habit = getMockHabit(
+            id = "id",
+            priority = HabitPriority.HIGH,
+            count = HabitCount.MONTH,
+            doneDates = emptyList()
+        )
+        val expectedCreationDate = 144424L
+        val expectedEvent = RedactorEvents.GoBack
+        `when`(redactorFragmentViewModel.state.value).thenReturn(
+            UiState(
+                id = "id",
+                uid = "uid",
+                color = HabitColor.PINK,
+                description = "description",
+                frequency = "3",
+                priority = 1,
+                title = "title",
+                type = 1,
+                count = 1,
+                doneDates = emptyList(),
+                descriptionCursorPosition = 1,
+                titleCursorPosition = 1,
+                frequencyCursorPosition = 1
+            )
+        )
+        `when`(System.currentTimeMillis()).thenReturn(14444L)
+        `when`(deleteHabitUseCase(habit)).thenReturn(Unit)
+
+        // When
+        with(redactorFragmentViewModel) {
+            event.test {
+                skipItems(1)
+                redactorFragmentViewModel.deleteHabit()
+                val event = awaitItem()
+
+                // Then
+                assertEquals(expectedCreationDate, )
+                verify(deleteHabitUseCase, times(1)).invoke(habit)
+                assertEquals(expectedEvent, event)
+            }
+        }
+    }
+
+
+    // ??
+//    @Test
+//    fun `check deleteHabit when uiState is null`() = runTest {
+//        // Given
+//        val habitId = null
+//        val expectedEvent = null
+//
+//        // When
+//        redactorFragmentViewModel.event.test {
+//            redactorFragmentViewModel.setHabit(habitId)
+//            redactorFragmentViewModel.deleteHabit()
+//            val event = awaitItem()
+//            // Then
+//            assertEquals(expectedEvent, event)
+//        }
+//    }
+
+    @Test
+    fun `should save habit`() = runTest {
+        // Given
+        val habitSave = getMockHabitSave()
+        val habitId = "id"
+        val habit = getMockHabit(id = "id")
+        val expectedEvent = RedactorEvents.GoBack
+        `when`(saveOrUpdateHabitUseCase(habitSave, habitId)).thenReturn(Unit)
+        `when`(getHabitByIdUseCase(habitId)).thenReturn(habit)
+
+        // When
+        redactorFragmentViewModel.event.test {
+            skipItems(1)
+
+            redactorFragmentViewModel.setHabit(habitId)
+            redactorFragmentViewModel.saveClick()
+            val event = awaitItem()
+
+            // Then
+            assertEquals(expectedEvent, event)
+        }
+    }
+
+    @Test
+    fun `shouldn't save habit when title is blank`() = runTest {
+        // Given
+        val habitId = "id"
+        val habit = getMockHabit(id = "id", title = "")
+        val expectedEvent = RedactorEvents.ShowValidationError
+        `when`(getHabitByIdUseCase(habitId)).thenReturn(habit)
+
+        // When
+        redactorFragmentViewModel.event.test {
+            skipItems(1)
+
+            redactorFragmentViewModel.setHabit(habitId)
+            redactorFragmentViewModel.saveClick()
+            val event = awaitItem()
+
+            // Then
+            assertEquals(expectedEvent, event)
+        }
+    }
+
+    @Test
+    fun `shouldn't save habit when description is blank`() = runTest {
+        // Given
+        val habitId = "id"
+        val habit = getMockHabit(id = "id", description = "")
+        val expectedEvent = RedactorEvents.ShowValidationError
+        `when`(getHabitByIdUseCase(habitId)).thenReturn(habit)
+
+        // When
+        redactorFragmentViewModel.event.test {
+            skipItems(1)
+
+            redactorFragmentViewModel.setHabit(habitId)
+            redactorFragmentViewModel.saveClick()
+            val event = awaitItem()
+
+            // Then
+            assertEquals(expectedEvent, event)
+        }
+    }
+
+    @Test
+    fun `shouldn't save habit when priority is choose`() = runTest {
+        // Given
+        val habitId = "id"
+        val habit = getMockHabit(id = "id", priority = HabitPriority.CHOOSE)
+        val expectedEvent = RedactorEvents.ShowValidationError
+        `when`(getHabitByIdUseCase(habitId)).thenReturn(habit)
+
+        // When
+        redactorFragmentViewModel.event.test {
+            skipItems(1)
+
+            redactorFragmentViewModel.setHabit(habitId)
+            redactorFragmentViewModel.saveClick()
+            val event = awaitItem()
+
+            // Then
+            assertEquals(expectedEvent, event)
+        }
+    }
+
+    @Test
+    fun `shouldn't save habit when frequency is 0`() = runTest {
+        // Given
+        val habitId = "id"
+        val habit = getMockHabit(id = "id", frequency = 0)
+        val expectedEvent = RedactorEvents.ShowValidationError
+        `when`(getHabitByIdUseCase(habitId)).thenReturn(habit)
+
+        // When
+        redactorFragmentViewModel.event.test {
+            skipItems(1)
+
+            redactorFragmentViewModel.setHabit(habitId)
+            redactorFragmentViewModel.saveClick()
+            val event = awaitItem()
+
+            // Then
+            assertEquals(expectedEvent, event)
+        }
+    }
+
+    @Test
+    fun `shouldn't save habit when frequency is blank`() = runTest {
+        // Given
+        val habitId = "id"
+        val habit = getMockHabit(id = "id", frequency = 0)
+        val expectedEvent = RedactorEvents.ShowValidationError
+        `when`(getHabitByIdUseCase(habitId)).thenReturn(habit)
+
+        // When
+        redactorFragmentViewModel.event.test {
+            skipItems(1)
+
+            redactorFragmentViewModel.setHabit(habitId)
+            redactorFragmentViewModel.onFrequencyChanged(frequency = "", cursorPosition = 0)
+            redactorFragmentViewModel.saveClick()
+            val event = awaitItem()
+
+            // Then
+            assertEquals(expectedEvent, event)
+        }
+    }
+
+    @Test
+    fun `shouldn't save habit when count is choose`() = runTest {
+        // Given
+        val habitId = "id"
+        val habit = getMockHabit(id = "id", count = HabitCount.CHOOSE)
+        val expectedEvent = RedactorEvents.ShowValidationError
+        `when`(getHabitByIdUseCase(habitId)).thenReturn(habit)
+
+        // When
+        redactorFragmentViewModel.event.test {
+            skipItems(1)
+
+            redactorFragmentViewModel.setHabit(habitId)
+            redactorFragmentViewModel.saveClick()
+            val event = awaitItem()
+
+            // Then
+            assertEquals(expectedEvent, event)
+        }
+    }
+
+
+    private fun getMockHabitSave(): HabitSave {
+        return HabitSave(
             title = "title",
             description = "description",
             creationDate = 144424L,
@@ -253,7 +495,34 @@ internal class RedactorFragmentViewModelTest {
         )
     }
 
+
+    private fun getMockHabit(
+        id: String,
+        title: String = "title",
+        description: String = "description",
+        priority: HabitPriority = HabitPriority.LOW,
+        frequency: Int = 3,
+        count: HabitCount = HabitCount.WEEK,
+        doneDates: List<Long> = listOf(19610L) // 10/9/2023
+    ): Habit {
+        return Habit(
+            id = id,
+            uid = "uid",
+            title = title,
+            description = description,
+            creationDate = 144424L,
+            color = HabitColor.PINK,
+            priority = priority,
+            type = HabitType.GOOD,
+            doneDates = doneDates,
+            count = count,
+            frequency = frequency
+        )
+    }
+
     private fun getMockUiState(
+        id: String? = null,
+        uid: String? = null,
         title: String = "",
         titleCursorPosition: Int = 0,
         description: String = "",
@@ -267,8 +536,8 @@ internal class RedactorFragmentViewModelTest {
         doneDates: List<Long> = emptyList()
     ): UiState {
         return UiState(
-            id = null,
-            uid = null,
+            id = id,
+            uid = uid,
             title = title,
             titleCursorPosition = titleCursorPosition,
             description = description,

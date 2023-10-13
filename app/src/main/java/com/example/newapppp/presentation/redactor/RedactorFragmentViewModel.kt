@@ -1,8 +1,8 @@
 package com.example.newapppp.presentation.redactor
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.newapppp.abstracts.BaseViewModel
+import com.example.newapppp.abstracts.RedactorEvents
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.domain.model.HabitCount
@@ -15,12 +15,7 @@ import com.example.newapppp.domain.usecase.redactor.SaveOrUpdateHabitUseCase
 import com.example.newapppp.presentation.habit_list.mapper.HabitCountMapper
 import com.example.newapppp.presentation.habit_list.mapper.HabitPriorityMapper
 import com.example.newapppp.presentation.redactor.state.UiState
-import com.example.newapppp.presentation.util.SingleLiveEvent
-import com.example.newapppp.presentation.util.emit
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,33 +27,23 @@ class RedactorFragmentViewModel @Inject constructor(
     private val deleteHabitUseCase: DeleteHabitUseCase,
     private val habitCountMapper: HabitCountMapper,
     private val habitPriorityMapper: HabitPriorityMapper
-) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(
-        UiState(
-            id = null,
-            uid = null,
-            title = "",
-            titleCursorPosition = 0,
-            description = "",
-            descriptionCursorPosition = 0,
-            color = HabitColor.ORANGE,
-            priority = 3,
-            type = 0,
-            frequency = "",
-            frequencyCursorPosition = 0,
-            count = 3,
-            doneDates = emptyList()
-        )
+) : BaseViewModel<UiState, RedactorEvents>(
+    initState = UiState(
+        id = null,
+        uid = null,
+        title = "",
+        titleCursorPosition = 0,
+        description = "",
+        descriptionCursorPosition = 0,
+        color = HabitColor.ORANGE,
+        priority = 3,
+        type = 0,
+        frequency = "",
+        frequencyCursorPosition = 0,
+        count = 3,
+        doneDates = emptyList()
     )
-    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
-
-    private val _showValidationError = SingleLiveEvent<Unit>()
-    val showValidationError: LiveData<Unit> get() = _showValidationError
-
-    private val _goBack = SingleLiveEvent<Unit>()
-    val goBack: LiveData<Unit> get() = _goBack
-
+){
     private var creationDate: Long? = null
 
     fun setHabit(habitId: String?) {
@@ -66,7 +51,7 @@ class RedactorFragmentViewModel @Inject constructor(
             viewModelScope.launch {
                 val habit = getHabitByIdUseCase(habitId)
                 creationDate = habit.creationDate
-                _uiState.value = UiState(
+                _state.value = UiState(
                     id = habit.id,
                     uid = habit.uid,
                     title = habit.title,
@@ -86,19 +71,19 @@ class RedactorFragmentViewModel @Inject constructor(
     }
 
     fun setType(habitType: HabitType) {
-        _uiState.update { state ->
+        _state.update { state ->
             state.copy(type = HabitType.values().indexOf(habitType))
         }
     }
 
     fun saveColor(color: HabitColor) {
-        _uiState.update { state ->
+        _state.update { state ->
             state.copy(color = color)
         }
     }
 
     fun onTitleChanged(title: String, cursorPosition: Int) {
-        _uiState.update { state ->
+        _state.update { state ->
             state.copy(
                 title = title,
                 titleCursorPosition = cursorPosition
@@ -107,7 +92,7 @@ class RedactorFragmentViewModel @Inject constructor(
     }
 
     fun onDescriptionChanged(description: String, cursorPosition: Int) {
-        _uiState.update { state ->
+        _state.update { state ->
             state.copy(
                 description = description,
                 descriptionCursorPosition = cursorPosition
@@ -116,11 +101,24 @@ class RedactorFragmentViewModel @Inject constructor(
     }
 
     fun onFrequencyChanged(frequency: String, cursorPosition: Int) {
-        _uiState.update { state ->
+        _state.update { state ->
             state.copy(
                 frequency = frequency,
                 frequencyCursorPosition = cursorPosition
             )
+        }
+    }
+
+    fun onPrioritySelected(priorityPosition: Int) {
+        _state.update { state ->
+            state.copy(priority = priorityPosition)
+        }
+    }
+
+
+    fun onCountSelected(countPosition: Int) {
+        _state.update { state ->
+            state.copy(count = countPosition)
         }
     }
 
@@ -130,28 +128,15 @@ class RedactorFragmentViewModel @Inject constructor(
         }
     }
 
-
-    fun onPrioritySelected(priorityPosition: Int) {
-        _uiState.update { state ->
-            state.copy(priority = priorityPosition)
-        }
-    }
-
     fun getHabitCountList(): List<String> {
         return HabitCount.values().map {
             habitCountMapper.getCountNameInRedactorFragment(it)
         }
     }
 
-    fun onCountSelected(countPosition: Int) {
-        _uiState.update { state ->
-            state.copy(count = countPosition)
-        }
-    }
-
     fun deleteHabit() {
         viewModelScope.launch {
-            _uiState.value.let {
+            _state.value.let {
                 val habit = Habit(
                     id = it.id ?: return@launch,
                     uid = it.uid,
@@ -168,13 +153,15 @@ class RedactorFragmentViewModel @Inject constructor(
                     doneDates = it.doneDates
                 )
                 deleteHabitUseCase(habit)
-                _goBack.emit()
+                _events.update {
+                    RedactorEvents.GoBack
+                }
             }
         }
     }
 
     fun saveClick() {
-        val uiState = _uiState.value
+        val uiState = _state.value
         if (validation()) {
             viewModelScope.launch {
                 val habitId = uiState.id
@@ -192,15 +179,19 @@ class RedactorFragmentViewModel @Inject constructor(
                     doneDates = uiState.doneDates
                 )
                 saveOrUpdateHabitUseCase(habitSave, habitId)
-                _goBack.emit()
+                _events.update {
+                    RedactorEvents.GoBack
+                }
             }
         } else {
-            _showValidationError.emit()
+            _events.update {
+                RedactorEvents.ShowValidationError
+            }
         }
     }
 
     private fun validation(): Boolean {
-        return _uiState.value.let { currentState ->
+        return _state.value.let { currentState ->
             currentState.run {
                 title.isNotBlank()
                         && description.isNotBlank()
