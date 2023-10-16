@@ -145,6 +145,7 @@ internal class HabitRepositoryImplTest {
 
             // Then
             verify(habitDao, times(1)).deleteHabitById(habit.id)
+            verify(api, times(0)).deleteHabit(anyString(), any())
         }
 
     @Test
@@ -229,6 +230,7 @@ internal class HabitRepositoryImplTest {
             verify(habitDao, times(1)).getAllHabits()
             verify(habitDao, times(1)).deleteHabitById(habitEntity1.id)
             verify(habitDao, times(1)).deleteHabitById(habitEntity2.id)
+            verify(api, times(0)).deleteHabit(anyString(), any())
         }
 
 
@@ -304,11 +306,10 @@ internal class HabitRepositoryImplTest {
             // Then
             verify(habitDao, times(1)).getHabitById(habitId)
             verify(habitDao, times(1)).upsertHabit(updatedHabitEntity)
+            verify(api, times(0)).postHabit(anyString(), any())
             assertEquals(expected, actual)
         }
 
-
-    // ???
     @Test
     fun `fetchHabitList should get habits from api and save into db`() =
         runTest {
@@ -432,8 +433,6 @@ internal class HabitRepositoryImplTest {
             verify(api, times(2)).deleteHabit(anyString(), any())
         }
 
-
-    // ???
     @Test
     fun `deleteOfflineDeletedHabits shouldn't delete any deleted habits when UIDs are null`() =
         runTest {
@@ -451,6 +450,7 @@ internal class HabitRepositoryImplTest {
 
             // Then
             verify(habitDao, times(1)).getAllDeletedHabits()
+            verify(api, times(0)).deleteHabit(anyString(), any())
         }
 
     @Test

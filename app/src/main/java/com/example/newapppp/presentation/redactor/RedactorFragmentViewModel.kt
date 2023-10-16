@@ -2,7 +2,7 @@ package com.example.newapppp.presentation.redactor
 
 import androidx.lifecycle.viewModelScope
 import com.example.newapppp.abstracts.BaseViewModel
-import com.example.newapppp.abstracts.RedactorEvents
+import com.example.newapppp.presentation.redactor.state.RedactorEvents
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.domain.model.HabitCount
@@ -15,6 +15,7 @@ import com.example.newapppp.domain.usecase.redactor.SaveOrUpdateHabitUseCase
 import com.example.newapppp.presentation.habit_list.mapper.HabitCountMapper
 import com.example.newapppp.presentation.habit_list.mapper.HabitPriorityMapper
 import com.example.newapppp.presentation.redactor.state.UiState
+import com.example.newapppp.presentation.util.DateGenerator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,7 +27,8 @@ class RedactorFragmentViewModel @Inject constructor(
     private val getHabitByIdUseCase: GetHabitByIdUseCase,
     private val deleteHabitUseCase: DeleteHabitUseCase,
     private val habitCountMapper: HabitCountMapper,
-    private val habitPriorityMapper: HabitPriorityMapper
+    private val habitPriorityMapper: HabitPriorityMapper,
+    private val dateGenerator: DateGenerator
 ) : BaseViewModel<UiState, RedactorEvents>(
     initState = UiState(
         id = null,
@@ -43,7 +45,7 @@ class RedactorFragmentViewModel @Inject constructor(
         count = 3,
         doneDates = emptyList()
     )
-){
+) {
     private var creationDate: Long? = null
 
     fun setHabit(habitId: String?) {
@@ -136,21 +138,21 @@ class RedactorFragmentViewModel @Inject constructor(
 
     fun deleteHabit() {
         viewModelScope.launch {
-            _state.value.let {
+            _state.value.apply {
                 val habit = Habit(
-                    id = it.id ?: return@launch,
-                    uid = it.uid,
-                    color = it.color,
-                    creationDate = creationDate ?: System.currentTimeMillis(),
-                    description = it.description,
-                    frequency = it.frequency.toInt(),
-                    priority = HabitPriority.values().getOrNull(it.priority)
+                    id = id ?: return@launch,
+                    uid = uid,
+                    color = color,
+                    creationDate = creationDate ?: dateGenerator.getCurrentDate(),
+                    description = description,
+                    frequency = frequency.toInt(),
+                    priority = HabitPriority.values().getOrNull(priority)
                         ?: HabitPriority.CHOOSE,
-                    title = it.title,
-                    type = HabitType.values().getOrNull(it.type) ?: HabitType.GOOD,
-                    count = HabitCount.values().getOrNull(it.count)
+                    title = title,
+                    type = HabitType.values().getOrNull(type) ?: HabitType.GOOD,
+                    count = HabitCount.values().getOrNull(count)
                         ?: HabitCount.WEEK,
-                    doneDates = it.doneDates
+                    doneDates = doneDates
                 )
                 deleteHabitUseCase(habit)
                 _events.update {
@@ -167,7 +169,7 @@ class RedactorFragmentViewModel @Inject constructor(
                 val habitId = uiState.id
                 val habitSave = HabitSave(
                     color = uiState.color,
-                    creationDate = creationDate ?: System.currentTimeMillis(),
+                    creationDate = creationDate ?: dateGenerator.getCurrentDate(),
                     description = uiState.description,
                     frequency = uiState.frequency.toInt(),
                     priority = HabitPriority.values().getOrNull(uiState.priority)
@@ -191,14 +193,12 @@ class RedactorFragmentViewModel @Inject constructor(
     }
 
     private fun validation(): Boolean {
-        return _state.value.let { currentState ->
-            currentState.run {
-                title.isNotBlank()
-                        && description.isNotBlank()
-                        && priority != HabitPriority.CHOOSE.ordinal
-                        && frequency.isNotBlank() && frequency != "0"
-                        && count != HabitCount.CHOOSE.ordinal
-            }
+        return _state.value.run {
+            title.isNotBlank()
+                    && description.isNotBlank()
+                    && priority != HabitPriority.CHOOSE.ordinal
+                    && frequency.isNotBlank() && frequency != "0"
+                    && count != HabitCount.CHOOSE.ordinal
         }
     }
 }

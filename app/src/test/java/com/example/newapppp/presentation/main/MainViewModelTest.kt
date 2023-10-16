@@ -2,7 +2,6 @@ package com.example.newapppp.presentation.main
 
 import app.cash.turbine.test
 import com.example.newapppp.domain.INetworkUtil
-import com.example.newapppp.domain.model.Filter
 import com.example.newapppp.domain.usecase.main.DeleteOfflineDeletedHabitsUseCase
 import com.example.newapppp.domain.usecase.main.FetchHabitListUseCase
 import com.example.newapppp.domain.usecase.main.PostOfflineHabitListUseCase
@@ -10,19 +9,14 @@ import com.example.newapppp.domain.usecase.main.PutOfflineHabitListUseCase
 import com.example.newapppp.presentation.rule.UnconfinedDispatcherRule
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.test.runTest
-import net.bytebuddy.implementation.InvokeDynamic.lambda
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
@@ -39,8 +33,8 @@ internal class MainViewModelTest {
     @get:Rule
     val unconfinedDispatcherRule = UnconfinedDispatcherRule()
 
-    private fun initViewModel(filterFlow: (Flow<Filter>) = flowOf()) {
-        ``
+    private fun initViewModel(isOnlineFlow: Flow<Boolean> = flowOf()) {
+        `when`(networkUtil.observeIsOnline()).thenReturn(isOnlineFlow)
         mainViewModel = MainViewModel(
             networkUtil,
             deleteOfflineDeletedHabitsUseCase,
@@ -52,30 +46,26 @@ internal class MainViewModelTest {
 
     @Test
     fun `returns initial connectionState when initialize`() = runTest {
-        // Given
-        `when`(networkUtil.observeIsOnline()).thenReturn(flow { emit(false) })
-
         // When
-        mainViewModel.connectionState.test {
-            val initialConnectionState = awaitItem()
+        initViewModel()
+        mainViewModel.state.test {
+            val initialMainState = awaitItem()
 
             // Then
-            assertFalse(initialConnectionState)
+            assertFalse(initialMainState.connected)
         }
     }
 
     @Test
     fun `returns true for connectionState`() = runTest {
-        // Given
-        `when`(networkUtil.observeIsOnline()).thenReturn(flow { emit(true) })
-
         // When
-        mainViewModel.connectionState.test {
+        initViewModel(flowOf(true).onEach { delay(100) })
+        mainViewModel.state.test {
             skipItems(1)
-            val connectionState = awaitItem()
+            val mainState = awaitItem()
 
             // Then
-            assertTrue(connectionState)
+            assertTrue(mainState.connected)
         }
     }
 }

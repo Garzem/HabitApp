@@ -2,7 +2,7 @@ package com.example.newapppp.presentation.habit_list
 
 import androidx.lifecycle.viewModelScope
 import com.example.newapppp.abstracts.BaseViewModel
-import com.example.newapppp.abstracts.HabitListEvents
+import com.example.newapppp.presentation.habit_list.state.HabitListEvents
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.domain.repository.FilterRepository

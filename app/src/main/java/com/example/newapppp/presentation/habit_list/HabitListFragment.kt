@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.abstracts.BaseFragment
-import com.example.newapppp.abstracts.HabitListEvents
+import com.example.newapppp.presentation.habit_list.state.HabitListEvents
 import com.example.newapppp.databinding.HabitListFragmentBinding
 import com.example.newapppp.domain.Constants.HABIT_TYPE_KEY
 import com.example.newapppp.presentation.util.collectWithLifecycle

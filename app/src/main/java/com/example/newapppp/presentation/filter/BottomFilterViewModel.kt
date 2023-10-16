@@ -1,37 +1,36 @@
 package com.example.newapppp.presentation.filter
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.newapppp.abstracts.BaseViewModel
 import com.example.newapppp.domain.model.Filter
 import com.example.newapppp.domain.model.HabitPriority
 import com.example.newapppp.domain.repository.FilterRepository
+import com.example.newapppp.presentation.filter.state.FilterEvent
+import com.example.newapppp.presentation.filter.state.FilterState
 import com.example.newapppp.presentation.habit_list.mapper.HabitPriorityMapper
-import com.example.newapppp.presentation.util.SingleLiveEvent
-import com.example.newapppp.presentation.util.emit
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class BottomFilterViewModel @Inject constructor(
     private val habitPriorityMapper: HabitPriorityMapper,
     private val filterRepository: FilterRepository
-): ViewModel() {
+): BaseViewModel<FilterState, FilterEvent>(
+    initState = FilterState(null)
+) {
 
-    val filterState: StateFlow<Filter?> = filterRepository.filterFlow.stateIn(
-        viewModelScope, SharingStarted.Eagerly, null
-    )
+    init {
+        filterRepository.filterFlow.onEach { filter ->
+            _state.update { state ->
+                state.copy(filter = filter)
+            }
+        }.launchIn(viewModelScope)
+    }
 
     private var selectedPriority = HabitPriority.CHOOSE
-
-    private val _showErrorToast = SingleLiveEvent<Unit>()
-    val showErrorToast: LiveData<Unit> get() = _showErrorToast
-
-    private val _goBack = SingleLiveEvent<Unit>()
-    val goBack: LiveData<Unit> get() = _goBack
 
     fun onPriorityChanged(priorityInt: Int) {
         selectedPriority = HabitPriority.values()[priorityInt]
@@ -39,7 +38,9 @@ class BottomFilterViewModel @Inject constructor(
 
     fun onFilterClicked(title: String) {
         if (title.isBlank() && selectedPriority == HabitPriority.CHOOSE) {
-            _showErrorToast.emit()
+            _events.update {
+                FilterEvent.ShowErrorToast
+            }
         } else {
             filterRepository.updateFilter { filter ->
                 filter.copy(
@@ -47,7 +48,9 @@ class BottomFilterViewModel @Inject constructor(
                     filterByPriority = selectedPriority
                 )
             }
-            _goBack.emit()
+            _events.update {
+                FilterEvent.GoBack
+            }
         }
     }
 

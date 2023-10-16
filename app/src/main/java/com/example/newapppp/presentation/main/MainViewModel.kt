@@ -2,11 +2,14 @@ package com.example.newapppp.presentation.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.newapppp.abstracts.BaseViewModel
 import com.example.newapppp.domain.INetworkUtil
 import com.example.newapppp.domain.usecase.main.FetchHabitListUseCase
 import com.example.newapppp.domain.usecase.main.DeleteOfflineDeletedHabitsUseCase
 import com.example.newapppp.domain.usecase.main.PostOfflineHabitListUseCase
 import com.example.newapppp.domain.usecase.main.PutOfflineHabitListUseCase
+import com.example.newapppp.presentation.main.state.MainState
+import com.example.newapppp.presentation.main.state.NoEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,11 +26,9 @@ class MainViewModel @Inject constructor(
     private val putOfflineHabitListUseCase: PutOfflineHabitListUseCase,
     private val fetchHabitListUseCase: FetchHabitListUseCase,
     private val postOfflineHabitListUseCase: PostOfflineHabitListUseCase
-) : ViewModel() {
-
-    private val _connectionState = MutableStateFlow(false)
-
-    val connectionState: StateFlow<Boolean> = _connectionState.asStateFlow()
+) : BaseViewModel<MainState, NoEvent>(
+    initState = MainState(false)
+) {
 
     init {
         observeNetworkConnection()
@@ -35,7 +36,9 @@ class MainViewModel @Inject constructor(
 
     private fun observeNetworkConnection() {
         networkUtil.observeIsOnline().onEach { isOnline ->
-            _connectionState.update { isOnline }
+            _state.update {
+                it.copy(connected = isOnline)
+            }
         }.launchIn(viewModelScope)
     }
 

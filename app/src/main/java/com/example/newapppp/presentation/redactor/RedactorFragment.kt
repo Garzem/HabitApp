@@ -13,7 +13,7 @@ import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.abstracts.BaseFragment
-import com.example.newapppp.abstracts.RedactorEvents
+import com.example.newapppp.presentation.redactor.state.RedactorEvents
 import com.example.newapppp.domain.Constants.COLOR_KEY
 import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.domain.model.HabitType

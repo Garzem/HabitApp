@@ -1,4 +1,6 @@
-package com.example.newapppp.abstracts
+package com.example.newapppp.presentation.redactor.state
+
+import com.example.newapppp.abstracts.BaseEvent
 
 sealed interface RedactorEvents: BaseEvent {
 

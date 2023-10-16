@@ -1,7 +1,7 @@
 package com.example.newapppp.presentation.habit_list
 
 import app.cash.turbine.test
-import com.example.newapppp.abstracts.HabitListEvents
+import com.example.newapppp.presentation.habit_list.state.HabitListEvents
 import com.example.newapppp.domain.model.Filter
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitColor
@@ -44,7 +44,7 @@ internal class HabitListViewModelTest {
     @get:Rule
     val unconfinedDispatcherRule = UnconfinedDispatcherRule()
 
-    private fun initViewModel(filterFlow: (Flow<Filter>) = flowOf()) {
+    private fun initViewModel(filterFlow: Flow<Filter> = flowOf()) {
         `when`(filterRepository.filterFlow).thenReturn(filterFlow)
         habitListViewModel = HabitListViewModel(
             deleteHabitUseCase,

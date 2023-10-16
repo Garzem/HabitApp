@@ -1,9 +1,8 @@
 package com.example.newapppp.presentation.redactor
 
-import android.provider.Settings
 import app.cash.turbine.test
 import app.cash.turbine.turbineScope
-import com.example.newapppp.abstracts.RedactorEvents
+import com.example.newapppp.presentation.redactor.state.RedactorEvents
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.domain.model.HabitCount
@@ -17,9 +16,7 @@ import com.example.newapppp.presentation.habit_list.mapper.HabitCountMapper
 import com.example.newapppp.presentation.habit_list.mapper.HabitPriorityMapper
 import com.example.newapppp.presentation.redactor.state.UiState
 import com.example.newapppp.presentation.rule.UnconfinedDispatcherRule
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.stateIn
+import com.example.newapppp.presentation.util.DateGenerator
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -37,6 +34,7 @@ internal class RedactorFragmentViewModelTest {
     private val deleteHabitUseCase = mock<DeleteHabitUseCase>()
     private val habitCountMapper = mock<HabitCountMapper>()
     private val habitPriorityMapper = mock<HabitPriorityMapper>()
+    private val dateGenerator = mock<DateGenerator>()
 
     private lateinit var redactorFragmentViewModel: RedactorFragmentViewModel
 
@@ -50,7 +48,8 @@ internal class RedactorFragmentViewModelTest {
             getHabitByIdUseCase,
             deleteHabitUseCase,
             habitCountMapper,
-            habitPriorityMapper
+            habitPriorityMapper,
+            dateGenerator
         )
     }
 
@@ -416,16 +415,55 @@ internal class RedactorFragmentViewModelTest {
         }
     }
 
+    @Test
+    fun `save habit should auto-generate creation date when in null`() = runTest {
+        // Given
+        val habitSave = getMockHabitSave(
+            creationDate = 144432L,
+            doneDates = emptyList()
+        )
+        val habitId = null
+        val expectedEvent = RedactorEvents.GoBack
+        `when`(dateGenerator.getCurrentDate()).thenReturn(144432L)
+        `when`(saveOrUpdateHabitUseCase(habitSave, habitId)).thenReturn(Unit)
 
-    private fun getMockHabitSave(): HabitSave {
+
+        // When
+        with(redactorFragmentViewModel) {
+            event.test {
+                skipItems(1)
+                setType(habitType = HabitType.GOOD)
+                saveColor(color = HabitColor.PINK)
+                onTitleChanged(title = "title", cursorPosition = 5)
+                onDescriptionChanged(description = "description", cursorPosition = 11)
+                onFrequencyChanged(frequency = "3", cursorPosition = 1)
+                onPrioritySelected(priorityPosition = 0)
+                onCountSelected(countPosition = 0)
+                saveClick()
+                val event = awaitItem()
+
+                // Then
+                verify(dateGenerator, times(1)).getCurrentDate()
+                verify(saveOrUpdateHabitUseCase, times(1))
+                    .invoke(habitSave, habitId)
+                assertEquals(expectedEvent, event)
+            }
+        }
+    }
+
+
+    private fun getMockHabitSave(
+        creationDate: Long = 144424L,
+        doneDates: List<Long> = listOf(19610L), // 10/9/2023
+    ): HabitSave {
         return HabitSave(
             title = "title",
             description = "description",
-            creationDate = 144424L,
+            creationDate = creationDate,
             color = HabitColor.PINK,
             priority = HabitPriority.LOW,
             type = HabitType.GOOD,
-            doneDates = listOf(19610L), // 10/9/2023
+            doneDates = doneDates,
             count = HabitCount.WEEK,
             frequency = 3
         )

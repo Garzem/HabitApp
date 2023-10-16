@@ -31,8 +31,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         setContentView(binding.root)
 
-        viewModel.connectionState.onEach { isConnected ->
-            if (isConnected) {
+        viewModel.state.onEach { state ->
+            if (state.connected) {
                 viewModel.makeRequestForDataVerification()
             }
         }.launchIn(lifecycleScope)

@@ -11,7 +11,9 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.databinding.FilterBottomSheetBinding
 import com.example.newapppp.domain.model.HabitPriority
+import com.example.newapppp.presentation.filter.state.FilterEvent
 import com.example.newapppp.presentation.habit_list.mapper.HabitPriorityMapper
+import com.example.newapppp.presentation.util.collectWithLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -30,23 +32,28 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
         clearTextInFindHabit()
         setupFilterSpinner()
         setupFilterButton()
-        setupCancelFilterButton()
-        binding.apply {
-            with(bottomViewModel) {
-                findHabitByTitle.editText?.setText(filterState.value?.filterByTitle)
+        collectWithLifecycle(bottomViewModel.state) { state ->
+            setupCancelFilterButton(state.filter?.isFilterApplied)
+            binding.apply {
+                findHabitByTitle.editText?.setText(state.filter?.filterByTitle)
                 val autoCompleteTextView = findHabitByPriority.editText as? AutoCompleteTextView
                 autoCompleteTextView?.setText(
                     habitPriorityMapper.getPriorityName(
-                        filterState.value?.filterByPriority ?: HabitPriority.CHOOSE
-                    ), false)
+                        state.filter?.filterByPriority ?: HabitPriority.CHOOSE
+                    ), false
+                )
             }
         }
-        observeEvents()
+        collectWithLifecycle(bottomViewModel.event) { event ->
+            observeEvents(event)
+            bottomViewModel.consumeEvents()
+        }
+
     }
 
     private fun clearTextInFindHabit() {
         val habitByName = binding.findHabitByTitle
-        habitByName.setEndIconOnClickListener{
+        habitByName.setEndIconOnClickListener {
             habitByName.editText?.text?.clear()
         }
     }
@@ -55,7 +62,8 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
         val priorityAdapter = ArrayAdapter(
             requireContext(),
             R.layout.filter_spinner_item,
-            bottomViewModel.getList())
+            bottomViewModel.getList()
+        )
         (binding.findHabitByPriority.editText as? AutoCompleteTextView)?.apply {
             setAdapter(priorityAdapter)
             setOnItemClickListener { _, _, position: Int, _ ->
@@ -72,9 +80,9 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
         }
     }
 
-    private fun setupCancelFilterButton() {
+    private fun setupCancelFilterButton(isFilterApplied: Boolean?) {
         val cancelButton = binding.cancelFilterButton
-        cancelButton.isVisible = bottomViewModel.filterState.value?.isFilterApplied ?: false
+        cancelButton.isVisible = isFilterApplied ?: false
         cancelButton.setOnClickListener {
             bottomViewModel.apply {
                 cancelFilter()
@@ -83,18 +91,19 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.filter_bottom_sh
         }
     }
 
-    private fun observeEvents() {
-        bottomViewModel.apply {
-            showErrorToast.observe(viewLifecycleOwner) {
+    private fun observeEvents(event: FilterEvent?) {
+        when (event) {
+            is FilterEvent.ShowErrorToast -> {
                 Toast.makeText(
                     requireContext(),
                     R.string.fill_the_filter_line,
                     Toast.LENGTH_SHORT
                 ).show()
             }
-            goBack.observe(viewLifecycleOwner) {
+            is FilterEvent.GoBack -> {
                 dismiss()
             }
+            null -> {}
         }
     }
 }
