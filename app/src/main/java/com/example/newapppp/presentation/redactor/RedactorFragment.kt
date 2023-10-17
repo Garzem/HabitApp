@@ -25,7 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class RedactorFragment : BaseFragment<UiState, RedactorEvents>(R.layout.redactor_fragment) {
+class RedactorFragment : BaseFragment<UiState, RedactorEvents>(R.layout.layout_compose) {
 
     @Inject
     lateinit var habitColorMapper: HabitColorMapper

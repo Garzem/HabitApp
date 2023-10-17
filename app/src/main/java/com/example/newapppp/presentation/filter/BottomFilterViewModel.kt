@@ -36,6 +36,12 @@ class BottomFilterViewModel @Inject constructor(
         selectedPriority = HabitPriority.values()[priorityInt]
     }
 
+    fun updateFilterTitle(newTitle: String) {
+        _state.update { state ->
+            state.copy(filter = state.filter?.copy(filterByTitle = newTitle))
+        }
+    }
+
     fun onFilterClicked(title: String) {
         if (title.isBlank() && selectedPriority == HabitPriority.CHOOSE) {
             _events.update {
