@@ -21,7 +21,8 @@ class BottomFilterViewModel @Inject constructor(
 ) : BaseViewModel<FilterState, FilterEvent>(
     initState = FilterState(
         selectedTitle = "",
-        selectedPriority = HabitPriority.CHOOSE.ordinal
+        selectedPriorityLocalized = habitPriorityMapper.getPriorityName(HabitPriority.CHOOSE),
+        selectedPriority = HabitPriority.CHOOSE
     )
 ) {
 
@@ -30,7 +31,8 @@ class BottomFilterViewModel @Inject constructor(
             _state.update { state ->
                 state.copy(
                     selectedTitle = filter.filterByTitle,
-                    selectedPriority = filter.filterByPriority.ordinal
+                    selectedPriorityLocalized = habitPriorityMapper.getPriorityName(filter.filterByPriority),
+                    selectedPriority = filter.filterByPriority
                 )
             }
         }.launchIn(viewModelScope)
@@ -45,8 +47,14 @@ class BottomFilterViewModel @Inject constructor(
             }
 
             is FilterAction.OnPriorityFilterChanged -> {
+                val habitPriority = HabitPriority.values().getOrElse(action.priorityIndex) {
+                    HabitPriority.CHOOSE
+                }
                 _state.update { state ->
-                    state.copy(selectedPriority = action.priority)
+                    state.copy(
+                        selectedPriorityLocalized = habitPriorityMapper.getPriorityName(habitPriority),
+                        selectedPriority = habitPriority
+                    )
                 }
             }
 
@@ -55,7 +63,7 @@ class BottomFilterViewModel @Inject constructor(
                         filterRepository.updateFilter { filter ->
                             filter.copy(
                                 filterByTitle = _state.value.selectedTitle,
-                                filterByPriority = HabitPriority.values()[_state.value.selectedPriority]
+                                filterByPriority = _state.value.selectedPriority
                             )
                         }
                         _events.update {
@@ -80,9 +88,5 @@ class BottomFilterViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun priorityIntToString(selectedPriority: Int): String {
-        return habitPriorityMapper.getPriorityName(HabitPriority.values()[selectedPriority])
     }
 }

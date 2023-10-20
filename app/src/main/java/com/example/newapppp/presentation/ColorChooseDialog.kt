@@ -69,9 +69,9 @@ class ColorChooseDialog : DialogFragment(R.layout.horizontal_color_choose_dialog
             HabitAppColors.PurpleDark
         )
         
-        Dialog(onDismissRequest = { onDismiss() }) {
-            
-        }
+//        Dialog(onDismissRequest = { onDismiss() }) {
+//
+//        }
     }
 
     @Composable

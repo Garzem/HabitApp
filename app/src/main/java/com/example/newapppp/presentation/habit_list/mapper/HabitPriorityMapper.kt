@@ -8,12 +8,10 @@ import javax.inject.Inject
 
 class HabitPriorityMapper @Inject constructor(@ApplicationContext private val context: Context) {
 
-    fun getPriorityName(priority: HabitPriority): String {
-        return when (priority) {
-            HabitPriority.CHOOSE -> context.getString(R.string.priority_choose)
-            HabitPriority.LOW -> context.getString(R.string.priority_low)
-            HabitPriority.MEDIUM -> context.getString(R.string.priority_medium)
-            HabitPriority.HIGH -> context.getString(R.string.priority_high)
+    fun getPriorityName(habitPriority: HabitPriority): String {
+        val array = context.resources.getStringArray(R.array.priority_array_string)
+        return array.getOrElse(habitPriority.ordinal) {
+            array[HabitPriority.CHOOSE.ordinal]
         }
     }
 }

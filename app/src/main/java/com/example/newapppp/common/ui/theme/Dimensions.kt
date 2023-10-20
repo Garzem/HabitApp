@@ -9,7 +9,8 @@ internal val LocalAppDimensions = staticCompositionLocalOf { AppDimensions() }
 data class AppDimensions(
     val paddingSmall: Dp = 4.dp,
     val paddingNormal: Dp = 8.dp,
-    val paddingLarge: Dp = 16.dp,
+    val paddingBig: Dp = 16.dp,
+    val paddingLarge: Dp = 24.dp,
     val paddingHuge: Dp = 32.dp,
     val colorButtonWidth: Dp = 50.dp,
     val colorButtonWidthSmall: Dp = 40.dp,

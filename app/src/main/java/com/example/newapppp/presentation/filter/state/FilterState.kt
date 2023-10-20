@@ -5,9 +5,10 @@ import com.example.newapppp.domain.model.HabitPriority
 
 data class FilterState(
     var selectedTitle: String,
-    var selectedPriority: Int
+    var selectedPriorityLocalized: String,
+    var selectedPriority: HabitPriority
 ): BaseState {
     val isFilterApplied: Boolean
         get() =
-            selectedTitle.isNotBlank() || selectedPriority != HabitPriority.CHOOSE.ordinal
+            selectedTitle.isNotBlank() || selectedPriority != HabitPriority.CHOOSE
 }
