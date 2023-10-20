@@ -1,7 +1,7 @@
 package com.example.newapppp.presentation.redactor
 
 import androidx.lifecycle.viewModelScope
-import com.example.newapppp.abstracts.BaseViewModel
+import com.example.newapppp.presentation.abstracts.BaseViewModel
 import com.example.newapppp.presentation.redactor.state.RedactorEvents
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitColor

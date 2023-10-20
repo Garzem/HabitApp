@@ -1,6 +1,6 @@
 package com.example.newapppp.presentation.redactor.state
 
-import com.example.newapppp.abstracts.BaseState
+import com.example.newapppp.presentation.abstracts.BaseState
 import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.domain.model.HabitCount
 import java.io.Serializable

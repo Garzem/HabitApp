@@ -1,7 +1,7 @@
 package com.example.newapppp.presentation.filter
 
 import androidx.lifecycle.viewModelScope
-import com.example.newapppp.abstracts.BaseViewModel
+import com.example.newapppp.presentation.abstracts.BaseViewModel
 import com.example.newapppp.domain.model.Filter
 import com.example.newapppp.domain.model.HabitPriority
 import com.example.newapppp.domain.repository.FilterRepository
@@ -16,62 +16,73 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BottomFilterViewModel @Inject constructor(
-    private val habitPriorityMapper: HabitPriorityMapper,
-    private val filterRepository: FilterRepository
-): BaseViewModel<FilterState, FilterEvent>(
-    initState = FilterState(null)
+    private val filterRepository: FilterRepository,
+    private val habitPriorityMapper: HabitPriorityMapper
+) : BaseViewModel<FilterState, FilterEvent>(
+    initState = FilterState(
+        selectedTitle = "",
+        selectedPriority = HabitPriority.CHOOSE.ordinal
+    )
 ) {
 
     init {
         filterRepository.filterFlow.onEach { filter ->
             _state.update { state ->
-                state.copy(filter = filter)
+                state.copy(
+                    selectedTitle = filter.filterByTitle,
+                    selectedPriority = filter.filterByPriority.ordinal
+                )
             }
         }.launchIn(viewModelScope)
     }
 
-    private var selectedPriority = HabitPriority.CHOOSE
-
-    fun onPriorityChanged(priorityInt: Int) {
-        selectedPriority = HabitPriority.values()[priorityInt]
-    }
-
-    fun updateFilterTitle(newTitle: String) {
-        _state.update { state ->
-            state.copy(filter = state.filter?.copy(filterByTitle = newTitle))
-        }
-    }
-
-    fun onFilterClicked(title: String) {
-        if (title.isBlank() && selectedPriority == HabitPriority.CHOOSE) {
-            _events.update {
-                FilterEvent.ShowErrorToast
+    fun onAction(action: FilterAction) {
+        when (action) {
+            is FilterAction.OnTitleFilterChanged -> {
+                _state.update { state ->
+                    state.copy(selectedTitle = action.title)
+                }
             }
-        } else {
-            filterRepository.updateFilter { filter ->
-                filter.copy(
-                    filterByTitle = title,
-                    filterByPriority = selectedPriority
-                )
+
+            is FilterAction.OnPriorityFilterChanged -> {
+                _state.update { state ->
+                    state.copy(selectedPriority = action.priority)
+                }
             }
-            _events.update {
-                FilterEvent.GoBack
+
+            is FilterAction.OnFilterButtonClick -> {
+                    if (_state.value.isFilterApplied) {
+                        filterRepository.updateFilter { filter ->
+                            filter.copy(
+                                filterByTitle = _state.value.selectedTitle,
+                                filterByPriority = HabitPriority.values()[_state.value.selectedPriority]
+                            )
+                        }
+                        _events.update {
+                            FilterEvent.GoBack
+                        }
+                    } else {
+                        _events.update {
+                            FilterEvent.ShowErrorToast
+                        }
+                    }
+                }
+
+            is FilterAction.OnCancelClick -> {
+                filterRepository.updateFilter {
+                    Filter(
+                        filterByTitle = "",
+                        filterByPriority = HabitPriority.CHOOSE
+                    )
+                }
+                _events.update {
+                    FilterEvent.GoBack
+                }
             }
         }
     }
 
-    fun cancelFilter() {
-        filterRepository.updateFilter {
-            Filter(
-                filterByTitle = "",
-                filterByPriority = HabitPriority.CHOOSE
-            )
-        }
-    }
-
-    fun getList(): List<String> {
-        return HabitPriority.values().map {
-            habitPriorityMapper.getPriorityName(it)
-        }
+    fun priorityIntToString(selectedPriority: Int): String {
+        return habitPriorityMapper.getPriorityName(HabitPriority.values()[selectedPriority])
     }
 }

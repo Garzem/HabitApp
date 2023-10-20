@@ -78,11 +78,6 @@
     <string name="find_habit_by_name_icon">Иконка найти по названию</string>
     <string name="find_habit_by_priority_icon">Иконка найти по приоритету</string>
 
-    <string name="priority_choose">Приоритет</string>
-    <string name="priority_low">Низкий</string>
-    <string name="priority_medium">Средний</string>
-    <string name="priority_high">Высокий</string>
-
     <string name="count_choose">Выберите период</string>
     <string name="count_week">Неделя</string>
     <string name="count_month">Месяц</string>
@@ -106,4 +101,16 @@
     <string name="mark_day_string">Отметить день</string>
     <string name="choose_the_date_string">Выберите дату</string>
     <string name="checkmark_string">галка</string>
+
+    <string name="priority_choose">Приоритет</string>
+    <string name="priority_low">Низкий</string>
+    <string name="priority_medium">Средний</string>
+    <string name="priority_high">Высокий</string>
+
+    <string-array name="priority_array_string">
+        <item>Низкий</item>
+        <item>Средний</item>
+        <item>Высокий</item>
+        <item>Приоритет</item>
+    </string-array>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.newapppp.abstracts
+package com.example.newapppp.presentation.abstracts
 
 import android.os.Bundle
 import android.view.View

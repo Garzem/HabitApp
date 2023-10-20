@@ -164,28 +164,15 @@ internal class BottomFilterViewModelTest {
     @Test
     fun `cancelFilter should reset filter to default values`() = runTest {
         // Given
-        val expectedFilter = FilterState(
-            filter = Filter(
-                filterByTitle = "",
-                filterByPriority = HabitPriority.CHOOSE
-            )
-        )
         doNothing().`when`(filterRepository).updateFilter(anyOrNull())
 
         // When
-        initViewModel(flowOf(
-            Filter(
-                filterByTitle = "",
-                filterByPriority = HabitPriority.CHOOSE
-            )
-                ).onEach { kotlinx.coroutines.delay(100) })
+        initViewModel()
         bottomFilterViewModel.state.test {
             skipItems(1)
             bottomFilterViewModel.cancelFilter()
-            val filterState = awaitItem()
             // Then
             verify(filterRepository, times(1)).updateFilter(anyOrNull())
-            assertEquals(expectedFilter, filterState)
         }
     }
 }

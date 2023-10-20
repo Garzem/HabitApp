@@ -2,7 +2,7 @@ package com.example.newapppp.presentation.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newapppp.abstracts.BaseViewModel
+import com.example.newapppp.presentation.abstracts.BaseViewModel
 import com.example.newapppp.domain.INetworkUtil
 import com.example.newapppp.domain.usecase.main.FetchHabitListUseCase
 import com.example.newapppp.domain.usecase.main.DeleteOfflineDeletedHabitsUseCase

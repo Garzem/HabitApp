@@ -1,4 +1,4 @@
-package com.example.newapppp.abstracts
+package com.example.newapppp.presentation.abstracts
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

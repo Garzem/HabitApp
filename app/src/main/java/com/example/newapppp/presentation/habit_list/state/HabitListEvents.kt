@@ -1,6 +1,6 @@
 package com.example.newapppp.presentation.habit_list.state
 
-import com.example.newapppp.abstracts.BaseEvent
+import com.example.newapppp.presentation.abstracts.BaseEvent
 import com.example.newapppp.domain.model.Message
 
 sealed interface HabitListEvents: BaseEvent {

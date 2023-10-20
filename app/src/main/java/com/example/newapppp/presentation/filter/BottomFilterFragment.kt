@@ -2,45 +2,42 @@ package com.example.newapppp.presentation.filter
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.Toast
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
+import com.example.newapppp.presentation.abstracts.Suggestion
+import com.example.newapppp.common.ui.element.buttons.BaseButton
+import com.example.newapppp.common.ui.element.buttons.BaseButtonDefaults
+import com.example.newapppp.common.ui.element.textfield.BaseTextField
+import com.example.newapppp.common.ui.element.textfield.TextFieldWithMenu
+import com.example.newapppp.common.ui.theme.HabitTheme
 import com.example.newapppp.common.ui.theme.color.HabitAppColors
-import com.example.newapppp.databinding.FilterBottomSheetBinding
-import com.example.newapppp.databinding.LayoutComposeBinding
-import com.example.newapppp.domain.model.HabitPriority
+import com.example.newapppp.databinding.LayoutBottomSheetComposeBinding
 import com.example.newapppp.presentation.filter.state.FilterEvent
+import com.example.newapppp.presentation.filter.state.FilterState
 import com.example.newapppp.presentation.habit_list.mapper.HabitPriorityMapper
 import com.example.newapppp.presentation.util.collectWithLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -48,9 +45,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class BottomFilterFragment : BottomSheetDialogFragment(R.layout.layout_compose) {
+class BottomFilterFragment : BottomSheetDialogFragment(R.layout.layout_bottom_sheet_compose) {
 
-    private val viewBinding by viewBinding(LayoutComposeBinding::bind)
+    private val binding by viewBinding(LayoutBottomSheetComposeBinding::bind)
     private val bottomViewModel: BottomFilterViewModel by viewModels()
 
 
@@ -59,28 +56,13 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.layout_compose) 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewBinding.root.setContent {
-            CreateFilterTitle()
-            FindHabitByTitle { newFilterByTitle ->
-                bottomViewModel.updateFilterTitle(newFilterByTitle)
-            }
+        binding.root.setContent {
+            val state by bottomViewModel.state.collectAsStateWithLifecycle()
+            FilterScreen(
+                state = state,
+                onAction = bottomViewModel::onAction
+            )
         }
-
-//        clearTextInFindHabit()
-//        setupFilterSpinner()
-//        setupFilterButton()
-//        collectWithLifecycle(bottomViewModel.state) { state ->
-//            setupCancelFilterButton(state.filter?.isFilterApplied)
-//            binding.apply {
-//                findHabitByTitle.editText?.setText(state.filter?.filterByTitle)
-//                val autoCompleteTextView = findHabitByPriority.editText as? AutoCompleteTextView
-//                autoCompleteTextView?.setText(
-//                    habitPriorityMapper.getPriorityName(
-//                        state.filter?.filterByPriority ?: HabitPriority.CHOOSE
-//                    ), false
-//                )
-//            }
-//        }
         collectWithLifecycle(bottomViewModel.event) { event ->
             observeEvents(event)
             bottomViewModel.consumeEvents()
@@ -88,45 +70,6 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.layout_compose) 
 
     }
 
-//    private fun clearTextInFindHabit() {
-//        val habitByName = binding.findHabitByTitle
-//        habitByName.setEndIconOnClickListener {
-//            habitByName.editText?.text?.clear()
-//        }
-//    }
-//
-//    private fun setupFilterSpinner() {
-//        val priorityAdapter = ArrayAdapter(
-//            requireContext(),
-//            R.layout.filter_spinner_item,
-//            bottomViewModel.getList()
-//        )
-//        (binding.findHabitByPriority.editText as? AutoCompleteTextView)?.apply {
-//            setAdapter(priorityAdapter)
-//            setOnItemClickListener { _, _, position: Int, _ ->
-//                if (position > 0) {
-//                    bottomViewModel.onPriorityChanged(position)
-//                }
-//            }
-//        }
-//    }
-//
-//    private fun setupFilterButton() {
-//        binding.startFilterButton.setOnClickListener {
-//            bottomViewModel.onFilterClicked(binding.findHabitByTitle.editText?.text.toString())
-//        }
-//    }
-//
-//    private fun setupCancelFilterButton(isFilterApplied: Boolean?) {
-//        val cancelButton = binding.cancelFilterButton
-//        cancelButton.isVisible = isFilterApplied ?: false
-//        cancelButton.setOnClickListener {
-//            bottomViewModel.apply {
-//                cancelFilter()
-//                dismiss()
-//            }
-//        }
-//    }
 
     private fun observeEvents(event: FilterEvent?) {
         when (event) {
@@ -144,7 +87,45 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.layout_compose) 
         }
     }
 
+    @Composable
+    private fun FilterScreen(
+        state: FilterState,
+        onAction: (FilterAction) -> Unit
+    ) {
+        Column {
+            CreateFilterTitle()
+            FindHabitByTitle(
+                title = state.selectedTitle,
+                onValueChanged = {
+                    onAction(FilterAction.OnTitleFilterChanged(it))
+                }
+            )
+            FieldWithMenu(
+                selected = state.selectedPriority,
+                onSuggestionClick = {
+                    onAction(FilterAction.OnPriorityFilterChanged(it.id))
+                }
+            )
+            FilterButtons(
+                onFilterButtonClick = {
+                    onAction(FilterAction.OnFilterButtonClick)
+                },
+                onCancelClicked = {
+                    onAction(FilterAction.OnCancelClick)
+                }
+            )
+        }
+    }
+
     @Preview
+    @Composable
+    fun FilterScreenPreview() {
+        FilterScreen(
+            state = FilterState("", 0),
+            onAction = {}
+        )
+    }
+
     @Composable
     fun CreateFilterTitle() {
         Text(
@@ -157,61 +138,109 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.layout_compose) 
     }
 
     @Composable
-    fun FindHabitByTitle(onValueChanged: (String) -> Unit) {
-        var text by remember { mutableStateOf(TextFieldValue()) }
-
-        OutlinedTextField(
-            value = text,
+    fun FindHabitByTitle(
+        title: String,
+        onValueChanged: (String) -> Unit
+    ) {
+        BaseTextField(
+            value = title,
             onValueChange = {
-                text = it
-                onValueChanged(it.text)
+                onValueChanged(title)
             },
-            label = { Text(text = stringResource(id = R.string.find_habit_by_name_string)) },
-            singleLine = true,
-            trailingIcon = {
-                IconButton(onClick = { text = TextFieldValue("") }) {
+            labelStringId = R.string.find_habit_by_name_string,
+            leadingIcon = {
+                IconButton(onClick = { TextFieldValue("") }) {
                     Icon(
                         painter = painterResource(id = R.drawable.find_by_name),
-                        contentDescription = stringResource(id = R.string.find_habit_by_name_icon))
+                        contentDescription = stringResource(id = R.string.find_habit_by_name_icon)
+                    )
                 }
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.small_margin))
-                .padding(top = dimensionResource(id = R.dimen.large_margin)),
+                .padding(horizontal = HabitTheme.dimensions.paddingNormal)
+                .padding(top = HabitTheme.dimensions.paddingLarge),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = HabitAppColors.Purple,
+                focusedBorderColor = HabitAppColors.PurpleDeep,
                 unfocusedBorderColor = HabitAppColors.GreyLight
             )
         )
+    }
+
+    @Preview
+    @Composable
+    fun FindHabitByTitlePreview() {
+        FindHabitByTitle("", {})
     }
 
     @Composable
-    fun FindHabitByPriority(priorities: List<>) {
-        var selectedPriority by remember { mutableIntStateOf(priorities[0]) }
+    fun FieldWithMenu(
+        selected: Int ,
+        onSuggestionClick: (Suggestion) -> Unit
+    ) {
+        var expanded by remember { mutableStateOf(false) }
 
-        OutlinedTextField(
-            value = selectedPriority,
-            onValueChange = {
-                selectedPriority = it
-            },
-            label = { Text(text = stringResource(id = R.string.find_habit_by_name_string)) },
-            singleLine = true,
-            trailingIcon = {
-                IconButton(onClick = { text = TextFieldValue("") }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.find_by_name),
-                        contentDescription = stringResource(id = R.string.find_habit_by_name_icon))
-                }
-            },
+        TextFieldWithMenu(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.small_margin))
-                .padding(top = dimensionResource(id = R.dimen.large_margin)),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = HabitAppColors.Purple,
-                unfocusedBorderColor = HabitAppColors.GreyLight
-            )
+                .padding(horizontal = HabitTheme.dimensions.paddingNormal)
+                .padding(top = HabitTheme.dimensions.paddingLarge),
+            expanded = expanded,
+            onExpandedChange = { value ->
+                expanded = value
+            },
+            value = bottomViewModel.priorityIntToString(selected),
+            labelStringId = R.string.find_habit_by_priority_string,
+            suggestionsList = stringArrayResource(id = R.array.priority_array_string)
+                .mapIndexed { id, value ->
+                    Suggestion(id, value)
+                },
+            onSuggestionClick = { suggestion ->
+                onSuggestionClick(suggestion)
+            },
+            leadingIcon = {
+                IconButton(onClick = { TextFieldValue("") }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.find_by_priority),
+                        contentDescription = stringResource(id = R.string.find_habit_by_priority_icon)
+                    )
+                }
+            }
         )
     }
+
+    @Preview
+    @Composable
+    fun FieldWithMenuPreview() {
+        FieldWithMenu(0, {})
+    }
+
+    @Composable
+    fun FilterButtons(
+        onFilterButtonClick: () -> Unit,
+        onCancelClicked: () -> Unit
+    ) {
+        val isFilterApplied by remember { mutableStateOf(bottomViewModel.state.value.isFilterApplied) }
+
+        Column {
+            BaseButton(
+                text = stringResource(id = R.string.filter_button_string),
+                onClick = onFilterButtonClick,
+                rounded = false
+            )
+            BaseButton(
+                text = stringResource(id = R.string.cancel_filter_button),
+                onClick = onCancelClicked,
+                colors = BaseButtonDefaults.secondaryButtonColors,
+                rounded = false,
+                isEnabled = isFilterApplied
+            )
+        }
+    }
+
+    @Preview
+    @Composable
+    fun FilterButtonsPreview() {
+        FilterButtons({}, {})
+    }
 }
+
