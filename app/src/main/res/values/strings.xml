@@ -60,7 +60,9 @@
     <string name="creation_date">Date of creation</string>
     <string name="colorText">Цвет</string>
     <string name="info_about_app">О приложении</string>
+    <string name="info_about_app_icon_string">Иконка "О приложении"</string>
     <string name="home_page_title">Главная</string>
+    <string name="home_page_title_icon_string">Иконка "Главная"</string>
     <string name="icon_of_the_app_title">Иконка приложения</string>
     <string name="achiever_title">Приложение для создания хобби \'Достигатор\'</string>
     <string name="version_1_0">Версия 1.0</string>
@@ -68,6 +70,11 @@
     <string name="developer_one_name">Сахан</string>
     <string name="developer_two_name">Палкан</string>
     <string name="redactor_habit_title">Редактор привычки</string>
+
+    <string name="user_name_string">Имя пользователя</string>
+    <string name="about_me_string">Обо мне</string>
+    <string name="profile_description_string">Фото профиля</string>
+    <string name="habits_string">Привычки</string>
 
     <string name="color_choose_title">Выбор цвета</string>
     <string name="filter_title">Фильрация</string>

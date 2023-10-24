@@ -14,7 +14,8 @@ class AppColors(
     primary: Color,
     secondary: Color,
     onPrimary: Color,
-    onSecondary: Color
+    onSecondary: Color,
+    onProfileBackground: Color
 ) {
     var background by mutableStateOf(background)
         private set
@@ -29,6 +30,9 @@ class AppColors(
     var onSecondary by mutableStateOf(onSecondary)
         private set
 
+    var onAvatarBackground by mutableStateOf(onProfileBackground)
+        private set
+
     fun copy(
         background: Color = this.background,
         onBackground: Color = this.onBackground,
@@ -36,13 +40,15 @@ class AppColors(
         secondary: Color = this.secondary,
         onPrimary: Color = this.onPrimary,
         onSecondary: Color = this.onPrimary,
+        onAvatarBackground: Color = this.onAvatarBackground
     ) = AppColors(
         background = background,
         onBackground = onBackground,
         primary = primary,
         secondary = secondary,
         onPrimary = onPrimary,
-        onSecondary = onSecondary
+        onSecondary = onSecondary,
+        onProfileBackground = onAvatarBackground
     )
 
     fun update(other: AppColors) {

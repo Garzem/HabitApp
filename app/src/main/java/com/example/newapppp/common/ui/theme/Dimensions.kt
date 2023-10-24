@@ -16,5 +16,8 @@ data class AppDimensions(
     val colorButtonWidthSmall: Dp = 40.dp,
     val buttonRadius: Dp = 20.dp,
     val bottomSheetRadius: Dp = 16.dp,
-    val boxRadius: Dp = 0.dp
+    val boxRadius: Dp = 0.dp,
+    val profile: Dp = 80.dp,
+    val spacer: Dp = 16.dp,
+    val navigationHeight: Dp = 48.dp
 )
