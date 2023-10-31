@@ -15,7 +15,11 @@ class AppColors(
     secondary: Color,
     onPrimary: Color,
     onSecondary: Color,
-    onProfileBackground: Color
+    onProfileBackground: Color,
+    selected: Color,
+    anotherTextColor: Color,
+    borderStroke: Color,
+    colorTextInField: Color
 ) {
     var background by mutableStateOf(background)
         private set
@@ -27,10 +31,17 @@ class AppColors(
         private set
     var onPrimary by mutableStateOf(onPrimary)
         private set
+    var onProfileBackground by mutableStateOf(onProfileBackground)
+        private set
     var onSecondary by mutableStateOf(onSecondary)
         private set
-
-    var onAvatarBackground by mutableStateOf(onProfileBackground)
+    var selected by mutableStateOf(selected)
+        private set
+    var anotherTextColor by mutableStateOf(anotherTextColor)
+        private set
+    var borderStroke by mutableStateOf(borderStroke)
+        private set
+    var colorTextInField by mutableStateOf(colorTextInField)
         private set
 
     fun copy(
@@ -40,7 +51,11 @@ class AppColors(
         secondary: Color = this.secondary,
         onPrimary: Color = this.onPrimary,
         onSecondary: Color = this.onPrimary,
-        onAvatarBackground: Color = this.onAvatarBackground
+        onProfileBackground: Color = this.onProfileBackground,
+        selected: Color = this.selected,
+        anotherTextColor: Color = this.anotherTextColor,
+        borderStroke: Color = this.borderStroke,
+        colorTextInField: Color = this.colorTextInField
     ) = AppColors(
         background = background,
         onBackground = onBackground,
@@ -48,7 +63,11 @@ class AppColors(
         secondary = secondary,
         onPrimary = onPrimary,
         onSecondary = onSecondary,
-        onProfileBackground = onAvatarBackground
+        onProfileBackground = onProfileBackground,
+        selected = selected,
+        anotherTextColor = anotherTextColor,
+        borderStroke = borderStroke,
+        colorTextInField = colorTextInField
     )
 
     fun update(other: AppColors) {
@@ -58,5 +77,10 @@ class AppColors(
         secondary = other.secondary
         onPrimary = other.onPrimary
         onSecondary = other.onSecondary
+        onProfileBackground = other.onProfileBackground
+        selected = other.selected
+        anotherTextColor = other.anotherTextColor
+        borderStroke = other.borderStroke
+        colorTextInField = other.colorTextInField
     }
 }

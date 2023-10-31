@@ -8,12 +8,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.window.Dialog
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
-import com.example.newapppp.common.ui.element.buttons.BaseButton
+import com.example.newapppp.common.ui.element.button.BaseButton
 import com.example.newapppp.common.ui.theme.HabitTheme
 import com.example.newapppp.common.ui.theme.color.HabitAppColors
 import com.example.newapppp.databinding.HorizontalColorChooseDialogBinding

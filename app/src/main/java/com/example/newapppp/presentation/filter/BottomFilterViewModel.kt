@@ -1,10 +1,10 @@
 package com.example.newapppp.presentation.filter
 
 import androidx.lifecycle.viewModelScope
-import com.example.newapppp.presentation.abstracts.BaseViewModel
 import com.example.newapppp.domain.model.Filter
 import com.example.newapppp.domain.model.HabitPriority
 import com.example.newapppp.domain.repository.FilterRepository
+import com.example.newapppp.presentation.abstracts.BaseViewModel
 import com.example.newapppp.presentation.filter.state.FilterEvent
 import com.example.newapppp.presentation.filter.state.FilterState
 import com.example.newapppp.presentation.habit_list.mapper.HabitPriorityMapper

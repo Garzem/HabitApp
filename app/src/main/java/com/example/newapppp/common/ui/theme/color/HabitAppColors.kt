@@ -13,7 +13,7 @@ object HabitAppColors {
     val TealDark = Color(0xFF018786)
     val Black1 = Color(0xFF000000)
     val Black2 = Color(0xFF2a2a2a)
-    val DarkGrey = Color(0xFF545454)
+    val GreyDark = Color(0xFF545454)
     val GreyLight = Color(0xFF7f7f7f)
     val White = Color(0xFFFFFFFF)
     val Pink = Color(0xFFF50057)

@@ -34,8 +34,8 @@
     <string name="frequency_doing_habit">Частота</string>
     <string name="execution_frequency">Периодичность выполнения</string>
 
-    <string name="save">Сохранить</string>
-    <string name="delete">Удалить</string>
+    <string name="save_string">Сохранить</string>
+    <string name="delete_string">Удалить</string>
 
     <string name="something">Something</string>
 
@@ -58,7 +58,7 @@
     <string name="priority">priority</string>
     <string name="type">type</string>
     <string name="creation_date">Date of creation</string>
-    <string name="colorText">Цвет</string>
+    <string name="color_string">Цвет</string>
     <string name="info_about_app">О приложении</string>
     <string name="info_about_app_icon_string">Иконка "О приложении"</string>
     <string name="home_page_title">Главная</string>
@@ -69,7 +69,9 @@
     <string name="developers_text_title">Разработчики</string>
     <string name="developer_one_name">Сахан</string>
     <string name="developer_two_name">Палкан</string>
-    <string name="redactor_habit_title">Редактор привычки</string>
+    <string name="redactor_title">Редактор</string>
+
+    <string name="empty_string"/>
 
     <string name="user_name_string">Имя пользователя</string>
     <string name="about_me_string">Обо мне</string>
@@ -84,11 +86,6 @@
 
     <string name="find_habit_by_name_icon">Иконка найти по названию</string>
     <string name="find_habit_by_priority_icon">Иконка найти по приоритету</string>
-
-    <string name="count_choose">Выберите период</string>
-    <string name="count_week">Неделя</string>
-    <string name="count_month">Месяц</string>
-    <string name="count_year">Год</string>
 
     <string name="count_choose_ui">выберите период</string>
     <string name="count_week_ui">неделю</string>
@@ -114,10 +111,20 @@
     <string name="priority_medium">Средний</string>
     <string name="priority_high">Высокий</string>
 
+    <string name="period_string">Период</string>
+    <string name="priority_string">Приоритет</string>
+
     <string-array name="priority_array_string">
         <item>Низкий</item>
         <item>Средний</item>
         <item>Высокий</item>
-        <item>Приоритет</item>
+        <item>Выберите приоритет</item>
+    </string-array>
+
+    <string-array name="count_array_string">
+        <item>Неделя</item>
+        <item>Месяц</item>
+        <item>Год</item>
+        <item>Выберите период</item>
     </string-array>
 </resources>

@@ -1,6 +1,5 @@
 package com.example.newapppp.presentation.main
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newapppp.presentation.abstracts.BaseViewModel
 import com.example.newapppp.domain.INetworkUtil
@@ -9,11 +8,8 @@ import com.example.newapppp.domain.usecase.main.DeleteOfflineDeletedHabitsUseCas
 import com.example.newapppp.domain.usecase.main.PostOfflineHabitListUseCase
 import com.example.newapppp.domain.usecase.main.PutOfflineHabitListUseCase
 import com.example.newapppp.presentation.main.state.MainState
-import com.example.newapppp.presentation.main.state.NoEvent
+import com.example.newapppp.presentation.main.state.MainEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -26,12 +22,24 @@ class MainViewModel @Inject constructor(
     private val putOfflineHabitListUseCase: PutOfflineHabitListUseCase,
     private val fetchHabitListUseCase: FetchHabitListUseCase,
     private val postOfflineHabitListUseCase: PostOfflineHabitListUseCase
-) : BaseViewModel<MainState, NoEvent>(
-    initState = MainState(false)
+) : BaseViewModel<MainState, MainEvent>(
+    initState = MainState(connected = false, navItem = null)
 ) {
 
     init {
         observeNetworkConnection()
+    }
+
+    fun onNavDestinationUpdated(navItem: NavItem?) {
+        _state.update {
+            it.copy(navItem = navItem)
+        }
+    }
+
+    fun openDrawer() {
+        _events.update {
+            MainEvent.OpenDrawer
+        }
     }
 
     private fun observeNetworkConnection() {

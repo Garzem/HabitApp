@@ -1,8 +1,6 @@
 package com.example.newapppp.presentation.redactor
 
 import androidx.lifecycle.viewModelScope
-import com.example.newapppp.presentation.abstracts.BaseViewModel
-import com.example.newapppp.presentation.redactor.state.RedactorEvents
 import com.example.newapppp.domain.model.Habit
 import com.example.newapppp.domain.model.HabitColor
 import com.example.newapppp.domain.model.HabitCount
@@ -12,8 +10,10 @@ import com.example.newapppp.domain.model.HabitType
 import com.example.newapppp.domain.usecase.DeleteHabitUseCase
 import com.example.newapppp.domain.usecase.redactor.GetHabitByIdUseCase
 import com.example.newapppp.domain.usecase.redactor.SaveOrUpdateHabitUseCase
+import com.example.newapppp.presentation.abstracts.BaseViewModel
 import com.example.newapppp.presentation.habit_list.mapper.HabitCountMapper
 import com.example.newapppp.presentation.habit_list.mapper.HabitPriorityMapper
+import com.example.newapppp.presentation.redactor.state.RedactorEvents
 import com.example.newapppp.presentation.redactor.state.UiState
 import com.example.newapppp.presentation.util.DateGenerator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,19 +34,82 @@ class RedactorFragmentViewModel @Inject constructor(
         id = null,
         uid = null,
         title = "",
-        titleCursorPosition = 0,
         description = "",
-        descriptionCursorPosition = 0,
         color = HabitColor.ORANGE,
         priority = 3,
+        selectedPriorityLocalized = habitPriorityMapper.getPriorityName(HabitPriority.values()[3]),
         type = 0,
         frequency = "",
-        frequencyCursorPosition = 0,
         count = 3,
+        selectedCountLocalized = habitCountMapper.getCountName(HabitCount.values()[3]),
         doneDates = emptyList()
     )
 ) {
     private var creationDate: Long? = null
+
+    fun onAction(action: RedactorAction) {
+        when (action) {
+            is RedactorAction.OnTitleChanged -> {
+                _state.update { state ->
+                    state.copy(title = action.title)
+                }
+            }
+
+            is RedactorAction.OnDescriptionChanged -> {
+                _state.update { state ->
+                    state.copy(description = action.description)
+                }
+            }
+
+            is RedactorAction.OnFrequencyChanged -> {
+                _state.update { state ->
+                    state.copy(frequency = action.frequency)
+                }
+            }
+
+            is RedactorAction.OnCountChanged -> {
+                val habitCount = HabitCount.values().getOrElse(action.countIndex) {
+                    HabitCount.CHOOSE
+                }
+                _state.update { state ->
+                    state.copy(
+                        selectedCountLocalized = habitCountMapper.getCountName(habitCount),
+                        count = action.countIndex
+                    )
+                }
+            }
+
+            is RedactorAction.OnPriorityChanged -> {
+                val habitPriority = HabitPriority.values().getOrElse(action.priorityIndex) {
+                    HabitPriority.CHOOSE
+                }
+                _state.update { state ->
+                    state.copy(
+                        selectedPriorityLocalized = habitPriorityMapper.getPriorityName(
+                            habitPriority
+                        ),
+                        priority = action.priorityIndex
+                    )
+                }
+            }
+
+            is RedactorAction.OnRadioButtonClick -> {
+                _state.update { state ->
+                    state.copy(
+                        type = HabitType.values().indexOf(action.type)
+                    )
+                }
+            }
+
+            is RedactorAction.OnSaveButtonClick -> {
+                saveClick()
+            }
+
+            is RedactorAction.OnDeleteButtonClick -> {
+                deleteHabit()
+            }
+        }
+    }
 
     fun setHabit(habitId: String?) {
         if (habitId != null) {
@@ -57,15 +120,14 @@ class RedactorFragmentViewModel @Inject constructor(
                     id = habit.id,
                     uid = habit.uid,
                     title = habit.title,
-                    titleCursorPosition = 0,
                     description = habit.description,
-                    descriptionCursorPosition = 0,
                     color = habit.color,
                     priority = HabitPriority.values().indexOf(habit.priority),
+                    selectedPriorityLocalized = habitPriorityMapper.getPriorityName(habit.priority),
                     type = HabitType.values().indexOf(habit.type),
                     frequency = habit.frequency.toString(),
-                    frequencyCursorPosition = 0,
                     count = HabitCount.values().indexOf(habit.count),
+                    selectedCountLocalized = habitCountMapper.getCountName(habit.count),
                     doneDates = habit.doneDates
                 )
             }
@@ -81,58 +143,6 @@ class RedactorFragmentViewModel @Inject constructor(
     fun saveColor(color: HabitColor) {
         _state.update { state ->
             state.copy(color = color)
-        }
-    }
-
-    fun onTitleChanged(title: String, cursorPosition: Int) {
-        _state.update { state ->
-            state.copy(
-                title = title,
-                titleCursorPosition = cursorPosition
-            )
-        }
-    }
-
-    fun onDescriptionChanged(description: String, cursorPosition: Int) {
-        _state.update { state ->
-            state.copy(
-                description = description,
-                descriptionCursorPosition = cursorPosition
-            )
-        }
-    }
-
-    fun onFrequencyChanged(frequency: String, cursorPosition: Int) {
-        _state.update { state ->
-            state.copy(
-                frequency = frequency,
-                frequencyCursorPosition = cursorPosition
-            )
-        }
-    }
-
-    fun onPrioritySelected(priorityPosition: Int) {
-        _state.update { state ->
-            state.copy(priority = priorityPosition)
-        }
-    }
-
-
-    fun onCountSelected(countPosition: Int) {
-        _state.update { state ->
-            state.copy(count = countPosition)
-        }
-    }
-
-    fun getHabitPriorityList(): List<String> {
-        return HabitPriority.values().map {
-            habitPriorityMapper.getPriorityName(it)
-        }
-    }
-
-    fun getHabitCountList(): List<String> {
-        return HabitCount.values().map {
-            habitCountMapper.getCountNameInRedactorFragment(it)
         }
     }
 

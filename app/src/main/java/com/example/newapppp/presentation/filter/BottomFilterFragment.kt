@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,21 +21,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newapppp.R
 import com.example.newapppp.presentation.abstracts.Suggestion
-import com.example.newapppp.common.ui.element.buttons.BaseButton
-import com.example.newapppp.common.ui.element.buttons.BaseButtonDefaults
+import com.example.newapppp.common.ui.element.button.BaseButton
+import com.example.newapppp.common.ui.element.button.BaseButtonDefaults
+import com.example.newapppp.common.ui.element.text.BaseText
 import com.example.newapppp.common.ui.element.textfield.BaseTextField
-import com.example.newapppp.common.ui.element.textfield.TextFieldWithMenu
+import com.example.newapppp.common.ui.element.textmenu.TextFieldWithMenu
 import com.example.newapppp.common.ui.theme.HabitTheme
+import com.example.newapppp.common.ui.theme.bold
 import com.example.newapppp.common.ui.theme.color.HabitAppColors
 import com.example.newapppp.databinding.LayoutBottomSheetComposeBinding
 import com.example.newapppp.domain.model.HabitPriority
@@ -54,8 +51,7 @@ import javax.inject.Inject
 class BottomFilterFragment : BottomSheetDialogFragment(R.layout.layout_bottom_sheet_compose) {
 
     private val binding by viewBinding(LayoutBottomSheetComposeBinding::bind)
-    private val bottomViewModel: BottomFilterViewModel by viewModels()
-
+    private val viewModel: BottomFilterViewModel by viewModels()
 
     @Inject
     lateinit var habitPriorityMapper: HabitPriorityMapper
@@ -63,15 +59,15 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.layout_bottom_sh
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.root.setContentWithTheme {
-            val state by bottomViewModel.state.collectAsStateWithLifecycle()
+            val state by viewModel.state.collectAsStateWithLifecycle()
             FilterScreen(
                 state = state,
-                onAction = bottomViewModel::onAction
+                onAction = viewModel::onAction
             )
         }
-        collectWithLifecycle(bottomViewModel.event) { event ->
+        collectWithLifecycle(viewModel.event) { event ->
             observeEvents(event)
-            bottomViewModel.consumeEvents()
+            viewModel.consumeEvents()
         }
 
     }
@@ -112,7 +108,10 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.layout_bottom_sh
                 )
                 .background(HabitTheme.colors.background)
         ) {
-            CreateFilterTitle()
+            BaseText(
+                textStringId = R.string.filters_string,
+                textStyle = HabitTheme.typography.titleLarge.bold
+            )
             FindHabitByTitle(
                 title = state.selectedTitle,
                 onAction = onAction
@@ -129,24 +128,7 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.layout_bottom_sh
     }
 
     @Composable
-    fun CreateFilterTitle() {
-        Text(
-            text = stringResource(id = R.string.filters_string),
-            style = MaterialTheme.typography.bodyLarge,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = HabitAppColors.Black1,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    top = HabitTheme.dimensions.paddingNormal
-                ),
-            textAlign = TextAlign.Center
-        )
-    }
-
-    @Composable
-    fun FindHabitByTitle(
+    private fun FindHabitByTitle(
         title: String,
         onAction: (FilterAction) -> Unit
     ) {
@@ -176,7 +158,7 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.layout_bottom_sh
     }
 
     @Composable
-    fun FieldWithMenu(
+    private fun FieldWithMenu(
         selectedPriority: String,
         onAction: (FilterAction) -> Unit
     ) {
@@ -211,14 +193,13 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.layout_bottom_sh
     }
 
     @Composable
-    fun FilterButtons(
+    private fun FilterButtons(
         isFilterApplied: Boolean,
         onAction: (FilterAction) -> Unit
     ) {
-
         Column {
             BaseButton(
-                text = stringResource(id = R.string.filter_button_string),
+                textStringId = R.string.filter_button_string,
                 onClick = {
                     onAction(FilterAction.OnFilterButtonClick)
                 },
@@ -228,7 +209,7 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.layout_bottom_sh
                 )
             )
             BaseButton(
-                text = stringResource(id = R.string.cancel_filter_button),
+                textStringId = R.string.cancel_filter_button,
                 onClick = {
                     onAction(FilterAction.OnCancelClick)
                 },
@@ -241,7 +222,7 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.layout_bottom_sh
 
     @Preview
     @Composable
-    fun FilterNotAppliedScreenPreview() {
+    private fun FilterNotAppliedScreenPreview() {
         FilterScreen(
             state = FilterState(
                 selectedTitle = "",
@@ -254,7 +235,7 @@ class BottomFilterFragment : BottomSheetDialogFragment(R.layout.layout_bottom_sh
 
     @Preview
     @Composable
-    fun FilterAppliedScreenPreview() {
+    private fun FilterAppliedScreenPreview() {
         FilterScreen(
             state = FilterState(
                 selectedTitle = "",

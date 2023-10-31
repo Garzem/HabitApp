@@ -1,9 +1,7 @@
 package com.example.newapppp.presentation.habit_list.habit_adapter
 
 import android.content.Context
-import android.os.Build
 import android.view.animation.AlphaAnimation
-import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newapppp.R
@@ -31,12 +29,12 @@ class HabitUIViewHolder(
             title.text = habit.title
             description.text = habit.description
             creationDate.text = habit.creationDate
-            colorMain.setBackgroundResource(habitColorMapper.getBackGroundResId(habit.color))
-            colorSupport.setBackgroundResource(habitColorMapper.getBackGroundResId(habit.color))
+//            colorMain.setBackgroundResource(habitColorMapper.getColor(habit.color))
+//            colorSupport.setBackgroundResource(habitColorMapper.getColor(habit.color))
             priority.text = habitPriorityMapper.getPriorityName(habit.priority)
             performanceStandard.text = context.getString(
                 R.string.performance_standard_adapter, habit.frequency, habitCountMapper
-                    .getCountNameHabitListFragment(habit.count))
+                    .getCountNameHabitFragment(habit.count))
             doneDatesCounter.text = context.getString(
                 R.string.done_dates_adapter, habit.doneDates.size)
 

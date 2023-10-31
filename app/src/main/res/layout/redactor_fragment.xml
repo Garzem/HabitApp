@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/large_margin"
-                android:text="@string/colorText"
+                android:text="@string/color_string"
                 android:textColor="@color/colorGreyDark"
                 android:textSize="@dimen/text_size_normal"
                 app:layout_constraintBottom_toBottomOf="@+id/color_holder"
@@ -193,7 +193,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:text="@string/save"
+        android:text="@string/save_string"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/delete_habit"
         app:layout_constraintStart_toStartOf="parent" />
@@ -203,7 +203,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:text="@string/delete"
+        android:text="@string/delete_string"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/save_habit" />

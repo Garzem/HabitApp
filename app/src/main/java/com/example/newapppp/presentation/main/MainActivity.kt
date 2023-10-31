@@ -4,62 +4,83 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.FloatingWindow
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.integration.compose.placeholder
 import com.example.newapppp.R
+import com.example.newapppp.common.ui.element.nav_drawer_item.BaseNavDrawerItem
+import com.example.newapppp.common.ui.element.drawer.BaseDrawer
 import com.example.newapppp.common.ui.theme.HabitTheme
-import com.example.newapppp.common.ui.topbar.BaseTopBar
 import com.example.newapppp.databinding.FragmentContainerBinding
 import com.example.newapppp.databinding.LayoutComposeBinding
+import com.example.newapppp.presentation.main.state.MainEvent
+import com.example.newapppp.presentation.redactor.RedactorFragmentDirections.Companion.actionNavAppInfoFragment
+import com.example.newapppp.presentation.redactor.RedactorFragmentDirections.Companion.actionNavHomeFragment
 import com.example.newapppp.presentation.util.setContentWithTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(R.layout.layout_compose) {
-    private var appBarConfiguration: AppBarConfiguration? = null
+class MainActivity : AppCompatActivity(R.layout.layout_compose), DrawerHost {
     private var navController: NavController? = null
     private val binding: LayoutComposeBinding by viewBinding(LayoutComposeBinding::bind)
     private val viewModel: MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.root.setContentWithTheme {
-            MainScreen()
+            val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            MainScreen(drawerState = drawerState, state.navItem)
+
+            val event by viewModel.event.collectAsStateWithLifecycle()
+            LaunchedEffect(event) {
+                when (event) {
+                    MainEvent.OpenDrawer -> {
+                        if (drawerState.isClosed) {
+                            drawerState.open()
+                        }
+                    }
+
+                    MainEvent.CloseDrawer -> {
+                        if (drawerState.isOpen) {
+                            drawerState.close()
+                        }
+                    }
+
+                    else -> return@LaunchedEffect
+                }
+                viewModel.consumeEvents()
+            }
+
         }
 
         viewModel.state.onEach { state ->
@@ -72,107 +93,69 @@ class MainActivity : AppCompatActivity(R.layout.layout_compose) {
 
 
     @Composable
-    fun MainScreen() {
-        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        val scope = rememberCoroutineScope()
-        ModalNavigationDrawer(
+    private fun MainScreen(drawerState: DrawerState, selectedNavItem: NavItem?) {
+        BaseDrawer(
             drawerState = drawerState,
-            drawerContent = {
-                DrawerMenu()
+            drawerMenu = {
+                DrawerMenu(selectedNavItem)
             }
         ) {
-            Scaffold(
-                topBar = {
-                    BaseTopBar(
-                        title = stringResource(id = R.string.habits_string),
-                        openMenuActionClick =
-                        {
-                            scope.launch {
-                                drawerState.apply {
-                                    if (isClosed) open() else close()
-                                }
-                            }
-                        }
-                    )
-                },
-                containerColor = HabitTheme.colors.background
-            ) { padding ->
+            AndroidViewBinding(
+                factory = { inflater, parent, attachToParent ->
+                    FragmentContainerBinding.inflate(inflater, parent, attachToParent).also {
+                        setupNavigationListener()
+                    }
+                }
+            )
+        }
+    }
+
+    @Composable
+    private fun DrawerMenu(navItem: NavItem?) {
+        ModalDrawerSheet(
+            drawerContainerColor = HabitTheme.colors.background,
+            windowInsets = WindowInsets(0, 0, 0, 0)
+        ) {
+            Column {
+                DrawerHeader()
+
                 Column(
-                    modifier = Modifier.clickable {
-                        navController?.navigate()
-                    }
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .background(HabitTheme.colors.background)
                 ) {
-                    AndroidViewBinding(factory = { inflater, parent, attachToParent ->
-                        FragmentContainerBinding.inflate(inflater, parent, attachToParent).also {
-                            setupNavigationListener()
-                        }
-                    }
+                    BaseNavDrawerItem(
+                        labelStringId = R.string.home_page_title,
+                        iconId = R.drawable.main_navigation_icon,
+                        contentIconStringId = R.string.home_page_title_icon_string,
+
+                        selected = navItem == NavItem.HOME,
+                        shape = CutCornerShape(HabitTheme.dimensions.boxRadius),
+                        onClick = { navController?.navigate(actionNavHomeFragment()) }
+                    )
+
+                    BaseNavDrawerItem(
+                        labelStringId = R.string.info_about_app,
+                        iconId = R.drawable.about_app_icon,
+                        contentIconStringId = R.string.info_about_app_icon_string,
+
+                        selected = navItem == NavItem.APP_INFO,
+                        shape = CutCornerShape(HabitTheme.dimensions.boxRadius),
+                        onClick = { navController?.navigate(actionNavAppInfoFragment()) }
                     )
                 }
             }
         }
     }
 
-    @Composable
-    fun DrawerMenu() {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(HabitTheme.dimensions.paddingBig)
-        ) {
-            DrawerHeader()
-            Divider(modifier = Modifier.fillMaxWidth())
-
-            NavigationDrawerItem(
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.home_page_title)
-                    )
-                },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.main_navigation_icon),
-                        contentDescription = stringResource(id = R.string.info_about_app_icon_string)
-                    )
-                },
-                selected = false,
-                shape = CutCornerShape(HabitTheme.dimensions.boxRadius),
-                onClick = { navController?.navigate("nav_app_info_fragment") }
-            )
-
-            NavigationDrawerItem(
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.info_about_app)
-                    )
-                },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.about_app_icon),
-                        contentDescription = stringResource(id = R.string.home_page_title_icon_string)
-                    )
-                },
-                selected = false,
-                shape = CutCornerShape(HabitTheme.dimensions.boxRadius),
-                onClick = { navController?.navigate("nav_home_fragment") }
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(HabitTheme.colors.background)
-            )
-        }
-    }
-
     @OptIn(ExperimentalGlideComposeApi::class)
     @Composable
-    fun DrawerHeader() {
+    private fun DrawerHeader() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = HabitTheme.colors.onAvatarBackground
+                    color = HabitTheme.colors.onProfileBackground
                 )
         ) {
             Column(
@@ -187,12 +170,12 @@ class MainActivity : AppCompatActivity(R.layout.layout_compose) {
                             color = HabitTheme.colors.background
                         )
                 ) {
-                    GlideImage(
-                        model = "https://free-png.ru/wp-content/uploads/2022/07/free-png.ru-95.png",
-                        loading = placeholder(R.drawable.loading_profile_icon),
-                        failure = placeholder(R.drawable.wifi_tethering),
-                        contentDescription = getString(R.string.profile_description_string),
-                    )
+//                    GlideImage(
+//                        model = "https://free-png.ru/wp-content/uploads/2022/07/free-png.ru-95.png",
+//                        loading = placeholder(R.drawable.loading_profile_icon),
+//                        failure = placeholder(R.drawable.wifi_tethering),
+//                        contentDescription = getString(R.string.profile_description_string),
+//                    )
                 }
                 Spacer(modifier = Modifier.height(HabitTheme.dimensions.spacer))
                 Text(
@@ -214,21 +197,22 @@ class MainActivity : AppCompatActivity(R.layout.layout_compose) {
         navController?.addOnDestinationChangedListener { controller, destination, _ ->
             if (destination !is FloatingWindow) {
                 val navigationBarItem = when (destination.id) {
-                    R.id.nav_app_info_fragment -> {}
-                    R.id.nav_redactor_fragment -> {}
-                    R.id.nav_color_choose_dialog -> {}
-                    R.id.nav_filter_dialog -> {}
-                    R.id.nav_home_fragment -> {}
+                    R.id.nav_home_fragment -> NavItem.HOME
+                    R.id.nav_app_info_fragment -> NavItem.APP_INFO
                     else -> null
                 }
-                viewModel.onNavDestinationUpdated(navigationBarItem, controller)
+                viewModel.onNavDestinationUpdated(navigationBarItem)
             }
         }
     }
 
     @Preview
     @Composable
-    fun DrawerMenuPreview() {
-        DrawerMenu()
+    private fun DrawerMenuPreview() {
+        DrawerMenu(NavItem.HOME)
+    }
+
+    override fun openDrawer() {
+        viewModel.openDrawer()
     }
 }
